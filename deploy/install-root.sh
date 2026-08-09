@@ -13,6 +13,19 @@ NGINX_TARGET="/etc/nginx/sites-available/kinavela"
 NGINX_LINK="/etc/nginx/sites-enabled/kinavela"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 
+wait_for_url() {
+  local url="$1"
+  local attempt
+  for attempt in {1..30}; do
+    if curl --fail --silent --max-time 10 "$url" >/dev/null; then
+      return 0
+    fi
+    sleep 1
+  done
+  echo "Timed out waiting for $url" >&2
+  return 1
+}
+
 backup_exact_target() {
   local target="$1"
   if [[ -e "$target" && ! -L "$target" ]]; then
@@ -35,7 +48,7 @@ install -d -o mignon -g mignon -m 0750 /var/log/kinavela
 systemctl daemon-reload
 systemctl enable kinavela.service
 systemctl restart kinavela.service
-curl --fail --silent --show-error --max-time 10 http://127.0.0.1:3020/api/health >/dev/null
+wait_for_url "http://127.0.0.1:3020/api/health"
 
 install -d -m 0755 /var/www/kinavela-certbot
 install -m 0644 "$PROJECT_DIR/deploy/nginx-http.conf" "$NGINX_TARGET"
@@ -53,6 +66,6 @@ nginx -t
 systemctl reload nginx
 
 systemctl restart kinavela.service
-curl --fail --silent --show-error --max-time 15 "https://$DOMAIN/api/readiness" >/dev/null
+wait_for_url "https://$DOMAIN/api/readiness"
 
 echo "Kinavela systemd, Nginx, and TLS installation completed."
