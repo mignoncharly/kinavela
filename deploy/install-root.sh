@@ -31,8 +31,10 @@ backup_exact_target "$SERVICE_TARGET"
 backup_exact_target "$NGINX_TARGET"
 
 install -m 0644 "$PROJECT_DIR/deploy/kinavela.service" "$SERVICE_TARGET"
+install -d -o mignon -g mignon -m 0750 /var/log/kinavela
 systemctl daemon-reload
-systemctl enable --now kinavela.service
+systemctl enable kinavela.service
+systemctl restart kinavela.service
 curl --fail --silent --show-error --max-time 10 http://127.0.0.1:3020/api/health >/dev/null
 
 install -d -m 0755 /var/www/kinavela-certbot

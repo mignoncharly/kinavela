@@ -12,7 +12,7 @@
 
 ## First install
 
-Run quality gates and migration as the application user, then execute `sudo ./deploy/install-root.sh`. The installer is limited to Kinavela targets. It backs up an existing exact service/site file, checks port 3020, installs the service and HTTP challenge vhost, validates Nginx, obtains a hostname-specific Certbot certificate, installs the TLS vhost, validates again, and performs a readiness request.
+Run quality gates and migration as the application user, then execute `sudo ./deploy/install-root.sh`. The installer is limited to Kinavela targets. It backs up an existing exact service/site file, checks port 3020, creates the dedicated `/var/log/kinavela` directory, installs the service and HTTP challenge vhost, validates Nginx, obtains a hostname-specific Certbot certificate, installs the TLS vhost, validates again, and performs a readiness request.
 
 ## Update
 
