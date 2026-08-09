@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "title": "Kinavela — Cultiver les racines. Créer la proximité.",
+    "description": "Une plateforme privée et fiable qui relie les familles de la diaspora par la culture, la communauté et les souvenirs."
+  },
+  "nav": { "vision": "Vision", "principles": "Sécurité", "contact": "Contact" },
+  "hero": {
+    "eyebrow": "Pour les familles camerounaises en Allemagne",
+    "title": "Cultiver les racines. Créer la proximité.",
+    "body": "Kinavela rapproche les familles voisines, fait grandir de petites communautés de confiance et aide les parents à transmettre langues, cultures et histoires familiales à leurs enfants.",
+    "primary": "Rejoindre la liste pilote",
+    "secondary": "Comment ça marche",
+    "privacy": "Privé par défaut · Aucun profil public d’enfant · Aucun domicile précis"
+  },
+  "journey": {
+    "eyebrow": "Un parcours, pas un fil",
+    "title": "Du premier lien au souvenir durable",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Découvrir",
+        "body": "Trouver des familles compatibles à proximité sans révéler leur localisation précise."
+      },
+      {
+        "number": "02",
+        "title": "Se connecter",
+        "body": "Les échanges privés ne s’ouvrent qu’après l’accord des deux familles."
+      },
+      {
+        "number": "03",
+        "title": "Créer un Village",
+        "body": "Partager des expériences culturelles dans de petites communautés locales de confiance."
+      },
+      {
+        "number": "04",
+        "title": "Préserver",
+        "body": "Conserver langues, récits et moments précieux dans un Roots Passport privé."
+      }
+    ]
+  },
+  "trust": {
+    "eyebrow": "La confidentialité dès la conception",
+    "title": "Les familles ont besoin de confiance, pas d’audience.",
+    "body": "Les enfants ne sont jamais des utilisateurs autonomes. Profils, médias et souvenirs restent sous le contrôle des parents et responsables autorisés.",
+    "items": [
+      "Aucun profil public d’enfant",
+      "Des distances approximatives, jamais de coordonnées exactes",
+      "Des partages explicites et une visibilité prudente",
+      "Une architecture de données et de sécurité pensée pour l’UE"
+    ]
+  },
+  "cta": {
+    "title": "Une manière plus sereine de créer du lien.",
+    "body": "Kinavela démarre volontairement à petite échelle. Écrivez-nous si votre famille souhaite participer au pilote ou soutenir la vision.",
+    "button": "info@gestionatech.de"
+  },
+  "footer": {
+    "status": "Socle de production actif",
+    "rights": "Tous droits réservés."
+  }
+}

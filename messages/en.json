@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "title": "Kinavela — Keep roots alive. Create closeness.",
+    "description": "A private, trusted platform connecting diaspora families through culture, community and memories."
+  },
+  "nav": { "vision": "Vision", "principles": "Safety", "contact": "Contact" },
+  "hero": {
+    "eyebrow": "For Cameroonian families in Germany",
+    "title": "Keep roots alive. Create closeness.",
+    "body": "Kinavela brings nearby families together, nurtures small trusted communities and helps parents keep language, culture and family stories alive for their children.",
+    "primary": "Join the pilot list",
+    "secondary": "How it works",
+    "privacy": "Private by default · No public child profiles · No exact home locations"
+  },
+  "journey": {
+    "eyebrow": "A journey, not a feed",
+    "title": "From first connection to lasting memory",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Discover",
+        "body": "Find compatible families nearby with deliberately imprecise location display."
+      },
+      {
+        "number": "02",
+        "title": "Connect",
+        "body": "Private conversation only opens after both families agree."
+      },
+      {
+        "number": "03",
+        "title": "Build a Village",
+        "body": "Create cultural experiences in small, trusted local communities."
+      },
+      {
+        "number": "04",
+        "title": "Preserve memories",
+        "body": "Keep language, stories and meaningful moments in a private Roots Passport."
+      }
+    ]
+  },
+  "trust": {
+    "eyebrow": "Privacy by design",
+    "title": "Families need trust, not reach.",
+    "body": "Children are never standalone users. Profiles, media and memories remain under the control of authorized parents and guardians.",
+    "items": [
+      "No public child profiles",
+      "Distance ranges instead of exact coordinates",
+      "Explicit sharing and conservative visibility",
+      "EU-oriented data and security architecture"
+    ]
+  },
+  "cta": {
+    "title": "A calmer way to build community.",
+    "body": "Kinavela is starting deliberately small. Write to us if your family would like to join the pilot or support the vision.",
+    "button": "info@gestionatech.de"
+  },
+  "footer": {
+    "status": "Production foundation active",
+    "rights": "All rights reserved."
+  }
+}

@@ -1,0 +1,3748 @@
+# ROOTS / VILLAGE
+
+## Technical Product & Implementation Blueprint
+
+**Product vision**
+
+ROOTS / Village is a privacy-first family diaspora platform helping parents:
+
+1. discover compatible families nearby;
+2. build trusted local micro-communities called Villages;
+3. organize real-world cultural experiences;
+4. transmit language, culture and family history to their children;
+5. preserve those memories over many years through a private Roots Passport.
+
+The platform is not designed as another social network.
+
+Its product loop is:
+
+**Discover → Connect → Build a Village → Meet → Experience Culture → Preserve Memory → Repeat**
+
+The initial launch market is:
+
+**Cameroonian families living in Germany**
+
+but the architecture must support multiple countries, cultures, languages and diaspora communities from day one.
+
+---
+
+# 1. PRODUCT PRINCIPLES
+
+Every implementation decision must respect these principles.
+
+### 1.1 Children are not social-network users
+
+Children do not create accounts.
+
+Every child profile belongs to one or more authorized guardians.
+
+Children:
+
+* cannot be searchable by strangers;
+* cannot be directly messaged;
+* cannot expose exact location;
+* cannot have public contact information;
+* cannot have public profiles indexed by search engines.
+
+---
+
+### 1.2 Approximate location by default
+
+Never display a family's exact home coordinates.
+
+The platform may internally use coordinates to calculate distance, but other users should only see values such as:
+
+> 12 km away
+
+or:
+
+> Ingolstadt area
+
+Public/client-visible location should use deliberately reduced precision.
+
+---
+
+### 1.3 Real-world interaction over endless feeds
+
+ROOTS should not become Facebook for diaspora families.
+
+Therefore avoid:
+
+* infinite public feeds;
+* follower counts;
+* popularity scores;
+* public child profiles;
+* vanity metrics.
+
+Prioritize:
+
+* matching;
+* Villages;
+* activities;
+* cultural missions;
+* family memories.
+
+---
+
+### 1.4 Privacy before growth
+
+The platform deals with families and children.
+
+Default visibility must always be conservative.
+
+Users explicitly opt into additional visibility.
+
+---
+
+# 2. RECOMMENDED TECHNOLOGY STACK
+
+## Frontend
+
+Use:
+
+* Next.js
+* React
+* TypeScript strict mode
+* App Router
+* Server Components where appropriate
+* Tailwind CSS
+* shadcn/ui
+* Radix primitives
+* Lucide icons
+* React Hook Form
+* Zod
+* TanStack Query only where client-side server-state management is genuinely necessary
+
+Do not duplicate server and client data-fetching systems unnecessarily.
+
+Prefer Server Components for normal page data.
+
+Use client components for:
+
+* interactive maps;
+* filters;
+* matching interaction;
+* dialogs;
+* messaging;
+* install PWA functionality;
+* realtime functionality.
+
+---
+
+# 3. DESIGN SYSTEM
+
+Recommended fonts:
+
+**Primary:** Geist or Inter.
+
+Visual direction:
+
+* warm;
+* premium;
+* trustworthy;
+* family-oriented;
+* culturally neutral enough for international expansion.
+
+Avoid making the entire product visually "African".
+
+Cultural identity should come from user content and community contexts rather than stereotypical visual decoration.
+
+Use design tokens.
+
+Example:
+
+```text
+background
+surface
+surface-elevated
+foreground
+muted
+border
+primary
+primary-foreground
+secondary
+success
+warning
+danger
+```
+
+Support:
+
+* light mode;
+* dark mode later;
+* WCAG AA contrast;
+* keyboard navigation;
+* screen readers;
+* 44px minimum touch targets where practical.
+
+Mobile-first.
+
+Primary supported widths:
+
+```text
+360px
+390px
+430px
+768px
+1024px
+1280px+
+```
+
+---
+
+# 4. BACKEND
+
+Use Supabase.
+
+Components:
+
+```text
+PostgreSQL
+Supabase Auth
+Supabase Storage
+Supabase Realtime
+Supabase Edge Functions where appropriate
+PostGIS
+Row Level Security
+database functions
+database triggers
+scheduled jobs if required
+```
+
+Backend architecture:
+
+```text
+Next.js
+   │
+   ├── Server Components
+   ├── Server Actions / Route Handlers
+   │
+   ▼
+Supabase
+   │
+   ├── Auth
+   ├── PostgreSQL
+   ├── RLS
+   ├── Storage
+   ├── Realtime
+   └── Edge Functions
+
+External services
+   │
+   ├── AI provider
+   ├── geocoding/maps
+   ├── transactional email
+   ├── Sentry
+   └── Stripe
+```
+
+---
+
+# 5. ENVIRONMENTS
+
+Maintain separate environments:
+
+```text
+local
+staging
+production
+```
+
+Never share production credentials with development.
+
+Environment variables:
+
+```text
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+
+SUPABASE_SERVICE_ROLE_KEY
+
+AI_API_KEY
+
+MAP_PROVIDER_KEY
+
+EMAIL_API_KEY
+
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
+SENTRY_DSN
+SENTRY_AUTH_TOKEN
+
+APP_URL
+```
+
+Service-role credentials must only exist server-side.
+
+---
+
+# 6. REPOSITORY STRUCTURE
+
+Recommended structure:
+
+```text
+/
+├─ app/
+│  ├─ (marketing)/
+│  ├─ (auth)/
+│  ├─ (onboarding)/
+│  ├─ (app)/
+│  │  ├─ discover/
+│  │  ├─ matches/
+│  │  ├─ villages/
+│  │  ├─ events/
+│  │  ├─ roots/
+│  │  ├─ family/
+│  │  ├─ messages/
+│  │  ├─ notifications/
+│  │  └─ settings/
+│  ├─ admin/
+│  └─ api/
+│
+├─ components/
+│  ├─ ui/
+│  ├─ family/
+│  ├─ discovery/
+│  ├─ villages/
+│  ├─ events/
+│  ├─ roots/
+│  ├─ messaging/
+│  └─ maps/
+│
+├─ features/
+│  ├─ auth/
+│  ├─ onboarding/
+│  ├─ families/
+│  ├─ matching/
+│  ├─ villages/
+│  ├─ events/
+│  ├─ roots-passport/
+│  ├─ stories/
+│  └─ moderation/
+│
+├─ lib/
+│  ├─ supabase/
+│  ├─ auth/
+│  ├─ geo/
+│  ├─ ai/
+│  ├─ email/
+│  ├─ security/
+│  └─ validation/
+│
+├─ supabase/
+│  ├─ migrations/
+│  ├─ seed.sql
+│  └─ functions/
+│
+├─ tests/
+│  ├─ unit/
+│  ├─ integration/
+│  └─ e2e/
+│
+├─ public/
+│  ├─ icons/
+│  └─ manifest/
+│
+├─ docs/
+│  ├─ architecture.md
+│  ├─ database.md
+│  ├─ privacy-model.md
+│  ├─ matching.md
+│  ├─ ai.md
+│  └─ deployment.md
+│
+└─ scripts/
+```
+
+Feature-specific business logic should live in `features`, not scattered throughout React components.
+
+---
+
+# 7. CORE DOMAIN MODEL
+
+Central concept:
+
+```text
+User
+   ↓
+Family
+   ↓
+Children
+   ↓
+Cultural identities
+   ↓
+Family preferences
+   ↓
+Matches
+   ↓
+Connections
+   ↓
+Village
+   ↓
+Events
+   ↓
+Cultural experiences
+   ↓
+Roots Passport
+```
+
+---
+
+# 8. DATABASE MODEL
+
+Use UUID primary keys.
+
+Standard columns where appropriate:
+
+```sql
+id uuid primary key default gen_random_uuid()
+created_at timestamptz not null default now()
+updated_at timestamptz not null default now()
+```
+
+---
+
+## 8.1 profiles
+
+```text
+profiles
+
+id
+auth_user_id
+display_name
+avatar_path
+preferred_language
+timezone
+country_of_residence
+city
+onboarding_completed
+verification_level
+status
+created_at
+updated_at
+```
+
+Possible statuses:
+
+```text
+active
+suspended
+deleted
+```
+
+---
+
+# 8.2 families
+
+```text
+families
+
+id
+name
+slug
+created_by
+country_of_residence
+city
+location geography(Point,4326)
+location_precision
+discovery_radius_km
+visibility
+bio
+created_at
+updated_at
+```
+
+Do not expose `location` directly to other families.
+
+---
+
+# 8.3 family_members
+
+Allows multiple parents/guardians later.
+
+```text
+family_members
+
+id
+family_id
+profile_id
+role
+status
+created_at
+```
+
+roles:
+
+```text
+owner
+guardian
+member
+```
+
+---
+
+# 8.4 children
+
+```text
+children
+
+id
+family_id
+nickname
+birth_year
+birth_month nullable
+gender optional
+avatar_path nullable
+visibility
+created_at
+updated_at
+```
+
+Avoid storing unnecessary exact birth dates.
+
+Age matching usually needs birth year/month, not exact birthday.
+
+---
+
+# 8.5 countries
+
+Reference table.
+
+```text
+countries
+
+id
+iso2
+iso3
+name
+emoji
+```
+
+---
+
+# 8.6 cultures
+
+```text
+cultures
+
+id
+country_id
+name
+type
+parent_culture_id nullable
+metadata jsonb
+```
+
+Can represent:
+
+```text
+Cameroon
+Bamiléké
+Bassa
+Beti
+Duala
+etc.
+```
+
+Do not enforce ethnicity classification on users.
+
+Participation is optional and self-described.
+
+---
+
+# 8.7 languages
+
+```text
+languages
+
+id
+iso_code
+name
+native_name
+```
+
+---
+
+# 8.8 family_cultures
+
+```text
+family_cultures
+
+family_id
+culture_id
+relationship_type
+priority
+```
+
+---
+
+# 8.9 family_languages
+
+```text
+family_languages
+
+family_id
+language_id
+proficiency
+transmission_goal
+```
+
+Example:
+
+```text
+French → fluent
+German → fluent
+Medumba → conversational
+```
+
+Transmission:
+
+```text
+already_speaking
+learning
+want_to_teach_children
+cultural_interest
+```
+
+---
+
+# 9. INTEREST SYSTEM
+
+Create reusable taxonomy.
+
+Tables:
+
+```text
+interests
+family_interests
+```
+
+Initial interests:
+
+```text
+playdates
+language
+cooking
+culture
+music
+traditional_games
+family_outings
+picnics
+parent_support
+school_support
+integration
+sports
+travel
+faith_optional
+arts
+history
+```
+
+Do not hard-code these into UI logic.
+
+---
+
+# 10. AVAILABILITY
+
+```text
+family_availability
+
+id
+family_id
+weekday
+period
+```
+
+Periods:
+
+```text
+morning
+afternoon
+evening
+```
+
+This improves matching without requiring calendar access.
+
+---
+
+# 11. DISCOVERY PREFERENCES
+
+```text
+discovery_preferences
+
+family_id
+
+radius_km
+same_country_priority
+same_culture_priority
+similar_child_age_priority
+same_language_priority
+shared_interests_priority
+availability_priority
+
+open_to_other_african_families
+open_to_all_diaspora_families
+
+min_child_age
+max_child_age
+```
+
+---
+
+# 12. GEOLOCATION
+
+Use PostGIS.
+
+Internal location may store approximate user-selected coordinates.
+
+Never force precise GPS.
+
+On onboarding:
+
+1. ask city/postcode;
+2. geocode;
+3. store approximate coordinates;
+4. optionally allow device location with explicit consent.
+
+Distance calculation:
+
+```sql
+ST_DWithin(...)
+ST_Distance(...)
+```
+
+Create a secure database RPC such as:
+
+```text
+discover_families(
+    requester_family_id,
+    radius_km,
+    filters
+)
+```
+
+RPC returns:
+
+```text
+family_id
+display_city
+distance_bucket
+match_score
+child_age_ranges
+shared_cultures
+shared_languages
+shared_interests
+```
+
+It must NOT return:
+
+```text
+latitude
+longitude
+street
+postcode
+private contact info
+child full names
+```
+
+---
+
+# 13. LOCATION PRIVACY
+
+Create distance buckets:
+
+```text
+<5 km
+5–10 km
+10–20 km
+20–30 km
+30–50 km
+50–100 km
+```
+
+or show rounded distance.
+
+Never return enough precision to reconstruct home coordinates.
+
+---
+
+# 14. MATCHING ENGINE V1
+
+Do not begin with AI.
+
+Use deterministic weighted scoring.
+
+Example:
+
+```text
+distance               25%
+children age overlap   20%
+cultural overlap       15%
+language overlap       10%
+shared interests       15%
+availability overlap   10%
+stated preferences      5%
+```
+
+Total:
+
+```text
+0–100
+```
+
+Possible formula:
+
+```text
+score =
+distance_score * 0.25 +
+child_age_score * 0.20 +
+culture_score * 0.15 +
+language_score * 0.10 +
+interest_score * 0.15 +
+availability_score * 0.10 +
+preference_score * 0.05
+```
+
+Return explanations.
+
+Example:
+
+> 91% compatibility
+
+Because:
+
+```text
+Children around same age
+12 km away
+Both families speak French and German
+Interested in cultural activities
+Usually available Saturday afternoon
+```
+
+Never expose internal sensitive information to explain scoring.
+
+---
+
+# 15. MATCHING ENGINE V2
+
+Later add behavioural signals:
+
+```text
+accepted suggestions
+declined suggestions
+event participation
+village participation
+preferred radius
+activity categories
+```
+
+Do not infer sensitive traits.
+
+Do not create opaque AI compatibility scores.
+
+AI may help generate explanations, but core matching should remain deterministic and auditable.
+
+---
+
+# 16. CONNECTION MODEL
+
+A discovered family cannot immediately see private information.
+
+States:
+
+```text
+none
+requested
+accepted
+declined
+blocked
+```
+
+Table:
+
+```text
+family_connections
+
+id
+requester_family_id
+recipient_family_id
+status
+created_at
+accepted_at
+```
+
+Once accepted:
+
+* messaging becomes available;
+* additional profile information may become visible.
+
+---
+
+# 17. VILLAGE SYSTEM
+
+Core table:
+
+```text
+villages
+
+id
+name
+slug
+description
+country_focus_id nullable
+city
+center_location geography
+radius_km
+visibility
+created_by
+member_limit
+status
+created_at
+updated_at
+```
+
+Village types:
+
+```text
+local
+culture
+language
+activity
+temporary
+```
+
+Initial product primarily uses:
+
+```text
+local + cultural
+```
+
+Example:
+
+> Cameroon Families · Ingolstadt
+
+---
+
+# 18. VILLAGE MEMBERS
+
+```text
+village_members
+
+id
+village_id
+family_id
+role
+status
+joined_at
+```
+
+Roles:
+
+```text
+owner
+organizer
+moderator
+member
+```
+
+---
+
+# 19. AUTOMATIC VILLAGE SUGGESTIONS
+
+Do not automatically create Villages at first.
+
+Detect possible clusters.
+
+Example condition:
+
+```text
+>= 5 compatible families
+within 40 km
+sharing country/culture
+without existing village
+```
+
+Then display:
+
+> There are 7 Cameroonian families around Ingolstadt.
+
+> Create a Village?
+
+This becomes an important growth mechanism.
+
+---
+
+# 20. EVENTS
+
+```text
+events
+
+id
+village_id
+creator_family_id
+
+title
+description
+category
+
+starts_at
+ends_at
+
+location_name
+location_city
+location_address encrypted/private
+public_location_description
+
+max_families
+registration_deadline
+
+visibility
+status
+
+created_at
+updated_at
+```
+
+Categories:
+
+```text
+playdate
+park
+picnic
+cooking
+language
+cultural
+sports
+creative
+family_support
+celebration
+other
+```
+
+---
+
+# 21. EVENT RSVP
+
+```text
+event_attendees
+
+event_id
+family_id
+status
+number_of_adults
+number_of_children
+created_at
+```
+
+Statuses:
+
+```text
+going
+maybe
+declined
+waitlisted
+```
+
+Exact event address can remain hidden until RSVP approval where appropriate.
+
+---
+
+# 22. CULTURAL MISSIONS
+
+This feature differentiates ROOTS from Meetup.
+
+Tables:
+
+```text
+cultural_missions
+mission_steps
+family_mission_progress
+```
+
+Example mission:
+
+```text
+Learn five greetings from Cameroon
+```
+
+Steps:
+
+```text
+Discover
+Listen
+Practice at home
+Use at next Village event
+Mark completed
+```
+
+Mission categories:
+
+```text
+language
+cooking
+history
+geography
+music
+storytelling
+traditions
+family
+travel
+games
+```
+
+---
+
+# 23. ROOTS PASSPORT
+
+Create one passport per child.
+
+```text
+roots_passports
+
+id
+child_id
+created_at
+```
+
+Entries:
+
+```text
+roots_passport_entries
+
+id
+passport_id
+
+type
+title
+description
+
+culture_id nullable
+language_id nullable
+event_id nullable
+mission_id nullable
+
+occurred_at
+visibility
+
+created_by
+created_at
+```
+
+Entry types:
+
+```text
+language
+story
+recipe
+place
+tradition
+event
+family_memory
+achievement
+trip
+photo
+audio
+video
+document
+```
+
+---
+
+# 24. ROOTS PASSPORT UX
+
+Child's passport could show:
+
+```text
+MY ROOTS
+
+Cameroon 🇨🇲
+Germany 🇩🇪
+
+Languages
+12 discoveries
+
+Stories
+8 memories
+
+Places
+5 visited
+
+Food
+7 discovered
+
+Traditions
+4 experienced
+
+Family stories
+13 preserved
+```
+
+Use gamification carefully.
+
+Avoid:
+
+```text
+competitive leaderboards
+public scores
+streak anxiety
+children comparison
+```
+
+Prefer:
+
+```text
+journey
+collection
+discovery
+family milestones
+```
+
+---
+
+# 25. ROOTS STORIES
+
+One of the strongest premium features.
+
+Workflow:
+
+```text
+Parent creates story request
+        ↓
+Shareable secure URL generated
+        ↓
+Grandparent opens without account
+        ↓
+Records audio
+        ↓
+Uploads
+        ↓
+AI transcription
+        ↓
+Language detection
+        ↓
+Optional translation
+        ↓
+AI-generated child-friendly adaptation
+        ↓
+Parent reviews
+        ↓
+Approve
+        ↓
+Roots Passport
+```
+
+Never publish AI-generated adaptation automatically.
+
+Parent must approve it.
+
+Keep:
+
+```text
+original audio
+original transcription
+translated transcription
+adapted story
+```
+
+as separate data.
+
+---
+
+# 26. STORY REQUEST TABLES
+
+```text
+story_requests
+
+id
+family_id
+child_id
+created_by
+token_hash
+question
+expires_at
+status
+created_at
+```
+
+```text
+family_stories
+
+id
+family_id
+child_id
+story_request_id
+
+title
+
+original_audio_path
+original_language
+
+transcript_original
+transcript_translation
+adapted_story
+
+ai_status
+approval_status
+
+created_at
+updated_at
+```
+
+---
+
+# 27. SECURE STORY LINKS
+
+Never store plain access tokens.
+
+Generate:
+
+```text
+cryptographically secure random token
+```
+
+Store:
+
+```text
+SHA-256(token)
+```
+
+Send raw token only in URL.
+
+Requests must be:
+
+```text
+single-purpose
+expiring
+rate-limited
+revocable
+```
+
+Example expiration:
+
+```text
+7 days
+```
+
+---
+
+# 28. STORAGE ARCHITECTURE
+
+Buckets:
+
+```text
+avatars
+family-media
+roots-media
+story-audio
+event-media
+verification-private
+```
+
+`verification-private` must never be public.
+
+Storage paths:
+
+```text
+families/{familyId}/...
+children/{childId}/roots/...
+stories/{storyId}/...
+```
+
+Signed URLs for private content.
+
+No permanently public child media URLs.
+
+---
+
+# 29. MESSAGING
+
+MVP does not need Discord.
+
+Implement minimal communication.
+
+Tables:
+
+```text
+conversations
+conversation_participants
+messages
+```
+
+Conversation types:
+
+```text
+family
+village
+event
+```
+
+Message structure:
+
+```text
+id
+conversation_id
+sender_profile_id
+body
+message_type
+reply_to
+created_at
+edited_at
+deleted_at
+```
+
+Use Supabase Realtime for updates.
+
+No public global chat.
+
+---
+
+# 30. SAFETY TOOLS
+
+Every user-facing family/village/message needs:
+
+```text
+Block
+Report
+Leave
+Mute
+```
+
+Tables:
+
+```text
+blocks
+reports
+moderation_actions
+```
+
+Report reasons:
+
+```text
+harassment
+spam
+fraud
+unsafe_behavior
+inappropriate_child_content
+discrimination
+impersonation
+other
+```
+
+---
+
+# 31. VERIFICATION SYSTEM
+
+Do not initially promise identity verification unless actually implemented.
+
+V1 levels:
+
+```text
+email_verified
+phone_verified
+community_verified
+identity_verified
+```
+
+Initially implement:
+
+```text
+email_verified
+phone_verified optional
+```
+
+Never display a generic "Verified" badge without explaining what verification means.
+
+---
+
+# 32. AUTHENTICATION
+
+Initial methods:
+
+```text
+email magic link
+email/password optional
+Google
+Apple later
+```
+
+Authentication alone does not authorize application resources.
+
+Database authorization comes from RLS.
+
+---
+
+# 33. AUTHORIZATION MODEL
+
+Important distinction:
+
+```text
+auth user
+↓
+profile
+↓
+family membership
+↓
+resource permissions
+```
+
+Never assume:
+
+```text
+logged in = authorized
+```
+
+Implement helpers:
+
+```text
+is_family_member()
+is_family_owner()
+is_village_member()
+is_village_moderator()
+can_view_child()
+can_view_passport()
+can_view_event_address()
+```
+
+Prefer reusable PostgreSQL security helper functions.
+
+---
+
+# 34. ROW LEVEL SECURITY
+
+RLS must be enabled on every exposed user-data table.
+
+Examples.
+
+A family member can edit their family:
+
+```sql
+family_id IN (
+  SELECT family_id
+  FROM family_members
+  WHERE profile_id = current_profile_id()
+)
+```
+
+A parent can access their children.
+
+Village members can access village-only data.
+
+A child Roots Passport can only be accessed by authorized guardians unless explicitly shared.
+
+Blocked families must disappear from discovery.
+
+---
+
+# 35. DO NOT EXPOSE SENSITIVE TABLES DIRECTLY
+
+Consider private schemas for:
+
+```text
+verification
+moderation internals
+AI processing
+billing internals
+audit logs
+exact sensitive location
+```
+
+Expose only required functions/views.
+
+---
+
+# 36. RATE LIMITING
+
+Rate-limit:
+
+```text
+login attempts
+magic links
+connection requests
+messages
+reports
+story uploads
+AI generation
+geocoding
+search
+event creation
+```
+
+Especially protect:
+
+```text
+anonymous story links
+authentication
+AI endpoints
+```
+
+---
+
+# 37. BOT PROTECTION
+
+Use bot protection on:
+
+```text
+signup
+login abuse
+story anonymous uploads
+contact form
+```
+
+Possible provider:
+
+Cloudflare Turnstile.
+
+---
+
+# 38. AUDIT LOGGING
+
+Create:
+
+```text
+audit_events
+```
+
+Record important events:
+
+```text
+profile_created
+family_created
+connection_requested
+village_created
+member_removed
+event_created
+story_uploaded
+privacy_setting_changed
+account_export_requested
+account_deleted
+moderation_action
+```
+
+Do not log message content or sensitive media unnecessarily.
+
+---
+
+# 39. GDPR / PRIVACY ARCHITECTURE
+
+Build GDPR mechanisms, not only legal pages.
+
+Provide:
+
+```text
+privacy dashboard
+download my data
+delete account
+delete family
+delete child
+delete individual Roots entry
+revoke sharing link
+remove uploaded media
+manage consent
+```
+
+Track consent where necessary.
+
+Table:
+
+```text
+consents
+
+profile_id
+consent_type
+policy_version
+granted_at
+revoked_at
+```
+
+---
+
+# 40. ACCOUNT DELETION
+
+Deletion workflow:
+
+```text
+request deletion
+↓
+re-authenticate
+↓
+confirm
+↓
+mark account pending deletion
+↓
+delete/anonymize application data
+↓
+delete private media
+↓
+delete auth account
+```
+
+Document retention exceptions.
+
+---
+
+# 41. AI ARCHITECTURE
+
+AI must be an optional service layer, not the backbone of the app.
+
+Use AI for:
+
+```text
+story transcription
+translation
+story adaptation
+mission generation
+activity suggestions
+event-description assistance
+cultural content assistance
+moderation assistance
+```
+
+Do NOT use AI to:
+
+```text
+decide who is safe
+determine ethnicity
+judge parenting
+assign identity
+automatically publish family stories
+make invisible social-ranking decisions
+```
+
+---
+
+# 42. AI SERVICE ABSTRACTION
+
+Do not call AI APIs directly from React components.
+
+Create:
+
+```text
+lib/ai/provider.ts
+```
+
+Interface:
+
+```ts
+interface AIProvider {
+  transcribeAudio(...)
+  translateText(...)
+  adaptFamilyStory(...)
+  generateMission(...)
+  moderateText(...)
+}
+```
+
+Then implementations can be changed later.
+
+---
+
+# 43. AI JOBS
+
+AI processing should be asynchronous where appropriate.
+
+Create:
+
+```text
+ai_jobs
+
+id
+job_type
+entity_type
+entity_id
+status
+attempts
+error
+created_at
+started_at
+completed_at
+```
+
+Statuses:
+
+```text
+pending
+processing
+completed
+failed
+cancelled
+```
+
+Make jobs idempotent.
+
+---
+
+# 44. AI PRIVACY
+
+Before sending information to an external AI provider:
+
+* minimize personal data;
+* never send unnecessary user identifiers;
+* strip metadata;
+* do not send location unless essential;
+* document provider usage;
+* make processing transparent to users.
+
+---
+
+# 45. CULTURAL CONTENT QUALITY
+
+Do not allow AI to become an authority on cultural traditions.
+
+Content sources should eventually support:
+
+```text
+community contributor
+reviewer
+source
+region/culture
+language
+version
+approval status
+```
+
+Content states:
+
+```text
+draft
+community_review
+approved
+archived
+```
+
+---
+
+# 46. NOTIFICATION SYSTEM
+
+Tables:
+
+```text
+notifications
+notification_preferences
+```
+
+Channels:
+
+```text
+in-app
+email
+web-push later
+```
+
+Examples:
+
+```text
+new compatible family
+connection request
+connection accepted
+new village nearby
+village invitation
+event reminder
+new cultural mission
+story response received
+```
+
+Avoid notification spam.
+
+---
+
+# 47. EMAIL
+
+Transactional email types:
+
+```text
+welcome
+verify email
+connection request
+village invitation
+event reminder
+story request
+story completed
+security alert
+```
+
+Centralize templates.
+
+Provide:
+
+```text
+plain-text version
+HTML version
+localization
+```
+
+---
+
+# 48. INTERNATIONALIZATION
+
+Architect for i18n immediately.
+
+Initial languages:
+
+```text
+German
+French
+English
+```
+
+Do not embed UI copy inside components.
+
+Structure:
+
+```text
+/messages
+   de.json
+   fr.json
+   en.json
+```
+
+Use locale-aware:
+
+```text
+dates
+times
+numbers
+pluralization
+```
+
+---
+
+# 49. SEO
+
+Only marketing/public cultural pages need SEO.
+
+Private app pages:
+
+```text
+noindex
+```
+
+Marketing structure:
+
+```text
+/
+ /de
+ /fr
+ /en
+
+/about
+/how-it-works
+/safety
+/for-families
+/cultures/cameroon
+/cities/ingolstadt
+```
+
+Potential acquisition pages later:
+
+```text
+Cameroonian families in Munich
+Cameroonian families in Berlin
+African families in Hamburg
+```
+
+Only create them when enough genuine content/data exists.
+
+Never generate thousands of empty SEO pages.
+
+---
+
+# 50. STRUCTURED DATA
+
+Use appropriate JSON-LD on public pages:
+
+```text
+Organization
+WebSite
+FAQPage
+Event
+```
+
+Do not expose private Village events through schema markup.
+
+---
+
+# 51. PWA
+
+Implement:
+
+```text
+manifest.webmanifest
+service worker
+offline shell
+installability
+icons
+theme-color
+standalone display
+```
+
+Do not show aggressive install prompt immediately.
+
+Trigger install recommendation after meaningful engagement such as:
+
+```text
+completed onboarding
+or
+second meaningful visit
+```
+
+Custom UI:
+
+> Add ROOTS to your home screen
+
+Native browser prompt only where supported.
+
+---
+
+# 52. OFFLINE
+
+V1 offline functionality:
+
+```text
+app shell
+recent Roots Passport entries
+saved cultural missions
+basic cached assets
+```
+
+Do not attempt offline messaging initially.
+
+---
+
+# 53. ANALYTICS
+
+Use privacy-conscious analytics.
+
+Important events:
+
+```text
+signup_started
+signup_completed
+
+onboarding_started
+onboarding_completed
+
+family_discovery_viewed
+family_match_opened
+
+connection_requested
+connection_accepted
+
+village_suggested
+village_created
+village_joined
+
+event_created
+event_rsvp
+event_attended
+
+mission_started
+mission_completed
+
+roots_entry_created
+
+story_request_created
+story_uploaded
+story_approved
+
+pwa_installed
+subscription_started
+```
+
+Never send:
+
+```text
+child names
+family stories
+private message content
+precise location
+```
+
+to analytics.
+
+---
+
+# 54. PRODUCT NORTH-STAR METRIC
+
+Do not optimize for DAU.
+
+Potential North Star:
+
+**Meaningful Family Connections per Active Family**
+
+More powerful later:
+
+**Offline Cultural Experiences Completed per Active Family per Month**
+
+Supporting metrics:
+
+```text
+onboarding completion
+successful match rate
+connection acceptance rate
+Village formation rate
+event attendance
+30-day family retention
+Roots Passport entries
+story completion
+```
+
+---
+
+# 55. MONETIZATION
+
+Do not monetize basic community access.
+
+Free:
+
+```text
+family profile
+discovery
+matching
+connections
+Villages
+basic events
+basic Roots Passport
+```
+
+Potential Premium:
+
+**Roots Family**
+
+```text
+AI story transcription
+translation
+story adaptation
+extended media storage
+family heritage archive
+premium cultural journeys
+annual family book
+advanced Roots Passport
+```
+
+Stripe architecture:
+
+```text
+billing_customers
+subscriptions
+subscription_events
+```
+
+Stripe webhooks are source of truth for billing state.
+
+Never trust client-side subscription flags.
+
+---
+
+# 56. ADMIN APPLICATION
+
+Create `/admin`.
+
+Roles:
+
+```text
+support
+moderator
+admin
+superadmin
+```
+
+Functions:
+
+```text
+user search
+family search
+reports queue
+moderation actions
+Village management
+event moderation
+cultural content moderation
+audit history
+AI job inspection
+feature flags
+```
+
+Admin actions must be audited.
+
+---
+
+# 57. MODERATION WORKFLOW
+
+```text
+report
+↓
+moderation queue
+↓
+review
+↓
+dismiss / warn / restrict / suspend
+↓
+audit entry
+```
+
+Protect moderators from unnecessary access to children's data.
+
+---
+
+# 58. FEATURE FLAGS
+
+Create basic feature flags early.
+
+Examples:
+
+```text
+roots_stories
+automatic_village_suggestions
+premium
+web_push
+identity_verification
+ai_missions
+```
+
+Allow controlled rollout.
+
+---
+
+# 59. OBSERVABILITY
+
+Use:
+
+```text
+Sentry
+structured server logs
+Supabase logs
+health endpoints
+```
+
+Monitor:
+
+```text
+frontend exceptions
+API failures
+auth failures
+database errors
+AI failures
+email failures
+payment webhooks
+```
+
+Never send sensitive content into error metadata.
+
+---
+
+# 60. TESTING STRATEGY
+
+Use:
+
+```text
+Vitest
+React Testing Library
+Playwright
+```
+
+Test pyramid:
+
+### Unit
+
+```text
+matching score
+distance bucketing
+validation
+permissions
+formatters
+```
+
+### Integration
+
+```text
+Supabase queries
+database RPCs
+RLS
+auth
+storage access
+AI job flow
+```
+
+### E2E
+
+```text
+signup
+onboarding
+discover family
+connect
+create Village
+join Village
+create event
+RSVP
+create Roots entry
+send story request
+approve story
+delete account
+```
+
+---
+
+# 61. RLS TESTING IS MANDATORY
+
+Write tests proving:
+
+```text
+Family A cannot access Family B private data.
+
+Family A cannot access Family B child details.
+
+Blocked families disappear from discovery.
+
+Non-members cannot read Village private messages.
+
+Village members cannot become admins themselves.
+
+Anonymous users cannot enumerate families.
+
+Service role never reaches browser bundle.
+```
+
+Do not consider a feature complete until its RLS tests pass.
+
+---
+
+# 62. PERFORMANCE
+
+Initial targets:
+
+```text
+LCP < 2.5s
+CLS < 0.1
+INP < 200ms where realistic
+```
+
+Use:
+
+```text
+Next Image
+lazy loading
+pagination
+server rendering
+database indexes
+query profiling
+```
+
+Indexes particularly on:
+
+```text
+family_id
+profile_id
+village_id
+status
+created_at
+location
+culture_id
+language_id
+```
+
+PostGIS indexes:
+
+```text
+GIST
+```
+
+---
+
+# 63. ACCESSIBILITY
+
+Required:
+
+```text
+semantic HTML
+labels
+keyboard operation
+focus states
+screen-reader labels
+reduced motion support
+color contrast
+error summaries
+```
+
+---
+
+# 64. IMPLEMENTATION PHASES
+
+==================================================
+
+# PHASE 0 — PROJECT FOUNDATION
+
+Goal:
+
+Create a production-grade skeleton.
+
+Implement:
+
+```text
+Next.js project
+TypeScript strict
+Tailwind
+shadcn/ui
+ESLint
+Prettier
+Git hooks
+environment validation
+Supabase clients
+Sentry
+i18n
+testing framework
+CI
+basic deployment
+```
+
+Create:
+
+```text
+local
+staging
+production
+```
+
+Deliverables:
+
+```text
+landing page
+health endpoint
+database connection
+CI passing
+staging deployment
+```
+
+Acceptance:
+
+```text
+npm test passes
+npm run build passes
+npm run lint passes
+staging deployment successful
+no secrets exposed client-side
+```
+
+==================================================
+
+# PHASE 1 — AUTHENTICATION & USER FOUNDATION
+
+Implement:
+
+```text
+signup
+login
+logout
+magic link
+password reset if passwords supported
+email verification
+session management
+profile
+settings
+delete account foundation
+```
+
+Database:
+
+```text
+profiles
+consents
+audit_events
+```
+
+Acceptance:
+
+User can:
+
+```text
+register
+authenticate
+sign out
+return with session
+edit basic profile
+request deletion
+```
+
+==================================================
+
+# PHASE 2 — FAMILY ONBOARDING
+
+Build multi-step onboarding.
+
+Steps:
+
+### Step 1
+
+About you
+
+### Step 2
+
+Your family
+
+### Step 3
+
+Children
+
+### Step 4
+
+Origins
+
+### Step 5
+
+Languages
+
+### Step 6
+
+What you want to preserve
+
+### Step 7
+
+Interests
+
+### Step 8
+
+Availability
+
+### Step 9
+
+Location/radius
+
+### Step 10
+
+Privacy
+
+### Step 11
+
+Preview
+
+Tables:
+
+```text
+families
+family_members
+children
+countries
+cultures
+languages
+family_cultures
+family_languages
+interests
+family_interests
+family_availability
+discovery_preferences
+```
+
+Acceptance:
+
+A new family can complete onboarding in under approximately 5 minutes without needing unnecessary personal details.
+
+==================================================
+
+# PHASE 3 — LOCATION & DISCOVERY
+
+Enable PostGIS.
+
+Implement:
+
+```text
+city search
+geocoding
+approximate location storage
+distance query
+radius filtering
+discovery cards
+filters
+location privacy
+blocking
+```
+
+Discovery card:
+
+```text
+Family display name
+Approximate area
+Distance
+Children age ranges
+Languages
+Shared interests
+Cultural connections
+Compatibility explanation
+```
+
+No contact details yet.
+
+Acceptance:
+
+A family can discover relevant families without exposing anyone's exact location.
+
+==================================================
+
+# PHASE 4 — MATCHING ENGINE
+
+Implement deterministic matching.
+
+Create:
+
+```text
+matching SQL/functions
+scoring service
+explanation generation
+tests
+```
+
+Filters:
+
+```text
+radius
+culture
+country
+languages
+child ages
+interests
+availability
+```
+
+No AI.
+
+Acceptance:
+
+Given a fixed dataset, match ranking must be deterministic and reproducible.
+
+==================================================
+
+# PHASE 5 — FAMILY CONNECTIONS
+
+Implement:
+
+```text
+connection request
+accept
+decline
+block
+connection list
+basic notification
+```
+
+Privacy changes after acceptance.
+
+Acceptance:
+
+Two families must mutually connect before private communication becomes possible.
+
+==================================================
+
+# PHASE 6 — MESSAGING
+
+Implement:
+
+```text
+family-to-family conversations
+realtime messages
+unread count
+report
+block
+mute
+```
+
+No unnecessary features such as GIF marketplace or stories.
+
+Acceptance:
+
+Connected families can communicate privately and safely.
+
+==================================================
+
+# PHASE 7 — VILLAGES
+
+Implement:
+
+```text
+create Village
+join request
+invite
+membership
+roles
+Village page
+members
+basic Village conversation
+leave
+remove member
+moderation
+```
+
+Village page:
+
+```text
+Overview
+Families
+Events
+Chat
+Culture
+```
+
+Acceptance:
+
+At least 3 families can form and manage a private local community.
+
+==================================================
+
+# PHASE 8 — EVENTS
+
+Implement:
+
+```text
+create event
+edit
+cancel
+RSVP
+capacity
+waitlist
+reminders
+private event address
+attendance confirmation
+```
+
+Acceptance:
+
+A Village can organize a complete real-world activity through ROOTS without falling back to external coordination.
+
+==================================================
+
+# PHASE 9 — VILLAGE DISCOVERY ENGINE
+
+Implement cluster detection.
+
+Example:
+
+```text
+7 Cameroon-origin families
+within 30 km
+3+ compatible child age ranges
+no existing active Village
+```
+
+Recommendation:
+
+> Start Cameroon Families · Ingolstadt?
+
+Do not auto-create without consent.
+
+==================================================
+
+# PHASE 10 — CULTURAL MISSIONS
+
+Implement:
+
+```text
+mission library
+mission categories
+age ranges
+culture association
+steps
+family progress
+Village missions
+completion
+Roots integration
+```
+
+Initial content should be curated manually.
+
+Do not begin with automatically generated AI culture content.
+
+==================================================
+
+# PHASE 11 — ROOTS PASSPORT
+
+Build the emotional core.
+
+Implement:
+
+```text
+passport per child
+timeline
+categories
+manual entries
+photos
+audio
+event integration
+mission integration
+privacy
+export architecture
+```
+
+Example automatic event:
+
+```text
+Mission completed
+↓
+Parent chooses:
+"Add to Elyon's Roots Passport?"
+```
+
+Acceptance:
+
+Parents can build meaningful cultural records without exposing the child publicly.
+
+==================================================
+
+# PHASE 12 — ROOTS STORIES
+
+Implement secure grandparent storytelling.
+
+Components:
+
+```text
+story request
+secure link
+anonymous recorder
+audio upload
+processing queue
+transcription
+translation
+adaptation
+review
+approval
+passport integration
+```
+
+This feature should have dedicated integration and privacy tests.
+
+==================================================
+
+# PHASE 13 — AI LAYER
+
+Only now integrate broader AI functionality.
+
+Implement:
+
+```text
+AI abstraction
+usage quotas
+cost tracking
+job queue
+error recovery
+prompt versioning
+moderation
+logging without sensitive content
+```
+
+Potential features:
+
+```text
+story adaptation
+translation
+cultural activity ideas
+mission draft generation
+event description assistance
+```
+
+Every AI-generated cultural statement should remain reviewable.
+
+==================================================
+
+# PHASE 14 — PWA
+
+Implement:
+
+```text
+manifest
+service worker
+install UI
+offline shell
+cached passport
+cached missions
+push architecture
+```
+
+Test Android Chrome thoroughly.
+
+Also test iOS Safari/PWA limitations.
+
+==================================================
+
+# PHASE 15 — NOTIFICATIONS
+
+Implement:
+
+```text
+in-app
+email
+event reminders
+connection requests
+Village activity
+story completion
+```
+
+Add web push after explicit consent.
+
+==================================================
+
+# PHASE 16 — ADMIN & MODERATION
+
+Create operational backend.
+
+Implement:
+
+```text
+reports
+users
+families
+villages
+events
+moderation
+suspension
+audit log
+AI jobs
+feature flags
+```
+
+No production launch without basic moderation capability.
+
+==================================================
+
+# PHASE 17 — BILLING
+
+Only after engagement has been validated.
+
+Integrate Stripe.
+
+Free tier remains useful.
+
+Premium:
+
+```text
+Roots Stories AI
+large archive
+advanced Passport
+premium cultural journeys
+annual export/book
+```
+
+Implement:
+
+```text
+checkout
+customer portal
+webhooks
+subscription sync
+entitlements
+usage quota
+```
+
+==================================================
+
+# PHASE 18 — SEO & PUBLIC ACQUISITION
+
+Develop public content pages.
+
+Initial:
+
+```text
+Cameroonian families in Germany
+Cameroonian families in Munich
+Cameroonian families in Berlin
+Cameroonian families in Frankfurt
+Cameroonian families near Ingolstadt
+```
+
+Only surface genuine aggregated community information.
+
+Never expose family identities.
+
+==================================================
+
+# PHASE 19 — GDPR HARDENING
+
+Before wider European launch:
+
+Perform:
+
+```text
+data inventory
+privacy review
+DPA review
+retention policy
+cookie audit
+consent audit
+account export
+account deletion test
+media deletion test
+backup policy review
+processor inventory
+```
+
+Prepare:
+
+```text
+Privacy Policy
+Terms
+Community Guidelines
+Child Safety Policy
+Cookie Policy
+Imprint/Impressum
+```
+
+==================================================
+
+# PHASE 20 — SECURITY HARDENING
+
+Perform:
+
+```text
+RLS audit
+storage-policy audit
+dependency scan
+rate-limit audit
+CSP
+security headers
+CSRF review
+XSS review
+SQL injection review
+IDOR testing
+secret scan
+admin authorization review
+signed URL review
+upload validation
+malware strategy
+```
+
+Run adversarial tests.
+
+Example:
+
+```text
+Can User A change URL familyId and access User B?
+
+Can anonymous visitor enumerate families?
+
+Can Village member become moderator via API?
+
+Can signed photo URLs be reused indefinitely?
+
+Can child ID expose another child's Passport?
+
+Can Story token be brute-forced?
+```
+
+==================================================
+
+# PHASE 21 — PILOT
+
+Launch deliberately small.
+
+Target:
+
+```text
+20–50 families
+Germany
+primarily Cameroon diaspora
+```
+
+Possible geographic pilot:
+
+```text
+Munich/Ingolstadt region
+Frankfurt/Rhein-Main
+Berlin
+```
+
+Do not open all Germany immediately if density is insufficient.
+
+Community products die when local density is too low.
+
+==================================================
+
+# PHASE 22 — PILOT METRICS
+
+Measure:
+
+```text
+onboarding completion
+families within matching radius
+match open rate
+connection request rate
+acceptance rate
+time to first connection
+Village formation
+event creation
+event attendance
+30-day retention
+Passport creation
+Roots Story usage
+```
+
+Most important question:
+
+> Did ROOTS cause families who did not previously know each other to meet in real life?
+
+If no, fix this before scaling.
+
+==================================================
+
+# PHASE 23 — GERMANY EXPANSION
+
+After pilot success:
+
+Expand geographic density city-by-city.
+
+Use waitlist/clustering system.
+
+Example:
+
+```text
+14 families waiting around Stuttgart.
+
+ROOTS Stuttgart unlocks when enough nearby families join.
+```
+
+This turns lack of density into a growth mechanism.
+
+==================================================
+
+# PHASE 24 — MULTI-DIASPORA EXPANSION
+
+Architecture already supports it.
+
+Possible rollout:
+
+```text
+Cameroon
+Nigeria
+Ghana
+Senegal
+Ivory Coast
+DR Congo
+Morocco
+Turkey
+India
+Vietnam
+Philippines
+etc.
+```
+
+Avoid assuming every diaspora community behaves identically.
+
+Community content and norms must be configurable.
+
+==================================================
+
+# 65. MOBILE APP STRATEGY
+
+Do NOT build native apps initially.
+
+First validate with PWA.
+
+Later:
+
+```text
+Expo
+React Native
+Expo Router
+Supabase JS
+shared TypeScript packages
+```
+
+Possible monorepo later:
+
+```text
+apps/
+  web/
+  mobile/
+
+packages/
+  database/
+  schemas/
+  domain/
+  ui-tokens/
+  matching/
+```
+
+Backend remains unchanged.
+
+---
+
+# 66. MVP DEFINITION
+
+Do not confuse MVP with the complete vision.
+
+True first release:
+
+```text
+Authentication
+Family onboarding
+Children
+Cultural background
+Languages
+Interests
+Location radius
+
+Discovery
+Matching
+Connection requests
+
+Private messaging
+
+Villages
+Events
+
+Basic Roots Passport
+
+Notifications
+Moderation
+Privacy
+PWA
+```
+
+Do NOT require for MVP:
+
+```text
+AI stories
+Stripe
+advanced cultural missions
+native apps
+marketplace
+complex verification
+annual books
+advanced recommendations
+```
+
+---
+
+# 67. MVP USER JOURNEY
+
+Example.
+
+Lucienne opens ROOTS.
+
+```text
+Create account
+↓
+Create family
+↓
+Cameroon
+↓
+French/German
+↓
+Child: age 4
+↓
+Culture + language + playdates
+↓
+Schrobenhausen
+↓
+40 km radius
+```
+
+ROOTS:
+
+> 8 compatible families nearby.
+
+She sees:
+
+```text
+Family A
+12 km
+child 3–5
+Cameroon
+French/German
+playdates + culture
+
+89% match
+```
+
+She sends:
+
+> Connect
+
+Family accepts.
+
+ROOTS then notices:
+
+```text
+6 compatible families
+within Ingolstadt region
+```
+
+and proposes:
+
+> Create Cameroon Families · Ingolstadt
+
+They form the Village.
+
+Lucienne creates:
+
+> Sunday picnic & Cameroon afternoon
+
+Five families RSVP.
+
+Afterward:
+
+> Add this experience to your child's Roots Passport?
+
+That is the minimum version where ROOTS delivers its real promise.
+
+---
+
+# 68. DEVELOPMENT RULES FOR CODEX / CLAUDE CODE
+
+The coding agent must follow these rules.
+
+## Rule 1
+
+Never implement multiple phases simultaneously unless explicitly requested.
+
+## Rule 2
+
+Before starting a phase:
+
+1. inspect existing repository;
+2. read `/docs`;
+3. inspect migrations;
+4. inspect RLS;
+5. inspect tests;
+6. produce a concise implementation checklist.
+
+## Rule 3
+
+Never rewrite functioning architecture unnecessarily.
+
+## Rule 4
+
+Never bypass TypeScript using:
+
+```text
+any
+@ts-ignore
+@ts-expect-error
+```
+
+unless documented and unavoidable.
+
+## Rule 5
+
+Every external input must be validated with Zod or equivalent server-side validation.
+
+## Rule 6
+
+Client validation is UX.
+
+Server/database validation is security.
+
+Implement both when relevant.
+
+## Rule 7
+
+Never expose:
+
+```text
+service role key
+AI API key
+email API key
+Stripe secret
+private storage credentials
+```
+
+to the browser.
+
+## Rule 8
+
+Every new table must define:
+
+```text
+primary key
+foreign keys
+indexes
+constraints
+RLS
+RLS policies
+updated_at strategy where applicable
+```
+
+## Rule 9
+
+Every migration must be committed.
+
+Never make undocumented production database changes manually.
+
+## Rule 10
+
+Every feature touching authorization requires permission tests.
+
+## Rule 11
+
+Avoid duplicate business logic.
+
+Move reusable logic to:
+
+```text
+features/
+lib/
+database functions
+```
+
+depending on responsibility.
+
+## Rule 12
+
+No placeholder security.
+
+Never write:
+
+```text
+TODO secure later
+TODO RLS
+temporary public bucket
+```
+
+for production-facing functionality.
+
+## Rule 13
+
+UI must remain mobile-first.
+
+Verify at:
+
+```text
+360px
+390px
+768px
+1280px
+```
+
+## Rule 14
+
+Every phase ends with:
+
+```bash
+lint
+typecheck
+unit tests
+integration tests
+build
+```
+
+and relevant E2E tests.
+
+## Rule 15
+
+Do not mark a phase complete with failing tests.
+
+---
+
+# 69. REQUIRED DOCUMENTATION
+
+Maintain:
+
+```text
+/docs/architecture.md
+/docs/database.md
+/docs/security.md
+/docs/privacy-model.md
+/docs/matching.md
+/docs/ai.md
+/docs/storage.md
+/docs/deployment.md
+/docs/product-decisions.md
+/docs/changelog.md
+```
+
+---
+
+# 70. ARCHITECTURE DECISION RECORDS
+
+For important decisions create:
+
+```text
+/docs/adr/
+```
+
+Example:
+
+```text
+001-supabase.md
+002-postgis.md
+003-no-public-child-profiles.md
+004-deterministic-matching.md
+005-pwa-first.md
+006-ai-provider-abstraction.md
+```
+
+This is especially important when working with AI coding agents because it prevents future agents from silently reversing architectural decisions.
+
+---
+
+# 71. AGENT PHASE PROMPT TEMPLATE
+
+Use this whenever assigning a phase to Codex or Claude Code:
+
+```text
+You are implementing PHASE [N] of ROOTS / Village.
+
+Before writing code:
+
+1. Read:
+   - README.md
+   - docs/architecture.md
+   - docs/database.md
+   - docs/security.md
+   - docs/privacy-model.md
+   - relevant ADR files
+
+2. Inspect the existing repository and database migrations.
+
+3. Do not assume a feature is missing before searching the codebase.
+
+4. Produce a concise implementation checklist.
+
+Then implement only PHASE [N].
+
+Requirements:
+
+- TypeScript strict mode.
+- No unnecessary `any`.
+- Validate all external inputs.
+- Maintain current architecture.
+- Add database migrations where required.
+- Enable RLS for every new exposed table.
+- Add explicit RLS policies.
+- Never expose service credentials.
+- Preserve privacy around families, children and location.
+- Write tests for authorization-sensitive functionality.
+- Mobile-first responsive UI.
+- Accessible components.
+- No placeholder functionality.
+- No fake production data.
+
+After implementation:
+
+1. run lint;
+2. run typecheck;
+3. run tests;
+4. run build;
+5. fix all relevant failures;
+6. report:
+   - files created;
+   - files modified;
+   - migrations;
+   - tests added;
+   - security considerations;
+   - remaining issues.
+
+Do not proceed to another phase.
+```
+
+---
+
+# 72. INITIAL BOOTSTRAP PROMPT FOR CODEX / CLAUDE CODE
+
+The first coding session should receive:
+
+```text
+Build the initial production-grade foundation for a web application named ROOTS / Village.
+
+ROOTS is a privacy-first platform helping diaspora families discover compatible families nearby, form trusted local micro-communities called Villages, organize cultural activities and preserve cultural memories for their children.
+
+Initial market:
+Cameroonian families living in Germany.
+
+Long-term:
+Multi-country, multi-culture, multilingual international platform.
+
+Technical architecture:
+
+- Next.js
+- React
+- TypeScript strict
+- App Router
+- Tailwind CSS
+- shadcn/ui
+- Supabase
+- PostgreSQL
+- Supabase Auth
+- Supabase Storage
+- PostGIS
+- Supabase Realtime
+- PWA
+- Zod
+- React Hook Form
+- Sentry
+- Playwright
+- Vitest
+
+Critical rules:
+
+Children are never standalone users.
+
+Do not expose child profiles publicly.
+
+Do not expose exact home locations.
+
+No service-role or private API keys in browser code.
+
+Use PostgreSQL Row Level Security as part of authorization.
+
+Architect for German, French and English from the beginning.
+
+Build mobile-first.
+
+Follow the repository structure and architecture described in the ROOTS technical blueprint.
+
+Implement PHASE 0 only.
+
+Before implementation, inspect the repository and describe your intended file architecture.
+
+After implementation run lint, typecheck, tests and production build.
+
+Do not proceed to authentication or later product phases.
+```
+
+---
+
+# 73. RELEASE GATES
+
+No public beta until:
+
+```text
+Authentication secure
+RLS reviewed
+location privacy verified
+child privacy verified
+blocking operational
+reporting operational
+moderation dashboard operational
+data deletion operational
+privacy documents published
+backups configured
+error monitoring configured
+rate limiting configured
+production environment isolated
+security headers configured
+E2E critical flows passing
+```
+
+---
+
+# 74. PRODUCT ROADMAP SUMMARY
+
+### Foundation
+
+```text
+Phase 0
+Infrastructure
+```
+
+### Identity
+
+```text
+Phases 1–2
+Auth + Family
+```
+
+### Discovery
+
+```text
+Phases 3–5
+Geo + Matching + Connections
+```
+
+### Community
+
+```text
+Phases 6–9
+Messaging + Villages + Events + Clustering
+```
+
+### Cultural moat
+
+```text
+Phases 10–12
+Missions + Roots Passport + Roots Stories
+```
+
+### Intelligence
+
+```text
+Phase 13
+AI
+```
+
+### Product maturity
+
+```text
+Phases 14–20
+PWA + Notifications + Admin + Billing + SEO + GDPR + Security
+```
+
+### Market validation
+
+```text
+Phases 21–23
+Pilot + Metrics + Germany expansion
+```
+
+### Scale
+
+```text
+Phase 24+
+International diaspora expansion + eventual native applications
+```
+
+---
+
+# FINAL PRODUCT ARCHITECTURE
+
+ROOTS should ultimately consist of five interconnected engines:
+
+## 1. Discovery Engine
+
+> Who are the families around us?
+
+Geo + compatibility.
+
+## 2. Village Engine
+
+> How do we create meaningful relationships?
+
+Micro-communities + activities + communication.
+
+## 3. Culture Engine
+
+> What do we want our children to discover?
+
+Languages + missions + traditions + experiences.
+
+## 4. Memory Engine
+
+> What do we preserve for them?
+
+Roots Passport + photos + stories + grandparents.
+
+## 5. Trust Engine
+
+> How do families interact safely?
+
+Privacy + consent + verification + moderation + permissions.
+
+The technological moat is therefore not one AI feature.
+
+It is the accumulated graph connecting:
+
+```text
+Families
+        ↕
+Cultures
+        ↕
+Languages
+        ↕
+Local communities
+        ↕
+Events
+        ↕
+Experiences
+        ↕
+Family memories
+```
+
+That graph becomes increasingly valuable as the family continues using ROOTS over years.
+
+The product should therefore be engineered as a **long-term family cultural infrastructure**, not as a disposable social application.

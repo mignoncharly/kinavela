@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "title": "Kinavela — Wurzeln bewahren. Nähe schaffen.",
+    "description": "Eine private, vertrauensvolle Plattform für Diaspora-Familien, die Kultur, Gemeinschaft und Erinnerungen verbindet."
+  },
+  "nav": {
+    "vision": "Vision",
+    "principles": "Sicherheit",
+    "contact": "Kontakt"
+  },
+  "hero": {
+    "eyebrow": "Für kamerunische Familien in Deutschland",
+    "title": "Wurzeln bewahren. Nähe schaffen.",
+    "body": "Kinavela bringt Familien in der Nähe zusammen, stärkt kleine vertrauensvolle Gemeinschaften und hilft Eltern, Sprache, Kultur und Familiengeschichten für ihre Kinder lebendig zu halten.",
+    "primary": "Pilotprogramm vormerken",
+    "secondary": "So funktioniert es",
+    "privacy": "Privat von Anfang an · Keine öffentlichen Kinderprofile · Keine exakten Wohnorte"
+  },
+  "journey": {
+    "eyebrow": "Eine Reise, kein Feed",
+    "title": "Vom ersten Kontakt zur bleibenden Erinnerung",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Entdecken",
+        "body": "Passende Familien in Ihrer Region finden — mit bewusst ungenauer Standortanzeige."
+      },
+      {
+        "number": "02",
+        "title": "Verbinden",
+        "body": "Erst nach gegenseitiger Zustimmung werden private Gespräche möglich."
+      },
+      {
+        "number": "03",
+        "title": "Village aufbauen",
+        "body": "In kleinen, lokalen Gemeinschaften Erlebnisse organisieren und Kultur teilen."
+      },
+      {
+        "number": "04",
+        "title": "Erinnerungen bewahren",
+        "body": "Sprachen, Geschichten und besondere Momente im privaten Roots Passport sammeln."
+      }
+    ]
+  },
+  "trust": {
+    "eyebrow": "Privacy by design",
+    "title": "Familien brauchen Vertrauen, nicht Reichweite.",
+    "body": "Kinder sind niemals eigenständige Nutzer. Profile, Medien und Erinnerungen bleiben unter der Kontrolle autorisierter Eltern und Erziehungsberechtigter.",
+    "items": [
+      "Keine öffentlichen Kinderprofile",
+      "Entfernungen statt genauer Koordinaten",
+      "Explizite Freigaben und konservative Sichtbarkeit",
+      "EU-orientierte Daten- und Sicherheitsarchitektur"
+    ]
+  },
+  "cta": {
+    "title": "Eine ruhigere Art, Gemeinschaft zu bauen.",
+    "body": "Kinavela startet bewusst klein. Schreiben Sie uns, wenn Ihre Familie am Pilotprogramm teilnehmen oder die Vision unterstützen möchte.",
+    "button": "info@gestionatech.de"
+  },
+  "footer": {
+    "status": "Produktionsfundament aktiv",
+    "rights": "Alle Rechte vorbehalten."
+  }
+}
