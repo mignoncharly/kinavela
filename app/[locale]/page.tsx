@@ -16,6 +16,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { isLocale, locales } from "@/lib/i18n/config";
 
 type PageProps = { params: Promise<{ locale: string }> };
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
