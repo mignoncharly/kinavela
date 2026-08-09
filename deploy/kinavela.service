@@ -21,6 +21,7 @@ RestartSec=5s
 TimeoutStartSec=45s
 TimeoutStopSec=20s
 KillSignal=SIGTERM
+SuccessExitStatus=143 SIGTERM
 SyslogIdentifier=kinavela
 LogsDirectory=kinavela
 LogsDirectoryMode=0750

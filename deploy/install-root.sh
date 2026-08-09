@@ -45,6 +45,9 @@ backup_exact_target "$NGINX_TARGET"
 
 install -m 0644 "$PROJECT_DIR/deploy/kinavela.service" "$SERVICE_TARGET"
 install -d -o mignon -g mignon -m 0750 /var/log/kinavela
+touch /var/log/kinavela/application.log /var/log/kinavela/error.log
+chown mignon:mignon /var/log/kinavela/application.log /var/log/kinavela/error.log
+chmod 0640 /var/log/kinavela/application.log /var/log/kinavela/error.log
 systemctl daemon-reload
 systemctl enable kinavela.service
 systemctl restart kinavela.service

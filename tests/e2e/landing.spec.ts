@@ -1,12 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 test("localized production landing page is usable", async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
   await page.goto("/de");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Wurzeln",
   );
   await expect(page.getByRole("link", { name: /Pilotprogramm/ })).toBeVisible();
   await expect(page.locator("main")).toBeVisible();
+  expect(consoleErrors).toEqual([]);
 });
 
 test("health endpoint responds without secrets", async ({ request }) => {
