@@ -80,6 +80,7 @@ export default async function LandingPage({ params }: PageProps) {
           <a href="#vision">{dictionary.nav.vision}</a>
           <a href="#safety">{dictionary.nav.principles}</a>
           <a href="#contact">{dictionary.nav.contact}</a>
+          <Link href={`/${locale}/auth/login`}>Sign in</Link>
         </nav>
         <nav className="locale-switcher" aria-label="Language selector">
           {locales.map((item) => (
@@ -103,7 +104,7 @@ export default async function LandingPage({ params }: PageProps) {
           <div className="hero-actions">
             <a
               className="button button-primary"
-              href="mailto:info@gestionatech.de?subject=Kinavela%20Pilot"
+              href={`/${locale}/auth/signup`}
             >
               {dictionary.hero.primary}
               <ArrowRight size={18} aria-hidden="true" />
@@ -203,13 +204,10 @@ export default async function LandingPage({ params }: PageProps) {
       </section>
 
       <section className="cta" id="contact" aria-labelledby="cta-title">
-        <p className="eyebrow">KINAVELA PILOT</p>
+        <p className="eyebrow">JOIN KINAVELA</p>
         <h2 id="cta-title">{dictionary.cta.title}</h2>
         <p>{dictionary.cta.body}</p>
-        <a
-          className="button button-primary"
-          href="mailto:info@gestionatech.de?subject=Kinavela%20Pilot"
-        >
+        <a className="button button-primary" href={`/${locale}/auth/signup`}>
           {dictionary.cta.button}
           <ArrowRight size={18} aria-hidden="true" />
         </a>

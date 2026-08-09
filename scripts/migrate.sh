@@ -15,7 +15,15 @@ source "$ENV_FILE"
 set +a
 
 node "$PROJECT_DIR/scripts/validate-env.mjs"
-psql --no-psqlrc --set ON_ERROR_STOP=1 "$DATABASE_URL" \
-  --file "$PROJECT_DIR/supabase/migrations/202608090001_foundation.sql"
 
-echo "Kinavela foundation migration applied."
+for migration in "$PROJECT_DIR"/supabase/migrations/*.sql; do
+  version="$(basename "$migration" .sql)"
+  applied="$(psql --no-psqlrc --tuples-only --no-align "$DATABASE_URL" \
+    --command "select exists(select 1 from kinavela_private.schema_migrations where version = '$version')")"
+  if [[ "$applied" == "t" ]]; then
+    echo "Skipping applied migration: $version"
+    continue
+  fi
+  psql --no-psqlrc --set ON_ERROR_STOP=1 "$DATABASE_URL" --file "$migration"
+  echo "Applied migration: $version"
+done

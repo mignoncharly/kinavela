@@ -9,7 +9,8 @@ set -a
 source "$ENV_FILE"
 set +a
 
-psql --no-psqlrc --set ON_ERROR_STOP=1 "$DATABASE_URL" \
-  --file "$PROJECT_DIR/supabase/tests/0001_foundation.sql"
+for test_file in "$PROJECT_DIR"/supabase/tests/*.sql; do
+  psql --no-psqlrc --set ON_ERROR_STOP=1 "$DATABASE_URL" --file "$test_file"
+done
 
 echo "Kinavela database assertions passed."

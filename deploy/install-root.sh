@@ -54,17 +54,17 @@ systemctl restart kinavela.service
 wait_for_url "http://127.0.0.1:3020/api/health"
 
 install -d -m 0755 /var/www/kinavela-certbot
-install -m 0644 "$PROJECT_DIR/deploy/nginx-http.conf" "$NGINX_TARGET"
-ln -sfn "$NGINX_TARGET" "$NGINX_LINK"
-nginx -t
-systemctl reload nginx
-
 if [[ ! -s "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]]; then
+  install -m 0644 "$PROJECT_DIR/deploy/nginx-http.conf" "$NGINX_TARGET"
+  ln -sfn "$NGINX_TARGET" "$NGINX_LINK"
+  nginx -t
+  systemctl reload nginx
   certbot certonly --webroot --webroot-path /var/www/kinavela-certbot \
     --domain "$DOMAIN" --email info@gestionatech.de --agree-tos --non-interactive
 fi
 
 install -m 0644 "$PROJECT_DIR/deploy/nginx.conf" "$NGINX_TARGET"
+ln -sfn "$NGINX_TARGET" "$NGINX_LINK"
 nginx -t
 systemctl reload nginx
 

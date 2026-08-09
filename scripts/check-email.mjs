@@ -1,5 +1,9 @@
-import "dotenv/config";
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: new URL("../.env.production", import.meta.url).pathname,
+});
 
 const transport = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

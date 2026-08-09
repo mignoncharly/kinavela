@@ -8,7 +8,7 @@
     "eyebrow": "Pour les familles camerounaises en Allemagne",
     "title": "Cultiver les racines. Créer la proximité.",
     "body": "Kinavela rapproche les familles voisines, fait grandir de petites communautés de confiance et aide les parents à transmettre langues, cultures et histoires familiales à leurs enfants.",
-    "primary": "Rejoindre la liste pilote",
+    "primary": "Créer un compte",
     "secondary": "Comment ça marche",
     "privacy": "Privé par défaut · Aucun profil public d’enfant · Aucun domicile précis"
   },
@@ -51,11 +51,11 @@
   },
   "cta": {
     "title": "Une manière plus sereine de créer du lien.",
-    "body": "Kinavela démarre volontairement à petite échelle. Écrivez-nous si votre famille souhaite participer au pilote ou soutenir la vision.",
-    "button": "info@gestionatech.de"
+    "body": "Créez dès maintenant votre espace familial protégé pour transmettre cultures, langues et souvenirs.",
+    "button": "Créer mon compte"
   },
   "footer": {
-    "status": "Socle de production actif",
+    "status": "Disponible en toute sécurité",
     "rights": "Tous droits réservés."
   }
 }
