@@ -8,14 +8,14 @@ Wants=network-online.target
 Type=simple
 User=mignon
 Group=mignon
-WorkingDirectory=/home/mignon/apps/gtech/kinavela
-EnvironmentFile=/home/mignon/apps/gtech/kinavela/.env.production
+WorkingDirectory=/home/mignon/apps/kinavela
+EnvironmentFile=/home/mignon/apps/kinavela/.env.production
 Environment=NODE_ENV=production
 Environment=PORT=3020
 Environment=HOSTNAME=127.0.0.1
-Environment=PATH=/home/mignon/.nvm/versions/node/v22.23.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-ExecStartPre=/home/mignon/.nvm/versions/node/v22.23.2/bin/node /home/mignon/apps/gtech/kinavela/scripts/validate-env.mjs
-ExecStart=/home/mignon/.nvm/versions/node/v22.23.2/bin/node /home/mignon/apps/gtech/kinavela/node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3020
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+ExecStartPre=/usr/bin/node /home/mignon/apps/kinavela/scripts/validate-env.mjs
+ExecStart=/usr/bin/node /home/mignon/apps/kinavela/node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3020
 Restart=on-failure
 RestartSec=5s
 TimeoutStartSec=45s
@@ -34,7 +34,7 @@ PrivateTmp=true
 PrivateDevices=true
 ProtectSystem=strict
 ProtectHome=read-only
-ReadWritePaths=/home/mignon/apps/gtech/kinavela/.next/cache /var/log/kinavela
+ReadWritePaths=/home/mignon/apps/kinavela/.next/cache /var/log/kinavela
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true

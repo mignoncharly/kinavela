@@ -6,9 +6,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/de", "/fr", "/en"],
-        disallow: ["/api/", "/admin/", "/app/"],
+        disallow: ["/api/", "/*/app", "/*/onboarding", "/*/auth"],
       },
     ],
-    sitemap: "https://kinavela.gestionatech.de/sitemap.xml",
+    sitemap: "https://www.kinavela.com/sitemap.xml",
   };
 }

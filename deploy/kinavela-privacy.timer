@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Kinavela privacy retention daily
+
+[Timer]
+OnCalendar=*-*-* 03:17:00 UTC
+Persistent=true
+AccuracySec=5min
+Unit=kinavela-privacy.service
+
+[Install]
+WantedBy=timers.target

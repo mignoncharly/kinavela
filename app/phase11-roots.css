@@ -1,0 +1,171 @@
+.roots-page {
+  padding-bottom: 80px;
+}
+.roots-hero {
+  max-width: 760px;
+  padding: 54px 0 28px;
+}
+.roots-hero > p:not(.eyebrow) {
+  max-width: 650px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.roots-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.roots-children,
+.roots-panel {
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+}
+.roots-children {
+  padding: 12px;
+}
+.roots-children h2 {
+  padding: 8px 12px;
+  font-size: 1.25rem;
+}
+.roots-child-link {
+  display: block;
+  padding: 12px;
+  border-radius: 13px;
+}
+.roots-child-link:hover,
+.roots-child-link[aria-current="page"] {
+  background: var(--surface-elevated);
+}
+.roots-child-link strong,
+.roots-child-link small {
+  display: block;
+}
+.roots-child-link small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.roots-panel {
+  padding: 24px;
+}
+.roots-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+}
+.roots-panel-heading h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+.roots-panel-heading p {
+  margin: 7px 0 0;
+  color: var(--muted);
+}
+.roots-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.roots-form {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-elevated);
+}
+.roots-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.roots-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.roots-form input,
+.roots-form select,
+.roots-form textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+}
+.roots-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.roots-timeline {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+.roots-entry {
+  position: relative;
+  padding: 18px 20px;
+  border-left: 3px solid var(--primary);
+  border-radius: 0 16px 16px 0;
+  background: var(--surface-elevated);
+}
+.roots-entry-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.roots-entry h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+.roots-entry p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.roots-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.roots-entry-meta span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+}
+.roots-entry-delete {
+  border: 0;
+  background: transparent;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 12px;
+}
+.roots-note {
+  margin: 16px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+@media (max-width: 760px) {
+  .roots-layout,
+  .roots-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .roots-panel-heading {
+    flex-direction: column;
+  }
+}

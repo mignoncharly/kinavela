@@ -1,0 +1,64 @@
+.notification-center,
+.notification-preferences {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+}
+.notification-center-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.notification-center-heading h2,
+.notification-preferences h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+.notification-center ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+.notification-center li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.notification-center li.unread {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  background: var(--surface-elevated);
+}
+.notification-center li div {
+  display: grid;
+  gap: 4px;
+}
+.notification-center li small,
+.notification-muted,
+.push-preference small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.notification-preferences label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+}
+.push-preference {
+  display: grid;
+  gap: 8px;
+}
+@media (max-width: 700px) {
+  .notification-center li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

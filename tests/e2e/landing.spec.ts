@@ -9,7 +9,9 @@ test("localized production landing page is usable", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Wurzeln",
   );
-  await expect(page.getByRole("link", { name: /Pilotprogramm/ })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Konto erstellen", exact: true }),
+  ).toBeVisible();
   await expect(page.locator("main")).toBeVisible();
   expect(consoleErrors).toEqual([]);
 });

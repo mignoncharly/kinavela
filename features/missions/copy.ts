@@ -1,0 +1,141 @@
+import type { Locale } from "@/lib/i18n/config";
+
+export const missionCopy = {
+  de: {
+    nav: "Missionen",
+    villagesNav: "Villages",
+    discoverNav: "Entdecken",
+    connectionsNav: "Verbindungen",
+    messagesNav: "Nachrichten",
+    back: "Zurück",
+    eyebrow: "KULTURELLE MISSIONEN",
+    title: "Kultur gemeinsam erleben",
+    intro:
+      "Kurze, von Menschen kuratierte Missionen helfen Familien, Sprache, Erinnerungen und Traditionen im Alltag lebendig zu halten.",
+    library: "Missionsbibliothek",
+    privacy:
+      "Missionen bleiben eine private Familienaktivität, bis ihr sie bewusst in ein Village einbringt.",
+    unavailable: "Missionen sind vorübergehend nicht verfügbar.",
+    noMissions: "Noch keine Missionen verfügbar.",
+    noVillageMissions: "Dieses Village hat noch keine Mission ausgewählt.",
+    villageMissions: "Missionen dieses Villages",
+    start: "Mission beginnen",
+    starting: "Wird begonnen…",
+    progressNote:
+      "Markiere jeden Schritt, sobald ihr ihn gemeinsam abgeschlossen habt.",
+    completed: "Abgeschlossen",
+    completedBody:
+      "Diese Erfahrung ist bereit, später in euer privates Roots Passport übernommen zu werden.",
+    minutes: "Min.",
+    years: "Jahre",
+    assignLabel: "Mission für das Village auswählen",
+    assign: "Hinzufügen",
+    assigning: "Wird hinzugefügt…",
+    actionError:
+      "Diese Aktion konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
+    categories: {
+      language: "Sprache",
+      cooking: "Kochen",
+      history: "Geschichte",
+      geography: "Geografie",
+      music: "Musik",
+      storytelling: "Erzählen",
+      traditions: "Traditionen",
+      family: "Familie",
+      travel: "Reisen",
+      games: "Spiele",
+    },
+  },
+  fr: {
+    nav: "Missions",
+    villagesNav: "Villages",
+    discoverNav: "Découvrir",
+    connectionsNav: "Connexions",
+    messagesNav: "Messages",
+    back: "Retour",
+    eyebrow: "MISSIONS CULTURELLES",
+    title: "Vivre la culture ensemble",
+    intro:
+      "Des missions courtes et préparées avec soin aident les familles à faire vivre la langue, les souvenirs et les traditions au quotidien.",
+    library: "Bibliothèque de missions",
+    privacy:
+      "Les missions restent une activité familiale privée jusqu’à ce que vous choisissiez de les partager dans un Village.",
+    unavailable: "Les missions sont temporairement indisponibles.",
+    noMissions: "Aucune mission n’est encore disponible.",
+    noVillageMissions: "Ce Village n’a pas encore choisi de mission.",
+    villageMissions: "Missions de ce Village",
+    start: "Commencer la mission",
+    starting: "Démarrage…",
+    progressNote: "Cochez chaque étape lorsque vous l’avez réalisée ensemble.",
+    completed: "Terminée",
+    completedBody:
+      "Cette expérience pourra ensuite être ajoutée à votre Roots Passport privé.",
+    minutes: "min",
+    years: "ans",
+    assignLabel: "Choisir une mission pour le Village",
+    assign: "Ajouter",
+    assigning: "Ajout…",
+    actionError: "Cette action n’a pas pu être effectuée. Veuillez réessayer.",
+    categories: {
+      language: "Langue",
+      cooking: "Cuisine",
+      history: "Histoire",
+      geography: "Géographie",
+      music: "Musique",
+      storytelling: "Récits",
+      traditions: "Traditions",
+      family: "Famille",
+      travel: "Voyage",
+      games: "Jeux",
+    },
+  },
+  en: {
+    nav: "Missions",
+    villagesNav: "Villages",
+    discoverNav: "Discover",
+    connectionsNav: "Connections",
+    messagesNav: "Messages",
+    back: "Back",
+    eyebrow: "CULTURAL MISSIONS",
+    title: "Experience culture together",
+    intro:
+      "Short, carefully curated missions help families keep language, memories and traditions alive in everyday life.",
+    library: "Mission library",
+    privacy:
+      "Missions stay a private family activity until you intentionally bring one into a Village.",
+    unavailable: "Missions are temporarily unavailable.",
+    noMissions: "No missions are available yet.",
+    noVillageMissions: "This Village has not selected a mission yet.",
+    villageMissions: "This Village’s missions",
+    start: "Start mission",
+    starting: "Starting…",
+    progressNote: "Mark each step when you complete it together.",
+    completed: "Completed",
+    completedBody:
+      "This experience is ready to be added to your private Roots Passport later.",
+    minutes: "min",
+    years: "years",
+    assignLabel: "Choose a mission for the Village",
+    assign: "Add mission",
+    assigning: "Adding…",
+    actionError: "This action could not be completed. Please try again.",
+    categories: {
+      language: "Language",
+      cooking: "Cooking",
+      history: "History",
+      geography: "Geography",
+      music: "Music",
+      storytelling: "Storytelling",
+      traditions: "Traditions",
+      family: "Family",
+      travel: "Travel",
+      games: "Games",
+    },
+  },
+} as const;
+
+export type MissionCopy = (typeof missionCopy)[Locale];
+
+export function getMissionCopy(locale: Locale) {
+  return missionCopy[locale];
+}

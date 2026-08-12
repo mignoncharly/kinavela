@@ -11,6 +11,8 @@ test-results/
 .env.*
 !.env.example
 supabaseandco_keys.txt
+remaining_keys.txt
+missing_keys.txt
 *.pem
 *.key
 

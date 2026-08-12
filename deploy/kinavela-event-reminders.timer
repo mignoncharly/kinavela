@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Kinavela event reminders every 15 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+AccuracySec=1min
+Persistent=true
+Unit=kinavela-event-reminders.service
+
+[Install]
+WantedBy=timers.target
+

@@ -1,0 +1,263 @@
+.event-board {
+  display: grid;
+  gap: 24px;
+}
+
+.event-board-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.event-board-heading h2,
+.event-card h3 {
+  margin: 0;
+}
+
+.event-board-heading p,
+.event-card-heading p,
+.event-description,
+.event-closed {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.event-board-heading > svg {
+  width: 36px;
+  height: 36px;
+  color: var(--primary);
+}
+
+.event-form-panel {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.event-form-panel summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.event-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.event-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.event-list {
+  display: grid;
+  gap: 18px;
+}
+
+.event-card {
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.event-card.cancelled {
+  opacity: 0.78;
+}
+
+.event-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.event-card-heading h3 {
+  margin-top: 8px;
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
+}
+
+.event-category,
+.event-status,
+.rsvp-state {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #e4ece4;
+  color: #35513e;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.event-status,
+.rsvp-state.declined,
+.event-card.cancelled .event-category {
+  background: #f4dddd;
+  color: #7c2929;
+}
+
+.rsvp-state.waitlisted {
+  background: #f7e9c8;
+  color: #6c4b0d;
+}
+
+.event-reminder {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin: -8px -8px 24px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f7e9c8;
+  color: #5d430e;
+}
+
+.event-reminder button {
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: 750;
+  text-decoration: underline;
+}
+
+.event-description {
+  margin: 24px 0;
+}
+
+.event-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
+
+.event-facts div {
+  padding: 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 80%, var(--border));
+}
+
+.event-facts dt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.event-facts dd {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.event-facts dd small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.event-rsvp {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) 100px 100px auto;
+  align-items: end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.event-rsvp .button {
+  min-height: 48px;
+}
+
+.event-manager {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.event-manager h4 {
+  margin: 24px 0 12px;
+}
+
+.event-attendee-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event-attendee-list li {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.event-attendee-list span,
+.event-attendee-list small {
+  display: block;
+}
+
+.event-attendee-list small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.attendance-button,
+.attendance-confirmed {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.attendance-confirmed {
+  border-color: #8dad8f;
+  background: #e4ece4;
+  color: #35513e;
+}
+
+@media (max-width: 720px) {
+  .event-form-grid,
+  .event-facts,
+  .event-rsvp {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card-heading,
+  .event-attendee-list li {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .event-reminder {
+    grid-template-columns: auto 1fr;
+  }
+
+  .event-reminder button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}

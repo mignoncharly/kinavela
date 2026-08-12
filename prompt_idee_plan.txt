@@ -2903,8 +2903,6 @@ No production launch without basic moderation capability.
 
 # PHASE 17 — BILLING
 
-Only after engagement has been validated.
-
 Integrate Stripe.
 
 Free tier remains useful.
@@ -3045,11 +3043,13 @@ Possible geographic pilot:
 Munich/Ingolstadt region
 Frankfurt/Rhein-Main
 Berlin
+Mainz
+Saarbrücken
+Kaiserslautern
+Stuttgart
 ```
 
-Do not open all Germany immediately if density is insufficient.
 
-Community products die when local density is too low.
 
 ==================================================
 
