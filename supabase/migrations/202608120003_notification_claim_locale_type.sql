@@ -1,14 +1,6 @@
 begin;
 
-alter table public.notification_push_subscriptions
-  add column if not exists last_success_at timestamptz,
-  add column if not exists last_failure_at timestamptz,
-  add column if not exists failure_count integer not null default 0
-    check (failure_count >= 0);
-
-drop function if exists public.claim_notification_deliveries();
-
-create function public.claim_notification_deliveries()
+create or replace function public.claim_notification_deliveries()
 returns table (
   delivery_id uuid,
   recipient_profile_id uuid,
@@ -85,13 +77,11 @@ revoke all on function public.claim_notification_deliveries()
 grant execute on function public.claim_notification_deliveries()
   to service_role;
 
-comment on column public.notification_push_subscriptions.failure_count is
-  'Bounded delivery health counter. Push endpoints and provider errors are never logged.';
 comment on function public.claim_notification_deliveries() is
   'Service-role-only outbox claim with private recipient identity and per-profile delivery rollout state.';
 
 insert into kinavela_private.schema_migrations(version)
-values ('202608120002_notification_web_push_delivery')
+values ('202608120003_notification_claim_locale_type')
 on conflict (version) do nothing;
 
 notify pgrst, 'reload schema';

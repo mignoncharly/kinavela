@@ -4,6 +4,7 @@ begin;
 do $$
 declare
   result_signature text;
+  function_definition text;
 begin
   select pg_get_function_result(
     'public.claim_notification_deliveries()'::regprocedure
@@ -16,6 +17,12 @@ begin
     raise exception 'Notification delivery claims must enforce channel rollout';
   end if;
 
+  select pg_get_functiondef(
+    'public.claim_notification_deliveries()'::regprocedure
+  ) into function_definition;
+  if function_definition not ilike '%profile.preferred_language::text%' then
+    raise exception 'Notification delivery locale must match the declared text result type';
+  end if;
 
   if result_signature ~* '(endpoint|p256dh|auth)' then
     raise exception 'Notification delivery claims must not expose push secrets';
