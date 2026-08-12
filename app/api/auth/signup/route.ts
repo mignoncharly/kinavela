@@ -45,12 +45,12 @@ export async function POST(request: Request) {
       {
         profile_id: profile.id,
         consent_type: "privacy_policy",
-        policy_version: "2026-08-09",
+        policy_version: "1.0",
       },
       {
         profile_id: profile.id,
         consent_type: "terms",
-        policy_version: "2026-08-09",
+        policy_version: "1.0",
       },
     ]);
     if (consentError) {

@@ -10,6 +10,7 @@ const validPayload = {
     name: "Nkom Family",
     country_of_residence: "DE",
     city: "Berlin",
+    location_place_id: "nominatim:62422",
     radius_km: 40,
     visibility: "discoverable",
     bio: "Our family",

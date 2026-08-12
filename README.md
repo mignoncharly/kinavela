@@ -2,7 +2,7 @@
 
 Kinavela is the production foundation for a privacy-first platform that helps diaspora families build trusted local communities and preserve cultural memories for their children.
 
-This repository currently implements **Phase 0 only**, as required by the product blueprint: a secure Next.js foundation, multilingual public landing page, health/readiness endpoints, isolated deployment assets, Supabase connectivity, testing, CI, and operational documentation. Authentication and product-domain phases intentionally remain future work.
+This repository implements **Phases 0–23** of the product blueprint: the secure Next.js/Supabase foundation, authentication, family onboarding, discovery and matching, family connections and messaging, Villages and events, Roots missions and passport stories, AI jobs, notifications, moderation, billing, SEO, GDPR controls, PWA support, security hardening, and the Germany pilot control plane.
 
 ## Local development
 

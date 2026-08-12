@@ -222,6 +222,15 @@ export default async function LandingPage({ params }: PageProps) {
           <span className="status-dot" />
           {dictionary.footer.status}
         </p>
+        <nav aria-label="Legal">
+          <Link href={`/${locale}/privacy`}>Privacy</Link>{" "}
+          <Link href={`/${locale}/terms`}>Terms</Link>{" "}
+          <Link href={"/" + locale + "/impressum"}>Impressum</Link>{" "}
+          <Link href={"/" + locale + "/cookies"}>Cookies</Link>{" "}
+          <Link href={"/" + locale + "/child-safety"}>Child safety</Link>{" "}
+          <Link href={"/" + locale + "/community-guidelines"}>Community</Link>{" "}
+          <a href="mailto:info@gestionatech.de">Contact</a>
+        </nav>
         <p>
           © {new Date().getUTCFullYear()} Kinavela. {dictionary.footer.rights}
         </p>

@@ -22,7 +22,10 @@
     "db:test": "bash scripts/test-database.sh",
     "check:email": "node scripts/check-email.mjs",
     "prepare": "husky",
-    "env:check": "node scripts/validate-env.mjs"
+    "env:check": "node scripts/validate-env.mjs",
+    "security:scan": "node scripts/scan-secrets.mjs",
+    "smoke:production": "node scripts/smoke-production.mjs",
+    "release:qualification": "bash scripts/release-qualification.sh"
   },
   "dependencies": {
     "@sentry/nextjs": "10.69.0",

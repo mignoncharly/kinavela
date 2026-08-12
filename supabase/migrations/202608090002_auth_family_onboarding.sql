@@ -521,9 +521,9 @@ begin
 
   insert into public.consents(profile_id, consent_type, policy_version)
   values
-    (profile_uuid, 'privacy_policy', '2026-08-09'),
-    (profile_uuid, 'terms', '2026-08-09'),
-    (profile_uuid, 'community_guidelines', '2026-08-09')
+    (profile_uuid, 'privacy_policy', '1.0'),
+    (profile_uuid, 'terms', '1.0'),
+    (profile_uuid, 'community_guidelines', '1.0')
   on conflict (profile_id, consent_type) where revoked_at is null do nothing;
 
   insert into public.audit_events(actor_profile_id, event_type, entity_type, entity_id)

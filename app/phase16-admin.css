@@ -1,0 +1,58 @@
+.admin-page .settings-panel {
+  max-width: 1180px;
+}
+.admin-intro {
+  margin-bottom: 1.5rem;
+}
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.admin-card {
+  overflow: auto;
+}
+.admin-card h2 {
+  margin-top: 0;
+}
+.admin-card table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.admin-card th,
+.admin-card td {
+  padding: 0.6rem 0.45rem;
+  border-bottom: 1px solid rgba(30, 44, 50, 0.12);
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.admin-card td.admin-detail {
+  white-space: normal;
+  min-width: 12rem;
+}
+.admin-action {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0.25rem 0.6rem;
+  font: inherit;
+  font-size: 0.78rem;
+}
+.admin-action:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+.admin-status {
+  border-radius: 999px;
+  padding: 0.15rem 0.45rem;
+  background: rgba(40, 95, 91, 0.12);
+}
+@media (max-width: 900px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}

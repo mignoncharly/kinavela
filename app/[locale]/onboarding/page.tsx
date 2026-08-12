@@ -1,7 +1,9 @@
 import { redirect, notFound } from "next/navigation";
 
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
+import { PilotWaitlistForm } from "@/components/pilot/pilot-waitlist-form";
 import { isLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Page({
@@ -11,6 +13,7 @@ export default async function Page({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const dictionary = getDictionary(locale);
   const supabase = await createClient();
   const {
     data: { user },
@@ -38,13 +41,17 @@ export default async function Page({
       .order("sort_order"),
   ]);
   return (
-    <OnboardingWizard
-      locale={locale}
-      profileName={profile?.display_name ?? ""}
-      countries={countries ?? []}
-      cultures={cultures ?? []}
-      languages={languages ?? []}
-      interests={interests ?? []}
-    />
+    <>
+      <OnboardingWizard
+        locale={locale}
+        profileName={profile?.display_name ?? ""}
+        countries={countries ?? []}
+        cultures={cultures ?? []}
+        languages={languages ?? []}
+        interests={interests ?? []}
+        discoveryCopy={dictionary.discovery}
+      />
+      <PilotWaitlistForm />
+    </>
   );
 }

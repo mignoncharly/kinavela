@@ -192,7 +192,10 @@ export function AuthForm({ locale, mode }: Props) {
             <input name="consent" type="checkbox" required />
             <span>
               {t.terms} <Link href={`/${locale}/terms`}>Terms</Link> ·{" "}
-              <Link href={`/${locale}/privacy`}>Privacy</Link>
+              <Link href={`/${locale}/privacy`}>Privacy</Link> ·{" "}
+              <Link href={"/" + locale + "/community-guidelines"}>
+                Community
+              </Link>
             </span>
           </label>
         </>

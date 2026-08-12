@@ -28,9 +28,10 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    const { data, error } = await supabase.rpc("complete_family_onboarding", {
-      p_payload: payload,
-    });
+    const { data, error } = await supabase.rpc(
+      "complete_family_onboarding_with_location",
+      { p_payload: payload },
+    );
     if (error) throw error;
     return NextResponse.json({ ok: true, familyId: data });
   } catch (error) {

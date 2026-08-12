@@ -1,10 +1,16 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
+import { publicEnv } from "@/lib/env.public";
 import { isLocale } from "@/lib/i18n/config";
 import { createClient } from "@/lib/supabase/server";
 
 const allowedTypes = new Set<EmailOtpType>(["signup", "magiclink", "recovery"]);
+
+// Base absolute redirects on the public app URL rather than request.url:
+// behind the nginx reverse proxy, Next resolves request.url to the internal
+// host (localhost:3020), which would otherwise leak into the Location header.
+const appUrl = publicEnv.NEXT_PUBLIC_APP_URL;
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -14,7 +20,7 @@ export async function GET(request: Request) {
   const locale = isLocale(rawLocale) ? rawLocale : "de";
   if (!tokenHash || !rawType || !allowedTypes.has(rawType)) {
     return NextResponse.redirect(
-      new URL(`/${locale}/auth/login?error=invalid_link`, url),
+      new URL(`/${locale}/auth/login?error=invalid_link`, appUrl),
     );
   }
   const supabase = await createClient();
@@ -24,12 +30,12 @@ export async function GET(request: Request) {
   });
   if (error || !data.user) {
     return NextResponse.redirect(
-      new URL(`/${locale}/auth/login?error=expired_link`, url),
+      new URL(`/${locale}/auth/login?error=expired_link`, appUrl),
     );
   }
   if (rawType === "recovery") {
     return NextResponse.redirect(
-      new URL(`/${locale}/auth/update-password`, url),
+      new URL(`/${locale}/auth/update-password`, appUrl),
     );
   }
   const { data: profile } = await supabase
@@ -42,7 +48,7 @@ export async function GET(request: Request) {
       profile?.onboarding_completed
         ? `/${locale}/app`
         : `/${locale}/onboarding`,
-      url,
+      appUrl,
     ),
   );
 }

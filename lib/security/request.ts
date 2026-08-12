@@ -20,6 +20,15 @@ export function requestFingerprint(request: Request, email: string) {
     .digest("hex");
 }
 
+export function clientAddressFingerprint(request: Request) {
+  const forwarded = request.headers
+    .get("x-forwarded-for")
+    ?.split(",")[0]
+    ?.trim();
+  const address = forwarded || request.headers.get("x-real-ip") || "unknown";
+  return createHash("sha256").update(address).digest("hex");
+}
+
 export function safeNextPath(value: unknown, fallback: string) {
   if (
     typeof value !== "string" ||

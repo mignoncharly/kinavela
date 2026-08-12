@@ -28,3 +28,27 @@ test("private application route redirects to login", async ({ page }) => {
     "Willkommen zurück",
   );
 });
+
+test("private discovery route redirects to login", async ({ page }) => {
+  await page.goto("/de/app/discover");
+  await expect(page).toHaveURL(/\/de\/auth\/login\?next=/);
+});
+
+test("private connections route redirects to login", async ({ page }) => {
+  await page.goto("/de/app/connections");
+  await expect(page).toHaveURL(/\/de\/auth\/login\?next=/);
+});
+
+test("private messages routes redirect to login", async ({ page }) => {
+  await page.goto("/de/app/messages");
+  await expect(page).toHaveURL(/\/de\/auth\/login\?next=/);
+  await page.goto("/de/app/messages/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  await expect(page).toHaveURL(/\/de\/auth\/login\?next=/);
+});
+
+test("private Village routes redirect to login", async ({ page }) => {
+  await page.goto("/de/app/villages");
+  await expect(page).toHaveURL(/\/de\/auth\/login\?next=/);
+  await page.goto("/de/app/villages/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  await expect(page).toHaveURL(/\/de\/auth\/login\?next=/);
+});

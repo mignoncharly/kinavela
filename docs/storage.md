@@ -1,5 +1,9 @@
 # Storage
 
-No media buckets are provisioned in Phase 0 because no media feature exists yet. Future buckets are `avatars`, `family-media`, `roots-media`, `story-audio`, `event-media`, and `verification-private`.
+The deployed product uses three private Supabase Storage buckets:
 
-All child/family media is private by default and accessed using short-lived signed URLs. `verification-private` must never be public. Storage policies must verify family/guardian membership and ship with authorization tests before a bucket is used.
+- `roots-media` stores guardian-managed Roots Passport media.
+- `story-audio` stores private original and derived story audio.
+- `privacy-exports` stores short-lived personal-data export artifacts.
+
+All buckets are non-public and enforce object-level policies. Application clients receive only short-lived signed access where a feature requires it; the privacy export endpoint authenticates the owner and streams the file as a private attachment. Child and family media remains private by default. Future buckets require a reviewed migration, explicit policies, MIME and size limits, and authorization tests before use.

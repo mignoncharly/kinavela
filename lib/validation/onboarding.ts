@@ -20,6 +20,7 @@ export const onboardingSchema = z.object({
     name: z.string().trim().min(2).max(100),
     country_of_residence: z.string().regex(/^[A-Z]{2}$/),
     city: z.string().trim().min(2).max(120),
+    location_place_id: z.string().trim().min(3).max(160),
     radius_km: z.number().int().min(5).max(100),
     visibility: z.enum(["private", "discoverable"]),
     bio: z.string().trim().max(600),

@@ -1,0 +1,716 @@
+/*
+ * Kinavela responsive foundation
+ *
+ * Keep product UI sizing independent from marketing typography and make page
+ * widths intentional. Feature styles stay close to their components; this
+ * layer owns shared containers, breakpoints and cross-feature composition.
+ */
+
+:root {
+  --page-gutter: clamp(1rem, 3vw, 2rem);
+  --container-reading: 48rem;
+  --container-form: 44rem;
+  --container-app: 80rem;
+  --container-wide: 90rem;
+  --container-marketing: 88rem;
+  --space-page-start: clamp(2.5rem, 5vw, 4.5rem);
+  --space-section: clamp(2rem, 4vw, 3.5rem);
+  --radius-card: 1rem;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+.site-header,
+.hero,
+footer {
+  width: min(var(--container-marketing), calc(100% - (var(--page-gutter) * 2)));
+}
+
+.journey {
+  padding-inline: max(
+    var(--page-gutter),
+    calc((100vw - var(--container-marketing)) / 2)
+  );
+}
+
+.trust {
+  padding-inline: max(
+    var(--page-gutter),
+    calc((100vw - var(--container-app)) / 2)
+  );
+}
+
+.app-shell {
+  width: min(var(--container-app), calc(100% - (var(--page-gutter) * 2)));
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.dashboard-page,
+.discovery-page,
+.connections-page,
+.villages-page,
+.village-detail-page,
+.missions-page,
+.stories-page,
+.admin-page {
+  width: min(var(--container-wide), calc(100% - (var(--page-gutter) * 2)));
+}
+
+.app-header {
+  min-height: 4.75rem;
+  gap: 1.5rem;
+}
+
+.app-header .brand {
+  flex: 0 0 auto;
+}
+
+.app-header nav {
+  min-width: 0;
+  justify-content: flex-end;
+  gap: clamp(0.65rem, 1.25vw, 1.15rem);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.app-header nav a {
+  position: relative;
+  color: var(--muted);
+}
+
+.app-header nav a:hover,
+.app-header nav a:focus-visible,
+.app-header nav a[aria-current="page"] {
+  color: var(--foreground);
+}
+
+.app-header nav a[aria-current="page"]::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.7rem;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--primary);
+  content: "";
+}
+
+.app-primary-nav {
+  margin-left: auto;
+}
+
+.app-nav-menu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.app-nav-menu > summary {
+  min-height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  appearance: none;
+}
+
+.app-nav-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-nav-menu > summary::marker {
+  content: "";
+  font-size: 0;
+}
+
+.app-nav-menu[open] > summary {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+}
+
+.app-nav-menu-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  width: min(17rem, calc(100vw - 2rem));
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  background: var(--surface);
+  box-shadow: 0 1rem 2.5rem rgb(38 53 46 / 14%);
+}
+
+.app-nav-menu-panel nav {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.app-nav-menu-panel nav a {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  border-radius: 0.625rem;
+}
+
+.app-nav-menu-panel nav a:hover,
+.app-nav-menu-panel nav a:focus-visible,
+.app-nav-menu-panel nav a[aria-current="page"] {
+  background: var(--surface-elevated);
+}
+
+.app-nav-menu-panel nav a[aria-current="page"]::after {
+  display: none;
+}
+
+.app-nav-menu-panel .button {
+  width: 100%;
+}
+
+.app-shell h1 {
+  max-width: 54rem;
+  font-size: clamp(2.25rem, 3.25vw, 3rem);
+  line-height: 1.04;
+}
+
+.app-shell h2 {
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  line-height: 1.12;
+}
+
+.app-shell h3 {
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  line-height: 1.2;
+}
+
+.app-welcome,
+.discovery-hero,
+.connections-hero,
+.messages-hero,
+.missions-hero,
+.roots-hero,
+.stories-hero {
+  max-width: var(--container-reading);
+  padding: var(--space-page-start) 0 clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.app-welcome h1,
+.settings-panel h1,
+.discovery-hero h1,
+.connections-hero h1,
+.messages-hero h1,
+.missions-hero h1,
+.roots-hero h1,
+.stories-hero h1,
+.village-heading h1,
+.villages-hero h1,
+.chat-heading h1 {
+  margin: 0.45rem 0 1rem;
+  font-size: clamp(2.25rem, 3.25vw, 3rem);
+  line-height: 1.04;
+}
+
+.app-welcome p,
+.discovery-hero > p:last-child,
+.connections-hero > p:last-child,
+.messages-hero > p:last-child,
+.missions-hero p:not(.eyebrow),
+.roots-hero > p:not(.eyebrow),
+.stories-hero > p:not(.eyebrow),
+.villages-hero > p:not(.eyebrow) {
+  max-width: 43rem;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.dashboard-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-grid article,
+.dashboard-grid .dashboard-card {
+  min-height: 13.5rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+}
+
+.dashboard-grid small {
+  margin: 1.6rem 0 0.55rem;
+}
+
+.dashboard-grid h2 {
+  font-size: 1.55rem;
+}
+
+.settings-panel {
+  width: min(var(--container-form), 100%);
+  padding: var(--space-page-start) 0;
+}
+
+.admin-page .settings-panel {
+  width: 100%;
+  max-width: none;
+}
+
+.auth-card {
+  width: min(var(--container-form), calc(100% - (var(--page-gutter) * 2)));
+  padding: clamp(2.5rem, 7vh, 5rem) 0;
+}
+
+.auth-card > .brand {
+  margin-bottom: clamp(2.75rem, 7vh, 5rem);
+}
+
+.auth-card h1 {
+  margin-bottom: 2rem;
+  font-size: clamp(2.65rem, 4.5vw, 4rem);
+  line-height: 0.98;
+}
+
+.auth-aside {
+  padding: clamp(3rem, 7vw, 7rem);
+}
+
+.auth-aside h2 {
+  max-width: 42rem;
+  font-size: clamp(2.5rem, 3.5vw, 3.75rem);
+  line-height: 1.02;
+}
+
+.onboarding-header {
+  width: min(var(--container-app), calc(100% - (var(--page-gutter) * 2)));
+}
+
+.onboarding-card {
+  width: min(var(--container-reading), calc(100% - (var(--page-gutter) * 2)));
+  min-height: 0;
+  margin-top: clamp(2.25rem, 6vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: 1.25rem;
+}
+
+.onboarding-card legend {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+}
+
+.pilot-waitlist h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.08;
+}
+
+.discovery-filters {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.875rem;
+  padding: 1.25rem;
+}
+
+.discovery-grid,
+.connection-grid,
+.village-card-grid,
+.mission-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.family-card,
+.connection-card,
+.mission-card,
+.event-card,
+.story-panel {
+  padding: clamp(1.25rem, 2vw, 1.6rem);
+  border-radius: var(--radius-card);
+}
+
+.family-card h2,
+.connection-card h3,
+.event-card-heading h3 {
+  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
+}
+
+.family-card dl {
+  margin: 1.4rem 0;
+}
+
+.connections-hero,
+.messages-hero {
+  padding-top: var(--space-page-start);
+}
+
+.notification-panel,
+.connection-section {
+  margin-bottom: 2rem;
+}
+
+.conversation-list {
+  max-width: 68rem;
+}
+
+.chat-heading {
+  padding: 2rem 0 1.5rem;
+}
+
+.message-thread {
+  height: min(62vh, 42rem);
+}
+
+.villages-hero,
+.village-heading,
+.village-section,
+.village-tabs,
+.village-tab-panel {
+  width: min(100%, var(--container-wide));
+}
+
+.villages-hero {
+  padding: var(--space-page-start) 0 1.75rem;
+}
+
+.village-section {
+  padding: 1.75rem 0;
+}
+
+.village-heading {
+  padding: 2.5rem 0 1.75rem;
+}
+
+.village-tab-panel {
+  padding: 2rem 0;
+}
+
+.phase-empty {
+  padding: clamp(2.75rem, 6vw, 4.5rem) 1.5rem;
+}
+
+.roots-layout {
+  grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr);
+}
+
+.stories-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+.admin-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-card {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.public-community-header,
+.public-community-footer {
+  width: min(var(--container-marketing), calc(100% - (var(--page-gutter) * 2)));
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+.public-community-content {
+  width: min(64rem, calc(100% - (var(--page-gutter) * 2)));
+  max-width: none;
+  padding: clamp(3.5rem, 7vw, 6.5rem) 0;
+}
+
+.public-community-content h1 {
+  max-width: 52rem;
+  font-size: clamp(3rem, 5vw, 4.75rem);
+  line-height: 0.98;
+}
+
+.public-community-lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+}
+
+.public-community-stats,
+.public-community-forming {
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.public-community-forming h2 {
+  font-size: clamp(2rem, 3.5vw, 3.25rem);
+}
+
+.story-recorder,
+.legal-page {
+  width: min(var(--container-reading), calc(100% - (var(--page-gutter) * 2)));
+}
+
+.story-recorder h1,
+.legal-page h1 {
+  font-size: clamp(2.35rem, 4vw, 3.5rem);
+  line-height: 1.04;
+}
+
+.legal-page {
+  padding: 3rem 0 6rem;
+}
+
+.legal-page > .brand {
+  margin-bottom: 4rem;
+}
+
+.offline-hero {
+  width: min(var(--container-app), 100%);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  min-height: 1.125rem;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--primary);
+}
+
+.story-form label > span,
+.privacy-controls > label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+@media (min-width: 80rem) {
+  .discovery-grid,
+  .connection-grid,
+  .village-card-grid,
+  .mission-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 0.92fr) minmax(32rem, 1.08fr);
+  }
+}
+
+@media (max-width: 79.9375rem) {
+  .app-header nav {
+    gap: 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .app-header .button {
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 63.9375rem) {
+  .site-header,
+  .hero,
+  footer,
+  .app-shell {
+    width: calc(100% - (var(--page-gutter) * 2));
+  }
+
+  .app-header {
+    align-items: center;
+  }
+
+  .hero {
+    gap: 2rem;
+  }
+
+  .hero-visual {
+    min-width: 0;
+  }
+
+  .app-primary-nav {
+    gap: 0.75rem;
+  }
+
+  .app-primary-nav a:first-child {
+    display: none;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .discovery-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .village-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .public-community-content {
+    padding-top: 4rem;
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  :root {
+    --page-gutter: 1rem;
+    --space-page-start: 2.5rem;
+  }
+
+  .app-shell {
+    width: calc(100% - 2rem);
+  }
+
+  .app-header {
+    min-height: 4.5rem;
+  }
+
+  .app-primary-nav {
+    display: none;
+  }
+
+  .app-nav-menu {
+    margin-left: auto;
+  }
+
+  .app-shell h1,
+  .app-welcome h1,
+  .settings-panel h1,
+  .discovery-hero h1,
+  .connections-hero h1,
+  .messages-hero h1,
+  .missions-hero h1,
+  .roots-hero h1,
+  .stories-hero h1,
+  .village-heading h1,
+  .villages-hero h1,
+  .chat-heading h1 {
+    font-size: clamp(2rem, 10vw, 2.6rem);
+    line-height: 1.04;
+  }
+
+  .dashboard-grid,
+  .discovery-grid,
+  .connection-grid,
+  .village-card-grid,
+  .mission-grid,
+  .stories-grid,
+  .admin-grid,
+  .discovery-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-grid article,
+  .dashboard-grid .dashboard-card {
+    min-height: 0;
+  }
+
+  .auth-card {
+    width: calc(100% - 2rem);
+    padding-block: 2.5rem;
+  }
+
+  .auth-card > .brand {
+    margin-bottom: 3rem;
+  }
+
+  .auth-card h1 {
+    font-size: clamp(2.5rem, 12vw, 3.25rem);
+  }
+
+  .onboarding-card {
+    width: calc(100% - 2rem);
+    margin-top: 2rem;
+  }
+
+  .village-form-grid,
+  .roots-layout,
+  .roots-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .public-community-content {
+    width: calc(100% - 2rem);
+    padding: 3rem 0 4rem;
+  }
+
+  .public-community-content h1 {
+    font-size: clamp(2.65rem, 13vw, 3.6rem);
+  }
+
+  .public-community-header {
+    align-items: flex-start;
+    padding-block: 1.1rem;
+  }
+
+  .public-community-header nav {
+    justify-content: flex-end;
+    font-size: 0.875rem;
+  }
+
+  .public-community-footer {
+    padding-block: 1.5rem;
+  }
+
+  .story-recorder,
+  .legal-page {
+    width: calc(100% - 2rem);
+  }
+
+  .wizard-actions {
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 39.9375rem) {
+  .button {
+    min-height: 2.875rem;
+  }
+
+  .choice-grid,
+  .two-columns,
+  .child-row {
+    grid-template-columns: 1fr;
+  }
+
+  .family-card,
+  .connection-card,
+  .mission-card,
+  .event-card,
+  .story-panel,
+  .notification-center,
+  .notification-preferences {
+    padding: 1.1rem;
+  }
+
+  .conversation-list > a {
+    padding-inline: 1rem;
+  }
+
+  .message-thread {
+    min-height: 21rem;
+    padding: 1rem;
+  }
+
+  .message-bubble {
+    width: 92%;
+  }
+
+  .public-community-header .brand {
+    letter-spacing: 0.12em;
+  }
+}

@@ -5,12 +5,15 @@ import { useState } from "react";
 
 import type { Locale } from "@/lib/i18n/config";
 
+import { clearOfflineSnapshots } from "@/components/pwa/offline-data";
+
 export function LogoutButton({ locale }: { locale: Locale }) {
   const router = useRouter();
   return (
     <button
       className="button button-secondary"
       onClick={async () => {
+        await clearOfflineSnapshots().catch(() => undefined);
         await fetch("/api/auth/logout", { method: "POST" });
         router.push(`/${locale}`);
         router.refresh();

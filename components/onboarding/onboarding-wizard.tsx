@@ -1,9 +1,14 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, Plus, ShieldCheck, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import {
+  CitySearch,
+  type CitySearchCopy,
+} from "@/components/discovery/city-search";
 import type { Locale } from "@/lib/i18n/config";
 
 type Reference = { id: string; name: string };
@@ -15,6 +20,7 @@ type Props = {
   cultures: Reference[];
   languages: Reference[];
   interests: Interest[];
+  discoveryCopy: CitySearchCopy;
 };
 type Child = { id: number };
 
@@ -49,12 +55,14 @@ export function OnboardingWizard({
   cultures,
   languages,
   interests,
+  discoveryCopy,
 }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [children, setChildren] = useState<Child[]>([{ id: 1 }]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [country, setCountry] = useState("DE");
 
   function next(form: HTMLFormElement) {
     const fieldset = form.querySelectorAll("fieldset")[step];
@@ -73,10 +81,16 @@ export function OnboardingWizard({
     const cultureIds = selected("cultures");
     const interestIds = selected("interests");
     const preservation = selected("preservation");
+    const locationPlaceId = String(form.get("locationPlaceId") ?? "");
     if (!cultureIds.length || !interestIds.length || !preservation.length) {
       setError(
         "Please select at least one origin, preservation goal and interest.",
       );
+      return;
+    }
+    if (!locationPlaceId) {
+      setStep(9);
+      setError("Please search for and select an approximate city area.");
       return;
     }
     setBusy(true);
@@ -90,6 +104,7 @@ export function OnboardingWizard({
         name: form.get("familyName"),
         country_of_residence: form.get("country"),
         city: form.get("city"),
+        location_place_id: locationPlaceId,
         radius_km: Number(form.get("radius")),
         visibility: form.get("visibility"),
         bio: form.get("bio"),
@@ -154,6 +169,12 @@ export function OnboardingWizard({
       <div className="onboarding-progress" aria-hidden="true">
         <span style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
       </div>
+      <nav className="onboarding-legal-links" aria-label="Legal">
+        <Link href={"/" + locale + "/privacy"}>Privacy</Link>{" "}
+        <Link href={"/" + locale + "/terms"}>Terms</Link>{" "}
+        <Link href={"/" + locale + "/community-guidelines"}>Community</Link>{" "}
+        <Link href={"/" + locale + "/child-safety"}>Child safety</Link>
+      </nav>
       <form className="onboarding-card" onSubmit={submit}>
         <p className="eyebrow">{steps[step]}</p>
         <fieldset hidden={step !== 0}>
@@ -376,7 +397,12 @@ export function OnboardingWizard({
           <legend>Set your discovery boundaries</legend>
           <label>
             Country
-            <select name="country" defaultValue="DE" required>
+            <select
+              name="country"
+              value={country}
+              onChange={(event) => setCountry(event.target.value)}
+              required
+            >
               {countries.map((country) => (
                 <option value={country.iso2} key={country.id}>
                   {country.emoji} {country.name}
@@ -384,10 +410,12 @@ export function OnboardingWizard({
               ))}
             </select>
           </label>
-          <label>
-            City
-            <input name="city" minLength={2} maxLength={120} required />
-          </label>
+          <CitySearch
+            key={country}
+            country={country}
+            locale={locale}
+            copy={discoveryCopy}
+          />
           <label>
             Search radius: <output>40 km</output>
             <input
