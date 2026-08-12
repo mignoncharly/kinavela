@@ -104,6 +104,7 @@ nginx -t
 systemctl reload nginx
 
 systemctl restart kinavela.service
+wait_for_url "http://127.0.0.1:3020/api/readiness"
 curl --fail --silent --show-error --max-time 10 --resolve "$DOMAIN:443:127.0.0.1" "https://$DOMAIN/api/readiness" >/dev/null
 
 echo "Kinavela systemd, Nginx, and TLS installation completed."
