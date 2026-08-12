@@ -24,6 +24,9 @@ begin
     raise exception 'Notification delivery locale must match the declared text result type';
   end if;
 
+  perform set_config('request.jwt.claim.role', 'service_role', true);
+  perform * from public.claim_notification_deliveries();
+
   if result_signature ~* '(endpoint|p256dh|auth)' then
     raise exception 'Notification delivery claims must not expose push secrets';
   end if;

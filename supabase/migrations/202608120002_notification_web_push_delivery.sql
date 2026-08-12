@@ -60,7 +60,7 @@ begin
     claimed.recipient_profile_id,
     claimed.channel,
     claimed.notification_kind,
-    auth_user.email,
+    auth_user.email::text,
     profile.preferred_language::text,
     case claimed.channel
       when 'email' then kinavela_private.feature_enabled(
