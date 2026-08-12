@@ -6,8 +6,10 @@ if [[ "${EUID}" -ne 0 ]]; then
   exit 1
 fi
 
-PROJECT_DIR="/home/mignon/apps/gtech/kinavela"
-DOMAIN="kinavela.gestionatech.de"
+PROJECT_DIR="/home/mignon/apps/kinavela"
+DOMAIN="www.kinavela.com"
+APEX_DOMAIN="kinavela.com"
+CERTBOT_EMAIL="${CERTBOT_EMAIL:-admin@kinavela.com}"
 SERVICE_TARGET="/etc/systemd/system/kinavela.service"
 REMINDER_SERVICE_TARGET="/etc/systemd/system/kinavela-event-reminders.service"
 REMINDER_TIMER_TARGET="/etc/systemd/system/kinavela-event-reminders.timer"
@@ -93,7 +95,7 @@ if [[ ! -s "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]]; then
   nginx -t
   systemctl reload nginx
   certbot certonly --webroot --webroot-path /var/www/kinavela-certbot \
-    --domain "$DOMAIN" --email info@gestionatech.de --agree-tos --non-interactive
+    --cert-name "$DOMAIN" --domain "$DOMAIN" --domain "$APEX_DOMAIN" --email "$CERTBOT_EMAIL" --agree-tos --non-interactive
 fi
 
 install -m 0644 "$PROJECT_DIR/deploy/nginx.conf" "$NGINX_TARGET"
@@ -102,6 +104,6 @@ nginx -t
 systemctl reload nginx
 
 systemctl restart kinavela.service
-wait_for_url "https://$DOMAIN/api/readiness"
+curl --fail --silent --show-error --max-time 10 --resolve "$DOMAIN:443:127.0.0.1" "https://$DOMAIN/api/readiness" >/dev/null
 
 echo "Kinavela systemd, Nginx, and TLS installation completed."

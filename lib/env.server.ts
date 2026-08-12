@@ -16,6 +16,13 @@ const serverEnvSchema = z
     SMTP_PASSWORD: z.string().min(8),
     EMAIL_FROM: z.string().min(3),
     EMAIL_REPLY_TO: z.string().email(),
+    WEB_PUSH_VAPID_PRIVATE_KEY: z.string().min(40).optional().or(z.literal("")),
+    WEB_PUSH_VAPID_SUBJECT: z
+      .string()
+      .url()
+      .or(z.string().startsWith("mailto:"))
+      .optional()
+      .or(z.literal("")),
     GEOCODING_BASE_URL: z
       .string()
       .url()
@@ -103,6 +110,8 @@ export const serverEnv = serverEnvSchema.parse({
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   EMAIL_FROM: process.env.EMAIL_FROM,
   EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO,
+  WEB_PUSH_VAPID_PRIVATE_KEY: process.env.WEB_PUSH_VAPID_PRIVATE_KEY,
+  WEB_PUSH_VAPID_SUBJECT: process.env.WEB_PUSH_VAPID_SUBJECT,
   GEOCODING_BASE_URL: process.env.GEOCODING_BASE_URL,
   EVENT_REMINDER_CRON_SECRET: process.env.EVENT_REMINDER_CRON_SECRET,
   PRIVACY_RETENTION_CRON_SECRET: process.env.PRIVACY_RETENTION_CRON_SECRET,

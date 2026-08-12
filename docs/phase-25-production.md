@@ -20,7 +20,7 @@ npm run check
 npm run db:migrate
 npm run db:test
 npm run build
-SMOKE_BASE_URL=https://kinavela.gestionatech.de npm run smoke:production
+SMOKE_BASE_URL=https://www.kinavela.com npm run smoke:production
 ```
 
 The smoke check is read-only. It must run after the service restart and through the intended public HTTPS endpoint. A failed readiness check blocks release promotion.

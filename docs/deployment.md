@@ -2,10 +2,10 @@
 
 ## Topology
 
-- Project: `/home/mignon/apps/gtech/kinavela`
+- Project: `/home/mignon/apps/kinavela`
 - Process: `kinavela.service`
 - Loopback listener: `127.0.0.1:3020`
-- Hostname: `kinavela.gestionatech.de`
+- Hostname: `www.kinavela.com`
 - Nginx site: `/etc/nginx/sites-available/kinavela`
 - Logs: `/var/log/kinavela/`, Nginx logs prefixed `kinavela`
 - Secrets: `.env.production` mode `0600`, never committed
@@ -39,4 +39,4 @@ For AI, set `AI_PROVIDER=openai`, the server-only OpenAI key, `AI_WORKER_CRON_SE
 
 ## Stripe activation
 
-Before restarting Kinavela with billing enabled, apply migrations, configure the live secret and the two live Roots Family Price IDs, create the live webhook endpoint at `https://kinavela.gestionatech.de/api/billing/webhook`, and store its `whsec_...` secret in `.env.production`. Select only the six events documented in `docs/stripe-setup.md`. Run `npm run env:check`, `npm run check`, `npm run db:migrate` and `npm run db:test` before enabling the `premium_billing` flag. Restart only `kinavela.service`, then verify the webhook, settings billing panel, Portal and cancel-at-period-end state.
+Before restarting Kinavela with billing enabled, apply migrations, configure the live secret and the two live Roots Family Price IDs, create the live webhook endpoint at `https://www.kinavela.com/api/billing/webhook`, and store its `whsec_...` secret in `.env.production`. Select only the six events documented in `docs/stripe-setup.md`. Run `npm run env:check`, `npm run check`, `npm run db:migrate` and `npm run db:test` before enabling the `premium_billing` flag. Restart only `kinavela.service`, then verify the webhook, settings billing panel, Portal and cancel-at-period-end state.

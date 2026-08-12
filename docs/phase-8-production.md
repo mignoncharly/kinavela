@@ -19,7 +19,7 @@ Going families receive one scheduled in-app reminder within 24 hours of the even
 ## Qualification commands
 
 ```bash
-cd /home/mignon/apps/gtech/kinavela
+cd /home/mignon/apps/kinavela
 npm run db:migrate
 npm run db:test
 npm run check

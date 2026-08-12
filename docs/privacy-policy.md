@@ -1,8 +1,8 @@
 # Privacy Policy
 
-Version 1.0  
+Version 1.1
 Effective date: 11 August 2026  
-Last updated: 11 August 2026
+Last updated: 12 August 2026
 
 ## 1. Controller
 
@@ -24,6 +24,7 @@ City/postcode searches are sent server-side to Nominatim/OpenStreetMap. Exact de
 - Service delivery, onboarding, family tools, Roots, messaging and community features: Art. 6(1)(b) GDPR.
 - Security, abuse prevention, moderation and incident handling: Art. 6(1)(f) GDPR and, where applicable, Art. 6(1)(c) GDPR.
 - Optional product email: Art. 6(1)(a) GDPR; consent can be withdrawn in Settings.
+- Optional Web Push: Art. 6(1)(a) GDPR; it requires an explicit Settings action and browser permission and can be withdrawn per device.
 - Optional first-party product metrics and the related browser storage: opt-in consent. The service remains usable after refusal.
 - Statutory accounting or tax records: Art. 6(1)(c) GDPR where the obligation exists.
 
@@ -36,25 +37,29 @@ The production deployment uses:
 - Supabase for Auth, PostgreSQL, private Storage and Realtime.
 - Zoho Europe SMTP at smtp.zoho.eu for account and opted-in notification email.
 - Nominatim/OpenStreetMap for explicit server-side city or postcode searches.
+- The push service selected by the user's browser or operating system when Web Push is explicitly enabled.
 
 The exact Supabase project region and the processor transfer mechanism are controlled in provider administration and are not asserted from application source alone. The SMTP endpoint is European; its hostname alone is not an EU-only storage guarantee. Applicable transfer safeguards are maintained in the controller's processor records.
 
-Stripe is used for hosted subscription Checkout, customer billing Portal sessions and payment webhooks. It receives the billing identifiers and payment information needed to process Roots Family subscriptions; Kinavela does not receive full card data. OpenAI processing, Sentry, third-party analytics, advertising, CAPTCHA and Web Push delivery remain disabled.
+Stripe is used for hosted subscription Checkout, customer billing Portal sessions and payment webhooks. It receives the billing identifiers and payment information needed to process Roots Family subscriptions; Kinavela does not receive full card data. OpenAI processing, Sentry, third-party analytics, advertising and CAPTCHA remain disabled.
+
+When Web Push is enabled, Kinavela sends an encrypted notification through the endpoint assigned by the browser's or operating system's push service. The exact recipient service depends on the device and browser. Push payloads use generic typed copy and exclude message bodies, exact addresses, story transcripts and child details.
 
 ## 5. Retention
 
-| Resource                                    | Retention                                                     |
-| ------------------------------------------- | ------------------------------------------------------------- |
-| Account, family, guardian and child data    | Active account lifetime, followed by the deletion workflow    |
-| Roots media and story audio/transcripts     | While retained by the family; removed during deletion         |
-| Personal-data export file and row           | 7 days after ready                                            |
-| Expired or revoked story requests and media | 30 days after expiry or revocation                            |
-| Notification outbox                         | 30 days                                                       |
-| Event reminder deliveries                   | 90 days                                                       |
-| In-app and connection notifications         | 365 days                                                      |
-| First-party product metrics                 | 180 days                                                      |
-| Security, moderation and audit events       | 730 days unless a safety, legal or incident hold applies      |
-| Provider-controlled backups                 | Per the configured backup cycle; deletion may propagate later |
+| Resource                                    | Retention                                                      |
+| ------------------------------------------- | -------------------------------------------------------------- |
+| Account, family, guardian and child data    | Active account lifetime, followed by the deletion workflow     |
+| Roots media and story audio/transcripts     | While retained by the family; removed during deletion          |
+| Personal-data export file and row           | 7 days after ready                                             |
+| Expired or revoked story requests and media | 30 days after expiry or revocation                             |
+| Notification outbox                         | 30 days                                                        |
+| Web Push device subscription                | Until revoked, expired, account deletion or provider rejection |
+| Event reminder deliveries                   | 90 days                                                        |
+| In-app and connection notifications         | 365 days                                                       |
+| First-party product metrics                 | 180 days                                                       |
+| Security, moderation and audit events       | 730 days unless a safety, legal or incident hold applies       |
+| Provider-controlled backups                 | Per the configured backup cycle; deletion may propagate later  |
 
 The privacy cron automates export expiry, account deletion, story-media cleanup and operational retention. Account deletion removes private media first, deletes child/story content where technically possible, anonymises authored messages and preserves only a minimal safety/integrity tombstone when a foreign-key or safety need prevents immediate physical deletion. Statutory records are retained for the legally required period.
 

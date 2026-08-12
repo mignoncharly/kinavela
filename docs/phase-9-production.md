@@ -22,7 +22,7 @@ Start and dismiss requests require same-origin HTTP checks, authenticated owners
 ## Qualification commands
 
 ```bash
-cd /home/mignon/apps/gtech/kinavela
+cd /home/mignon/apps/kinavela
 npm run db:migrate
 npm run db:test
 npm run check

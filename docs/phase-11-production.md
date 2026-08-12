@@ -14,7 +14,7 @@ Phase 11 adds one private Roots Passport per child, a guardian-controlled timeli
 ## Qualification commands
 
 ```bash
-cd /home/mignon/apps/gtech/kinavela
+cd /home/mignon/apps/kinavela
 npm run check
 npm run db:migrate
 npm run db:test

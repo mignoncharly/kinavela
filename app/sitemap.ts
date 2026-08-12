@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import { publicCommunityPages } from "@/features/seo/public-pages";
 import { locales } from "@/lib/i18n/config";
 
-const baseUrl = "https://kinavela.gestionatech.de";
+const baseUrl = "https://www.kinavela.com";
 const legalRoutes = [
   "privacy",
   "terms",

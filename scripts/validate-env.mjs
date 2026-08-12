@@ -125,6 +125,31 @@ if (stripeValues.length > 0) {
     fail("Stripe Roots Family prices must be Price IDs");
 }
 
+const vapidValues = [
+  process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY,
+  process.env.WEB_PUSH_VAPID_PRIVATE_KEY,
+  process.env.WEB_PUSH_VAPID_SUBJECT,
+].filter(Boolean);
+if (vapidValues.length > 0) {
+  if (
+    !process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY ||
+    !process.env.WEB_PUSH_VAPID_PRIVATE_KEY ||
+    !process.env.WEB_PUSH_VAPID_SUBJECT
+  )
+    fail(
+      "Web Push configuration requires the public key, private key and subject",
+    );
+  if (process.env.NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY.length < 80)
+    fail("NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY is too short");
+  if (process.env.WEB_PUSH_VAPID_PRIVATE_KEY.length < 40)
+    fail("WEB_PUSH_VAPID_PRIVATE_KEY is too short");
+  if (
+    !process.env.WEB_PUSH_VAPID_SUBJECT.startsWith("mailto:") &&
+    !URL.canParse(process.env.WEB_PUSH_VAPID_SUBJECT)
+  )
+    fail("WEB_PUSH_VAPID_SUBJECT must be a mailto address or URL");
+}
+
 const forbiddenPublicNames = [
   "NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY",
   "NEXT_PUBLIC_DATABASE_URL",
@@ -132,6 +157,7 @@ const forbiddenPublicNames = [
   "NEXT_PUBLIC_EVENT_REMINDER_CRON_SECRET",
   "NEXT_PUBLIC_STRIPE_SECRET_KEY",
   "NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET",
+  "NEXT_PUBLIC_WEB_PUSH_VAPID_PRIVATE_KEY",
 ];
 if (forbiddenPublicNames.some((name) => process.env[name])) {
   console.error(

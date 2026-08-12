@@ -21,7 +21,7 @@ After acceptance, it may additionally return the other family's bio and active o
 ## Qualification commands
 
 ```bash
-cd /home/mignon/apps/gtech/kinavela
+cd /home/mignon/apps/kinavela
 npm run db:migrate
 npm run db:test
 npm run check

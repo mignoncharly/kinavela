@@ -4,14 +4,14 @@ This is the implemented Priority 0 privacy and legal package. It records the pro
 
 ## Data inventory
 
-| Activity            | Data                                                                           | Recipients                                        | Product rule                                               |
-| ------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------- | ---------------------------------------------------------- |
-| Account/auth        | email, auth identifier, profile preferences                                    | Supabase Auth/Database                            | active account plus deletion workflow                      |
-| Family and children | family profile, child nickname/year, culture/language links                    | Supabase Database                                 | guardian access; minimise child data                       |
-| Stories/media       | voice, transcripts, passport media                                             | private Supabase Storage; AI only when configured | private buckets; delete media before account anonymisation |
-| Safety              | messages, reports, moderation metadata                                         | restricted Kinavela/Supabase access               | retain only for safety and legal review                    |
-| Billing             | Stripe Customer and subscription identifiers, minimized webhook audit metadata | Stripe, Supabase Database                         | Roots Family active; family owner manages billing          |
-| Notifications       | email consent, push endpoint keys, delivery payloads                           | Zoho SMTP, Supabase                               | opt-in email and revocation                                |
+| Activity            | Data                                                                           | Recipients                                         | Product rule                                               |
+| ------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------- | ---------------------------------------------------------- |
+| Account/auth        | email, auth identifier, profile preferences                                    | Supabase Auth/Database                             | active account plus deletion workflow                      |
+| Family and children | family profile, child nickname/year, culture/language links                    | Supabase Database                                  | guardian access; minimise child data                       |
+| Stories/media       | voice, transcripts, passport media                                             | private Supabase Storage; AI only when configured  | private buckets; delete media before account anonymisation |
+| Safety              | messages, reports, moderation metadata                                         | restricted Kinavela/Supabase access                | retain only for safety and legal review                    |
+| Billing             | Stripe Customer and subscription identifiers, minimized webhook audit metadata | Stripe, Supabase Database                          | Roots Family active; family owner manages billing          |
+| Notifications       | email consent, push endpoint keys, generic typed delivery payloads             | Zoho SMTP, Supabase, browser-selected push service | opt-in email; explicit push permission and revocation      |
 
 The canonical machine-readable inventory is `kinavela_private.processing_activities`.
 
@@ -23,7 +23,7 @@ The privacy cron claims one export and one account deletion per run. It removes 
 
 ## Processor and transfer review
 
-The production processor inventory is Supabase, Zoho Europe SMTP, Nominatim/OpenStreetMap and Stripe for Roots Family billing. OpenAI, Sentry, analytics, advertising, CAPTCHA and Web Push delivery remain disabled and excluded from the public policy. Supabase project region, hosting operator and contractual transfer mechanisms still require provider-console or contract confirmation; they are not invented from source code.
+The production processor inventory is Supabase, Zoho Europe SMTP, Nominatim/OpenStreetMap and Stripe for Roots Family billing. Optional Web Push uses the browser-selected push service only after permission and remains rollout-gated. OpenAI, Sentry, analytics, advertising and CAPTCHA remain disabled. Supabase project region, hosting operator and contractual transfer mechanisms still require provider-console or contract confirmation; they are not invented from source code.
 
 ## Cookie and consent audit
 

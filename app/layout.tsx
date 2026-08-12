@@ -32,7 +32,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kinavela.gestionatech.de"),
+  metadataBase: new URL("https://www.kinavela.com"),
   applicationName: "Kinavela",
   title: { default: "Kinavela", template: "%s · Kinavela" },
   description:

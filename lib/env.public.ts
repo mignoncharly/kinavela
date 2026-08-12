@@ -6,6 +6,7 @@ const publicEnvSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url(),
   NEXT_PUBLIC_WEB_PUSH_VAPID_PUBLIC_KEY: z
     .string()
+    .min(80)
     .optional()
     .or(z.literal("")),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z

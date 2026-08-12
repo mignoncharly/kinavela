@@ -8,7 +8,7 @@ assertions in that order.
 Run it from the reviewed release tree:
 
     npm ci
-    SMOKE_BASE_URL=https://kinavela.gestionatech.de npm run release:qualification
+    SMOKE_BASE_URL=https://www.kinavela.com npm run release:qualification
 
 `SMOKE_BASE_URL` is optional for local qualification, but it must be set for
 production promotion. The smoke check is read-only and verifies health,

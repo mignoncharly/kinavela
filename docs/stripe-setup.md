@@ -30,7 +30,7 @@ Stripe-hosted Checkout is used, so `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is not r
 
 Create one live-mode Stripe webhook endpoint:
 
-`https://kinavela.gestionatech.de/api/billing/webhook`
+`https://www.kinavela.com/api/billing/webhook`
 
 Select only:
 

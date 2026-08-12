@@ -56,7 +56,7 @@ export default async function LandingPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Kinavela",
-    url: "https://kinavela.gestionatech.de",
+    url: "https://www.kinavela.com",
     email: "info@gestionatech.de",
     description: dictionary.meta.description,
   };

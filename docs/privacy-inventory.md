@@ -1,7 +1,7 @@
 # Production privacy inventory
 
-Audit date: 11 August 2026  
-Application: Kinavela at https://kinavela.gestionatech.de
+Audit date: 12 August 2026
+Application: Kinavela at https://www.kinavela.com
 
 ## Processing inventory
 
@@ -25,6 +25,7 @@ Application: Kinavela at https://kinavela.gestionatech.de
 2. Zoho Europe SMTP: transactional and opted-in notification email. Configured endpoint: `smtp.zoho.eu`.
 3. Nominatim/OpenStreetMap: explicit server-side city/postcode geocoding. Configured default: `https://nominatim.openstreetmap.org`.
 4. Stripe: hosted Roots Family Checkout, Customer Portal and payment webhooks. Kinavela stores only billing identifiers and minimized webhook audit metadata; Stripe handles payment method and invoice records.
+5. Browser/operating-system push service: only after explicit Web Push permission and device registration; the exact service is determined by the subscription endpoint.
 
 The application server/Nginx is self-managed for the controller, but its commercial hosting operator is not identified in the repository and is not given a fictional name in the public policy.
 
@@ -34,9 +35,10 @@ The application server/Nginx is self-managed for the controller, but its commerc
 - `kinavela:metrics-consent`: localStorage consent choice until changed.
 - `kinavela:app_session_started`: sessionStorage marker until tab/session end, only after metrics consent.
 - `kinavela-offline-v1`: IndexedDB snapshots, automatically removed after 30 days.
-- `kinavela-shell-v1`: service-worker Cache Storage for static/offline shell only.
+- `kinavela-shell-v2`: service-worker Cache Storage for static/offline shell only.
+- Browser PushManager subscription: device endpoint and keys until revoked, expired, uninstall or browser clear.
 
-No advertising, social, third-party analytics, CAPTCHA or embedded payment widget is installed. Stripe-hosted Checkout and Portal pages open on Stripe infrastructure. No consent banner is used for authentication/PWA necessities; the banner exists only for opt-in first-party product metrics.
+No advertising, social, third-party analytics, CAPTCHA or embedded payment widget is installed. Stripe-hosted Checkout and Portal pages open on Stripe infrastructure. Web Push requires an explicit Settings action and browser permission and remains controlled by the `web_push_delivery` rollout. No consent banner is used for authentication/PWA necessities; the banner exists only for opt-in first-party product metrics.
 
 ## Retention controls
 

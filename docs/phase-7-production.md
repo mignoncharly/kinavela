@@ -20,7 +20,7 @@ Village chat uses the existing `messages` Realtime publication with a filtered c
 ## Qualification commands
 
 ```bash
-cd /home/mignon/apps/gtech/kinavela
+cd /home/mignon/apps/kinavela
 npm run db:migrate
 npm run db:test
 npm run check
