@@ -81,7 +81,7 @@ comment on function public.claim_notification_deliveries() is
   'Service-role-only outbox claim with private recipient identity and per-profile delivery rollout state.';
 
 insert into kinavela_private.schema_migrations(version)
-values ('202608120003_notification_claim_locale_type')
+values ('202608120004_notification_claim_email_type')
 on conflict (version) do nothing;
 
 notify pgrst, 'reload schema';
