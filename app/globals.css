@@ -1610,3 +1610,187 @@ footer p:last-child {
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Landing warmth layer
+
+   Incremental pass over the existing landing page — no structural or copy
+   changes. Everything here either removes rigid spacing that read as
+   institutional, or adds motion that is opt-out under reduced-motion.
+
+   Reveal animations use the independent `translate` property rather than
+   `transform`, because a running animation beats a transition in the cascade
+   and would otherwise freeze the cards' hover lift.
+   --------------------------------------------------------------------------- */
+
+@keyframes landing-reveal {
+  from {
+    opacity: 0;
+    translate: 0 20px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes icon-greet {
+  0%,
+  100% {
+    rotate: 0deg;
+    scale: 1;
+  }
+  35% {
+    rotate: -9deg;
+    scale: 1.08;
+  }
+  70% {
+    rotate: 6deg;
+    scale: 1.04;
+  }
+}
+
+@keyframes face-bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -0.3rem;
+  }
+}
+
+/* The journey cards pair a fixed 4.3rem title margin with a tall min-height.
+   On the four-column desktop grid that reads as deliberate air, and the fixed
+   margin is what keeps the four titles on a shared baseline — so it stays.
+   Stacked on mobile the same pair leaves a plain hole, so only the small
+   breakpoints below tighten it. */
+
+/* Warm the step marker: it read as a spec-sheet index in mono grey. */
+.landing-page .step-number {
+  color: color-mix(in srgb, var(--primary) 46%, var(--muted));
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.landing-page .journey-icon {
+  transition:
+    transform 260ms ease,
+    background-color 260ms ease;
+}
+
+.landing-page .journey-card:hover .journey-icon,
+.landing-page .journey-card:focus-within .journey-icon {
+  background: color-mix(in srgb, var(--primary) 16%, #f5e6db);
+}
+
+.landing-page .journey-card:nth-child(2):hover .journey-icon,
+.landing-page .journey-card:nth-child(4):hover .journey-icon {
+  background: color-mix(in srgb, var(--secondary) 16%, #e5ecdf);
+}
+
+/* Trust checklist: rounder, and each item answers to the pointer so the
+   section stops reading as a static compliance table. */
+.landing-page .trust-copy li {
+  border-radius: 1.15rem;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    translate 220ms ease;
+}
+
+.landing-page .trust-copy li:hover {
+  border-color: rgb(255 255 255 / 16%);
+  background: rgb(255 255 255 / 7%);
+  translate: 4px 0;
+}
+
+/* The face clusters are the most human thing on the page and were rendered
+   small enough to read as decoration. Give them presence. */
+.trust-faces span {
+  width: 2.6rem;
+}
+
+.landing-page .cta-community span,
+.landing-page .cta-community svg {
+  transition: translate 260ms ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing-page .journey-card:hover .journey-icon,
+  .landing-page .journey-card:focus-within .journey-icon {
+    animation: icon-greet 620ms ease;
+  }
+
+  .landing-page .cta-community:hover span,
+  .landing-page .cta-community:hover svg {
+    animation: face-bob 1.6s ease-in-out infinite;
+  }
+
+  .landing-page .cta-community:hover span:nth-child(2) {
+    animation-delay: 120ms;
+  }
+
+  .landing-page .cta-community:hover span:nth-child(3) {
+    animation-delay: 240ms;
+  }
+
+  .landing-page .cta-community:hover svg {
+    animation-delay: 360ms;
+  }
+
+  .landing-page .cta-community:hover span:nth-child(5) {
+    animation-delay: 480ms;
+  }
+
+  .landing-page .cta-community:hover span:nth-child(6) {
+    animation-delay: 600ms;
+  }
+
+  /* Scroll-linked reveals, no JS and no dependency. Browsers without view
+     timelines simply render everything in place. */
+  @supports (animation-timeline: view()) {
+    .landing-page .section-heading,
+    .landing-page .journey-card,
+    .landing-page .trust-copy li,
+    .landing-page .trust-emblem,
+    .landing-page .cta-community {
+      animation: landing-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 24%;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  /* Stacked cards no longer need to reserve height for a four-across grid;
+     close the gap so the copy sits under its own icon rather than adrift. */
+  .landing-page .journey-card {
+    min-height: 0;
+  }
+
+  .landing-page .journey-card h3 {
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .landing-page .journey-card,
+  .landing-page .journey-card:nth-child(2) {
+    min-height: 0;
+  }
+
+  .landing-page .journey-card h3 {
+    margin-top: 1.6rem;
+  }
+
+  .trust-faces span {
+    width: 2.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page .trust-copy li:hover {
+    translate: none;
+  }
+}
