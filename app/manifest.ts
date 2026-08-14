@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
 
+import { getDictionary } from "@/lib/i18n/dictionaries";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Kinavela",
     short_name: "Kinavela",
-    description:
-      "Privacy-first cultural community infrastructure for diaspora families.",
+    description: getDictionary("de").meta.description,
     start_url: "/de",
     id: "/de",
     scope: "/",

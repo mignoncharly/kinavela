@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -14,10 +15,16 @@ import "./phase16-admin.css";
 import "./phase17-billing.css";
 import "./phase18-seo.css";
 import "./phase19-privacy.css";
-import "./phase21-pilot.css";
+import "./phase29-family-settings.css";
+import "./phase32-invitations.css";
+import "./phase33-discovery-activation.css";
+import "./phase34-trust-safety.css";
+import "./phase35-support.css";
+import "./phase36-offline-coordination.css";
 import "./pwa.css";
 import "./responsive.css";
 
+import { isLocale } from "@/lib/i18n/config";
 import { DocumentLanguage } from "@/components/i18n/document-language";
 import { MetricsConsentBanner } from "@/components/privacy/metrics-consent-banner";
 import { PwaRuntime } from "@/components/pwa/pwa-runtime";
@@ -39,6 +46,21 @@ export const metadata: Metadata = {
     "Privacy-first cultural community infrastructure for diaspora families.",
   manifest: "/manifest.webmanifest",
   icons: { icon: "/icon.svg" },
+  // Without max-snippet/max-image-preview, Google caps how much of a page it
+  // may quote, which also limits what AI surfaces can summarise or cite.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: { type: "website", siteName: "Kinavela" },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
@@ -46,11 +68,13 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const requestedLocale = (await headers()).get("x-kinavela-locale") ?? "de";
+  const locale = isLocale(requestedLocale) ? requestedLocale : "de";
   return (
-    <html lang="de">
+    <html lang={locale} suppressHydrationWarning>
       <body className={geistSans.variable + " " + geistMono.variable}>
         {children}
         <DocumentLanguage />

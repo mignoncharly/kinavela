@@ -39,9 +39,10 @@ export default async function Page({
 
   const [detailResult, libraryResult, villageResult] = await Promise.all([
     supabase.rpc("get_village", { p_village_id: parsedId.data.village_id }),
-    supabase.rpc("list_cultural_missions"),
-    supabase.rpc("list_village_missions", {
+    supabase.rpc("list_cultural_missions_v3", { p_locale: locale }),
+    supabase.rpc("list_village_missions_v3", {
       p_village_id: parsedId.data.village_id,
+      p_locale: locale,
     }),
   ]);
   const detail = parseVillageDetail(detailResult.data);

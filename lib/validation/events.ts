@@ -46,9 +46,23 @@ const validEventTimes = (value: {
     new Date(value.starts_at).getTime();
 
 export const eventCreateSchema = z
-  .object({ village_id: z.string().uuid(), ...eventFields })
+  .object({
+    village_id: z.string().uuid(),
+    ...eventFields,
+    recurrence_frequency: z
+      .enum(["weekly", "biweekly", "monthly"])
+      .nullable()
+      .default(null),
+    recurrence_ends_on: z.string().date().nullable().default(null),
+  })
   .strict()
-  .refine(validEventTimes, { path: ["ends_at"], message: "invalid_time" });
+  .refine(validEventTimes, { path: ["ends_at"], message: "invalid_time" })
+  .refine(
+    (value) =>
+      (value.recurrence_frequency === null) ===
+      (value.recurrence_ends_on === null),
+    { path: ["recurrence_ends_on"], message: "invalid_recurrence" },
+  );
 
 export const eventUpdateSchema = z
   .object({ event_id: z.string().uuid(), ...eventFields })

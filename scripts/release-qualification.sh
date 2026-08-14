@@ -17,6 +17,7 @@ step "production dependency audit" npm audit --omit=dev --audit-level=high
 step "application checks" env -u NODE_ENV npm run check
 step "remote database migrations" npm run db:migrate
 step "remote database assertions" npm run db:test
+step "cross-browser acceptance" env RELEASE_CANDIDATE_SERVER=1 RUN_AUTHENTICATED_VISUAL=1 npm run test:e2e
 
 if [[ -n "${SMOKE_BASE_URL:-}" ]]; then
   step "public HTTPS smoke" env SMOKE_BASE_URL="$SMOKE_BASE_URL" npm run smoke:production

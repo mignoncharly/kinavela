@@ -1,62 +1,73 @@
 {
   "meta": {
-    "title": "Kinavela — Cultiver les racines. Créer la proximité.",
-    "description": "Une plateforme privée et fiable qui relie les familles de la diaspora par la culture, la communauté et les souvenirs."
+    "title": "Kinavela — Faire vivre ses racines. Créer des liens.",
+    "description": "Un espace privé et digne de confiance où les familles de la diaspora se retrouvent autour de leur culture, de leur communauté et de leurs souvenirs."
   },
   "nav": {
     "vision": "Vision",
     "principles": "Sécurité",
-    "contact": "Contact"
+    "contact": "Contact",
+    "signIn": "Se connecter",
+    "primaryLabel": "Navigation principale",
+    "languageLabel": "Sélecteur de langue",
+    "homeLabel": "Accueil Kinavela"
   },
   "hero": {
     "eyebrow": "Pour les familles camerounaises en Allemagne",
-    "title": "Cultiver les racines. Créer la proximité.",
-    "body": "Kinavela rapproche les familles voisines, fait grandir de petites communautés de confiance et aide les parents à transmettre langues, cultures et histoires familiales à leurs enfants.",
+    "title": "Faire vivre ses racines. Créer des liens.",
+    "body": "Kinavela rapproche les familles d’une même région, fait grandir de petites communautés de confiance et aide les parents à transmettre leur langue, leur culture et leurs histoires familiales à leurs enfants.",
     "primary": "Créer un compte",
     "secondary": "Comment ça marche",
-    "privacy": "Privé par défaut · Aucun profil public d’enfant · Aucun domicile précis"
+    "privacy": "Privé dès le départ · Aucun profil public d’enfant · Aucune adresse précise",
+    "illustrationLabel": "Illustration de familles et d’un voisinage réunis au sein de la communauté Kinavela",
+    "nearbyDistance": "12 km",
+    "nearbyFamily": "Famille à proximité",
+    "passportLabel": "ROOTS PASSPORT",
+    "preservedStory": "Une histoire qui reste vivante"
   },
   "journey": {
-    "eyebrow": "Un parcours, pas un fil",
-    "title": "Du premier lien au souvenir durable",
+    "eyebrow": "Un parcours, pas un fil d’actualité",
+    "title": "De la première rencontre aux souvenirs qui restent",
     "steps": [
       {
         "number": "01",
         "title": "Découvrir",
-        "body": "Trouver des familles compatibles à proximité sans révéler leur localisation précise."
+        "body": "Trouver des familles avec lesquelles créer des liens, sans jamais révéler leur localisation précise."
       },
       {
         "number": "02",
-        "title": "Se connecter",
-        "body": "Les échanges privés ne s’ouvrent qu’après l’accord des deux familles."
+        "title": "Créer du lien",
+        "body": "Une conversation privée ne peut commencer qu’après l’accord des deux familles."
       },
       {
         "number": "03",
-        "title": "Créer un Village",
-        "body": "Partager des expériences culturelles dans de petites communautés locales de confiance."
+        "title": "Faire grandir un Village",
+        "body": "Vivre et partager sa culture dans de petites communautés locales fondées sur la confiance."
       },
       {
         "number": "04",
-        "title": "Préserver",
-        "body": "Conserver langues, récits et moments précieux dans un Roots Passport privé."
+        "title": "Préserver les souvenirs",
+        "body": "Conserver langue, récits et moments précieux dans un Roots Passport privé."
       }
     ]
   },
   "trust": {
     "eyebrow": "La confidentialité dès la conception",
-    "title": "Les familles ont besoin de confiance, pas d’audience.",
-    "body": "Les enfants ne sont jamais des utilisateurs autonomes. Profils, médias et souvenirs restent sous le contrôle des parents et responsables autorisés.",
+    "title": "Les familles ont besoin de confiance, pas de visibilité.",
+    "body": "Les enfants n’ont jamais de compte autonome. Profils, médias et souvenirs restent sous le contrôle des parents et responsables légaux autorisés.",
+    "emblem": ["CONFIDENTIALITÉ", "DÈS LA CONCEPTION"],
     "items": [
       "Aucun profil public d’enfant",
-      "Des distances approximatives, jamais de coordonnées exactes",
-      "Des partages explicites et une visibilité prudente",
-      "Une architecture de données et de sécurité pensée pour l’UE"
+      "Des distances approximatives plutôt que des coordonnées exactes",
+      "Des choix de partage explicites et une visibilité limitée",
+      "Une architecture des données et de la sécurité pensée pour l’UE"
     ]
   },
   "cta": {
+    "eyebrow": "REJOINDRE KINAVELA",
     "title": "Une manière plus sereine de créer du lien.",
-    "body": "Créez dès maintenant votre espace familial protégé pour transmettre cultures, langues et souvenirs.",
-    "button": "Créer mon compte"
+    "body": "Créez dès maintenant un espace protégé pour votre famille et faites vivre, ensemble, la culture, la langue et les souvenirs.",
+    "button": "Créer un compte en toute sécurité"
   },
   "discovery": {
     "eyebrow": "DÉCOUVERTE",
@@ -106,6 +117,11 @@
     "searching": "Recherche…",
     "select": "Utiliser cette zone",
     "noCities": "Aucune ville trouvée. Vérifiez l’orthographe.",
+    "searchUnavailable": "La recherche de lieu est temporairement indisponible. Veuillez réessayer.",
+    "invalidLocation": "Ce lieu n’est plus valide. Veuillez le rechercher et le sélectionner à nouveau.",
+    "germanyOnly": "Kinavela accepte actuellement les lieux situés en Allemagne. Choisissez une ville ou un code postal allemand.",
+    "authenticationRequired": "Veuillez vous reconnecter pour continuer.",
+    "validationFailed": "Vérifiez vos informations et réessayez.",
     "save": "Enregistrer la zone",
     "saving": "Enregistrement…",
     "attribution": "Géocodage © contributeurs OpenStreetMap",
@@ -147,8 +163,10 @@
     "noConnections": "Vous n’avez pas encore de connexion familiale acceptée.",
     "findFamilies": "Découvrir des familles",
     "pendingPrivacy": "Seules les informations familiales adaptées à la découverte sont visibles avant votre accord.",
-    "acceptedPrivacy": "Partagé après accord mutuel : présentation familiale et noms affichés des responsables uniquement.",
+    "acceptedPrivacy": "Partagé après accord mutuel : présentation familiale, noms affichés des responsables et uniquement les surnoms d’enfants autorisés avec une tranche d’âge large.",
     "guardians": "Responsables",
+    "children": "Enfants partagés par cette famille",
+    "ageRange": "âge {range}",
     "connect": "Se connecter",
     "connecting": "Envoi…",
     "requested": "Demande envoyée",
@@ -307,6 +325,7 @@
     "villageTarget": "Signalement du Village",
     "dismiss": "Classer",
     "deleteMessage": "Retirer le message",
+    "deleteSupportContent": "Retirer le contenu d’entraide",
     "back": "Tous les Villages",
     "privateCommunity": "VILLAGE PRIVÉ",
     "sections": "Sections du Village",
@@ -314,6 +333,7 @@
       "overview": "Aperçu",
       "families": "Familles",
       "events": "Événements",
+      "support": "Entraide",
       "chat": "Chat",
       "culture": "Culture"
     },
@@ -322,6 +342,13 @@
     "joinRequests": "Demandes d’adhésion",
     "noRequests": "Aucune demande d’adhésion en attente.",
     "moderation": "Modération",
+    "verificationRequests": "Demandes de vérification communautaire",
+    "noVerificationRequests": "Aucune vérification communautaire n’est en attente.",
+    "urgentChildSafety": "SÉCURITÉ ENFANT URGENTE",
+    "responseDue": "Objectif de réponse opérationnelle :",
+    "cancelReportedEvent": "Annuler l’événement",
+    "restrictReportedEvent": "Restreindre l’événement",
+    "escalateReport": "Transmettre à la sécurité Kinavela",
     "noEvents": "Aucun événement de Village n’a encore été organisé.",
     "chatSafety": "Seules les familles actives du Village peuvent lire et écrire ici. Les messages peuvent être signalés et modérés.",
     "cultureFocus": "Le pays culturel de référence actuel de ce Village est {country}.",
@@ -380,6 +407,21 @@
     "noRsvps": "Aucune réponse familiale pour le moment.",
     "noEvents": "Aucun événement du Village n’a encore été organisé.",
     "actionError": "Cette action n’a pas pu être effectuée.",
+    "reportEvent": "Signaler l’événement",
+    "reportReason": "Motif",
+    "reportDetails": "Détails pour l’équipe de sécurité",
+    "reportPrivacy": "Ne copiez ici ni messages privés, ni adresses exactes, ni coordonnées d’enfant, ni contenu illégal.",
+    "submitReport": "Envoyer le signalement",
+    "reportSent": "L’événement a été signalé pour examen.",
+    "reportReasons": {
+      "unsafe_location": "Lieu dangereux",
+      "inappropriate_conduct": "Conduite inappropriée",
+      "misleading_event": "Événement trompeur",
+      "child_safety_concern": "Préoccupation liée à la sécurité d’un enfant",
+      "discrimination": "Discrimination",
+      "fraud": "Fraude",
+      "other": "Autre"
+    },
     "categories": {
       "playdate": "Rencontre enfants",
       "park": "Parc",
@@ -396,6 +438,14 @@
   },
   "footer": {
     "status": "Disponible en toute sécurité",
-    "rights": "Tous droits réservés."
+    "rights": "Tous droits réservés.",
+    "legalLabel": "Informations juridiques",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "impressum": "Mentions légales",
+    "cookies": "Cookies",
+    "childSafety": "Protection de l’enfance",
+    "community": "Règles de la communauté",
+    "contact": "Contact"
   }
 }

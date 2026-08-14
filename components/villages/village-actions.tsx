@@ -11,9 +11,12 @@ import type {
   VillageReportResult,
 } from "@/features/villages/results";
 import type { Locale } from "@/lib/i18n/config";
+import { getTrustCopy } from "@/features/trust/copy";
+import type { VillageVerificationRequest } from "@/lib/validation/trust";
 import { createClient } from "@/lib/supabase/browser";
 import { reportReasons } from "@/lib/validation/messaging";
 import { villageRoles, villageTypes } from "@/lib/validation/villages";
+import { formatDateTime } from "@/lib/i18n/format";
 
 export type VillageCopy = (typeof import("@/messages/en.json"))["villages"];
 
@@ -669,9 +672,11 @@ export function VillageChat({
 export function ModerationQueue({
   reports,
   copy,
+  locale,
 }: {
   reports: VillageReportResult[];
   copy: VillageCopy;
+  locale: Locale;
 }) {
   if (reports.length === 0)
     return <p className="muted-copy">{copy.noReports}</p>;
@@ -681,12 +686,26 @@ export function ModerationQueue({
         <article key={report.report_id}>
           <Shield size={18} />
           <div>
+            <span className={`moderation-severity ${report.severity}`}>
+              {report.urgent_child_safety
+                ? copy.urgentChildSafety
+                : report.severity}
+            </span>
             <strong>
               {copy.reasons[report.reason as keyof typeof copy.reasons] ??
                 report.reason}
             </strong>
-            <p>{report.target_family_name ?? copy.villageTarget}</p>
+            <p>
+              {report.target_event_title ??
+                report.target_support_post_title ??
+                report.target_family_name ??
+                copy.villageTarget}
+            </p>
             {report.details && <p>{report.details}</p>}
+            <small>
+              {copy.responseDue}{" "}
+              {formatDateTime(locale, report.response_due_at)}
+            </small>
             <div className="inline-actions">
               <AsyncButton
                 label={copy.dismiss}
@@ -736,7 +755,114 @@ export function ModerationQueue({
                   }
                 />
               )}
+              {report.target_event_id && (
+                <>
+                  <AsyncButton
+                    label={copy.cancelReportedEvent}
+                    busyLabel={copy.updating}
+                    className="chat-tool danger"
+                    onAction={() =>
+                      fetch("/api/villages/reports", {
+                        method: "PATCH",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({
+                          report_id: report.report_id,
+                          resolution: "cancel_event",
+                        }),
+                      })
+                    }
+                  />
+                  <AsyncButton
+                    label={copy.restrictReportedEvent}
+                    busyLabel={copy.updating}
+                    className="chat-tool danger"
+                    onAction={() =>
+                      fetch("/api/villages/reports", {
+                        method: "PATCH",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({
+                          report_id: report.report_id,
+                          resolution: "restrict_event",
+                        }),
+                      })
+                    }
+                  />
+                </>
+              )}
+              {report.target_support_post_id && (
+                <AsyncButton
+                  label={copy.deleteSupportContent}
+                  busyLabel={copy.updating}
+                  className="chat-tool danger"
+                  onAction={() =>
+                    fetch("/api/villages/reports", {
+                      method: "PATCH",
+                      headers: { "content-type": "application/json" },
+                      body: JSON.stringify({
+                        report_id: report.report_id,
+                        resolution: "delete_support_content",
+                      }),
+                    })
+                  }
+                />
+              )}
+              <AsyncButton
+                label={copy.escalateReport}
+                busyLabel={copy.updating}
+                onAction={() =>
+                  fetch("/api/villages/reports", {
+                    method: "PATCH",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                      report_id: report.report_id,
+                      resolution: "escalate",
+                    }),
+                  })
+                }
+              />
             </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+export function VerificationQueue({
+  requests,
+  locale,
+  copy,
+}: {
+  requests: VillageVerificationRequest[];
+  locale: Locale;
+  copy: VillageCopy;
+}) {
+  const trustCopy = getTrustCopy(locale);
+  if (requests.length === 0)
+    return <p className="muted-copy">{copy.noVerificationRequests}</p>;
+  return (
+    <div className="moderation-list verification-list">
+      {requests.map((request) => (
+        <article key={request.request_id}>
+          <Shield size={18} />
+          <div>
+            <strong>{request.profile_display_name}</strong>
+            <p>{request.family_name}</p>
+            <p>{trustCopy.endorsementExact}</p>
+            <AsyncButton
+              label={trustCopy.endorse}
+              busyLabel={trustCopy.endorseBusy}
+              onAction={() =>
+                fetch("/api/trust", {
+                  method: "POST",
+                  headers: { "content-type": "application/json" },
+                  body: JSON.stringify({
+                    action: "endorse_community_verification",
+                    request_id: request.request_id,
+                  }),
+                })
+              }
+            />
           </div>
         </article>
       ))}

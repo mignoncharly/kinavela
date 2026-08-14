@@ -8,6 +8,7 @@ import { MissionBoard } from "@/components/missions/mission-actions";
 import { OfflineSnapshotButton } from "@/components/pwa/offline-data";
 import { parseCulturalMissions } from "@/features/missions/results";
 import { isLocale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 import { getMissionCopy } from "@/features/missions/copy";
 import { createClient } from "@/lib/supabase/server";
 
@@ -19,6 +20,7 @@ export default async function Page({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const copy = getMissionCopy(locale);
+  const appCopy = getAppDictionary(locale);
   const supabase = await createClient();
   const {
     data: { user },
@@ -31,7 +33,9 @@ export default async function Page({
     .single();
   if (!profile?.onboarding_completed) redirect(`/${locale}/onboarding`);
 
-  const result = await supabase.rpc("list_cultural_missions");
+  const result = await supabase.rpc("list_cultural_missions_v3", {
+    p_locale: locale,
+  });
   const missions = parseCulturalMissions(result.data);
   return (
     <main className="app-shell missions-page">
@@ -62,7 +66,8 @@ export default async function Page({
             <OfflineSnapshotButton
               kind="missions"
               payload={missions.data}
-              label="Save missions offline"
+              label={appCopy.pwa.saveMissions}
+              locale={locale}
             />
             <MissionBoard copy={copy} missions={missions.data} />
           </>

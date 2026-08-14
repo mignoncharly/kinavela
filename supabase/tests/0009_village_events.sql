@@ -111,6 +111,7 @@ select set_config('request.jwt.claims', json_build_object('sub', :'event_user_b'
 select pg_temp.event_call_denied('create', :'event_village')::integer as member_create_denied \gset
 select count(*)::integer as hidden_before_rsvp from public.list_village_events(:'event_village')
 where event_id = :'event_id'::uuid and location_address is null and not address_visible \gset
+select public.acknowledge_meeting_safety('event_rsvp');
 select public.rsvp_village_event(:'event_id', 'going', 2, 2) as family_b_status \gset
 select count(*)::integer as visible_after_rsvp from public.list_village_events(:'event_village')
 where event_id = :'event_id'::uuid and location_address = 'Private Park Gate 7, Berlin' and address_visible \gset
@@ -119,6 +120,7 @@ reset role;
 set local role authenticated;
 select set_config('request.jwt.claim.sub', :'event_user_c', true);
 select set_config('request.jwt.claims', json_build_object('sub', :'event_user_c', 'role', 'authenticated')::text, true);
+select public.acknowledge_meeting_safety('event_rsvp');
 select public.rsvp_village_event(:'event_id', 'going', 1, 1) as family_c_status \gset
 select count(*)::integer as waitlist_address_hidden from public.list_village_events(:'event_village')
 where event_id = :'event_id'::uuid and current_rsvp_status = 'waitlisted'

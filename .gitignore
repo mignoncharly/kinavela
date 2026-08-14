@@ -1,6 +1,7 @@
 # Dependencies and build output
 node_modules/
 .next/
+.next-production/
 out/
 coverage/
 playwright-report/
@@ -11,6 +12,7 @@ test-results/
 .env.*
 !.env.example
 supabaseandco_keys.txt
+supabase_connection.txt
 remaining_keys.txt
 missing_keys.txt
 *.pem

@@ -5,16 +5,28 @@ begin;
 insert into auth.users(id, email, raw_user_meta_data, is_sso_user, is_anonymous, email_confirmed_at, created_at, updated_at)
 values (:'user_id', 'onboarding-test@kinavela.invalid', '{"display_name":"Onboarding Test"}', false, false, now(), now(), now());
 
+insert into public.geocoding_cache(
+  query_hash, provider_place_id, display_city, display_area, country_code, location
+)
+values (
+  repeat('f', 64),
+  'onboarding-test-berlin',
+  'Berlin',
+  'Berlin',
+  'DE',
+  extensions.st_setsrid(extensions.st_makepoint(13.4050, 52.5200), 4326)::extensions.geography
+);
+
 select set_config('request.jwt.claim.sub', :'user_id', true);
 select set_config('request.jwt.claims', json_build_object('sub', :'user_id', 'role', 'authenticated')::text, true);
 set local role authenticated;
 
-select public.complete_family_onboarding($json$
+select public.complete_family_onboarding_with_location($json$
 {
   "display_name":"Onboarding Test",
   "preferred_language":"en",
   "timezone":"Europe/Berlin",
-  "family":{"name":"Secure Test Family","country_of_residence":"DE","city":"Berlin","radius_km":35,"visibility":"discoverable","bio":"Atomic onboarding test"},
+  "family":{"name":"Secure Test Family","country_of_residence":"DE","city":"Berlin","location_place_id":"onboarding-test-berlin","radius_km":35,"visibility":"discoverable","bio":"Atomic onboarding test"},
   "children":[{"nickname":"Little Root","birth_year":2020,"birth_month":5,"gender":null}],
   "culture_ids":["20000000-0000-4000-8000-000000000001"],
   "languages":[{"language_id":"30000000-0000-4000-8000-000000000003","proficiency":"fluent","transmission_goal":"want_to_teach_children"}],

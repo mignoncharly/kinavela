@@ -6,7 +6,11 @@
   "nav": {
     "vision": "Vision",
     "principles": "Safety",
-    "contact": "Contact"
+    "contact": "Contact",
+    "signIn": "Sign in",
+    "primaryLabel": "Primary navigation",
+    "languageLabel": "Language selector",
+    "homeLabel": "Kinavela home"
   },
   "hero": {
     "eyebrow": "For Cameroonian families in Germany",
@@ -14,7 +18,12 @@
     "body": "Kinavela brings nearby families together, nurtures small trusted communities and helps parents keep language, culture and family stories alive for their children.",
     "primary": "Create account",
     "secondary": "How it works",
-    "privacy": "Private by default · No public child profiles · No exact home locations"
+    "privacy": "Private by default · No public child profiles · No exact home locations",
+    "illustrationLabel": "Kinavela community journey illustration",
+    "nearbyDistance": "12 km",
+    "nearbyFamily": "Family nearby",
+    "passportLabel": "ROOTS PASSPORT",
+    "preservedStory": "A story preserved"
   },
   "journey": {
     "eyebrow": "A journey, not a feed",
@@ -46,6 +55,7 @@
     "eyebrow": "Privacy by design",
     "title": "Families need trust, not reach.",
     "body": "Children are never standalone users. Profiles, media and memories remain under the control of authorized parents and guardians.",
+    "emblem": ["PRIVACY", "BY DESIGN"],
     "items": [
       "No public child profiles",
       "Distance ranges instead of exact coordinates",
@@ -54,6 +64,7 @@
     ]
   },
   "cta": {
+    "eyebrow": "JOIN KINAVELA",
     "title": "A calmer way to build community.",
     "body": "Create your protected family space now and keep culture, language and memories alive together.",
     "button": "Create account securely"
@@ -106,6 +117,11 @@
     "searching": "Searching…",
     "select": "Use this area",
     "noCities": "No cities found. Check the spelling and try again.",
+    "searchUnavailable": "Location search is temporarily unavailable. Please try again.",
+    "invalidLocation": "That location is no longer valid. Please search and select it again.",
+    "germanyOnly": "Kinavela currently accepts locations in Germany. Please select a German city or postcode.",
+    "authenticationRequired": "Please sign in again to continue.",
+    "validationFailed": "Please review your details and try again.",
     "save": "Save area",
     "saving": "Saving…",
     "attribution": "Geocoding © OpenStreetMap contributors",
@@ -147,8 +163,10 @@
     "noConnections": "You have no accepted family connections yet.",
     "findFamilies": "Discover families",
     "pendingPrivacy": "Only discovery-safe family information is visible until you accept.",
-    "acceptedPrivacy": "Shared after mutual acceptance: family bio and guardian display names only.",
+    "acceptedPrivacy": "Shared after mutual acceptance: family bio, guardian display names, and only opted-in child nicknames with broad age ranges.",
     "guardians": "Guardians",
+    "children": "Children shared by this family",
+    "ageRange": "age {range}",
     "connect": "Connect",
     "connecting": "Sending…",
     "requested": "Request sent",
@@ -307,6 +325,7 @@
     "villageTarget": "Village report",
     "dismiss": "Dismiss",
     "deleteMessage": "Remove message",
+    "deleteSupportContent": "Remove support content",
     "back": "All Villages",
     "privateCommunity": "PRIVATE VILLAGE",
     "sections": "Village sections",
@@ -314,6 +333,7 @@
       "overview": "Overview",
       "families": "Families",
       "events": "Events",
+      "support": "Support",
       "chat": "Chat",
       "culture": "Culture"
     },
@@ -322,6 +342,13 @@
     "joinRequests": "Join requests",
     "noRequests": "No pending join requests.",
     "moderation": "Moderation",
+    "verificationRequests": "Community-verification requests",
+    "noVerificationRequests": "No community-verification requests are pending.",
+    "urgentChildSafety": "URGENT CHILD SAFETY",
+    "responseDue": "Operational response target:",
+    "cancelReportedEvent": "Cancel event",
+    "restrictReportedEvent": "Restrict event",
+    "escalateReport": "Escalate to Kinavela safety",
     "noEvents": "No Village events have been organized yet.",
     "chatSafety": "Only active Village families can read and write here. Messages can be reported and moderated.",
     "cultureFocus": "This Village’s current cultural focus is {country}.",
@@ -380,6 +407,21 @@
     "noRsvps": "No family RSVPs yet.",
     "noEvents": "No Village events have been organized yet.",
     "actionError": "This event action could not be completed.",
+    "reportEvent": "Report event",
+    "reportReason": "Reason",
+    "reportDetails": "Details for the safety team",
+    "reportPrivacy": "Do not copy private messages, exact addresses, child contact details or illegal material here.",
+    "submitReport": "Send report",
+    "reportSent": "The event report was sent for review.",
+    "reportReasons": {
+      "unsafe_location": "Unsafe location",
+      "inappropriate_conduct": "Inappropriate conduct",
+      "misleading_event": "Misleading event",
+      "child_safety_concern": "Child-safety concern",
+      "discrimination": "Discrimination",
+      "fraud": "Fraud",
+      "other": "Other"
+    },
     "categories": {
       "playdate": "Playdate",
       "park": "Park",
@@ -396,6 +438,14 @@
   },
   "footer": {
     "status": "Securely available",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "legalLabel": "Legal",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "impressum": "Impressum",
+    "cookies": "Cookies",
+    "childSafety": "Child safety",
+    "community": "Community guidelines",
+    "contact": "Contact"
   }
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { accountStateCopy } from "@/components/legal/account-state-copy";
 import { isLocale } from "@/lib/i18n/config";
 
 export default async function Page({
@@ -10,18 +11,15 @@ export default async function Page({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const copy = accountStateCopy[locale];
   return (
     <main className="app-shell">
       <section className="settings-panel">
-        <p className="eyebrow">ACCOUNT ACCESS</p>
-        <h1>Account temporarily unavailable</h1>
-        <p>
-          Your Kinavela account is suspended while our moderation team reviews
-          it. If you believe this is a mistake, contact support through the
-          address in the privacy notice.
-        </p>
+        <p className="eyebrow">{copy.eyebrow}</p>
+        <h1>{copy.title}</h1>
+        <p>{copy.body}</p>
         <Link className="back-link" href={`/${locale}`}>
-          Return to Kinavela
+          {copy.return}
         </Link>
       </section>
     </main>

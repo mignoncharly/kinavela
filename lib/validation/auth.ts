@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { locales } from "@/lib/i18n/config";
+import { invitationTokenSchema } from "@/lib/validation/invitations";
 
 export const emailSchema = z.string().trim().toLowerCase().email().max(254);
 export const passwordSchema = z
@@ -19,12 +20,14 @@ export const signupSchema = z.object({
   acceptTerms: z.literal(true),
   acceptPrivacy: z.literal(true),
   website: z.string().max(0).optional().default(""),
+  invite_token: invitationTokenSchema.optional(),
 });
 
 export const loginSchema = z.object({
   email: emailSchema,
   password: z.string().min(1).max(128),
   locale: z.enum(locales),
+  invite_token: invitationTokenSchema.optional(),
 });
 
 export const emailActionSchema = z.object({

@@ -3,6 +3,8 @@
 import { Check, Handshake, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { MeetingSafetyNotice } from "@/components/trust/meeting-safety-notice";
+import type { Locale } from "@/lib/i18n/config";
 
 type Copy = {
   connect: string;
@@ -112,27 +114,47 @@ export function ConnectionResponseButtons({
 
 export function RealLifeMeetingButton({
   connectionId,
+  locale,
+  meetingSafetyAcknowledged,
 }: {
   connectionId: string;
+  locale: Locale;
+  meetingSafetyAcknowledged: boolean;
 }) {
   const [busy, setBusy] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [showSafety, setShowSafety] = useState(false);
+  async function record(safetyAcknowledged: boolean) {
+    setBusy(true);
+    const response = await fetch(`/api/connections/${connectionId}/meeting`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        safety_acknowledged: safetyAcknowledged,
+      }),
+    });
+    if (response.ok) {
+      setConfirmed(true);
+      setShowSafety(false);
+    }
+    setBusy(false);
+  }
+  if (showSafety)
+    return (
+      <MeetingSafetyNotice
+        locale={locale}
+        busy={busy}
+        onConfirm={() => record(true)}
+      />
+    );
   return (
     <button
       className="button button-secondary"
       type="button"
       disabled={busy || confirmed}
-      onClick={async () => {
-        setBusy(true);
-        const response = await fetch(
-          `/api/connections/${connectionId}/meeting`,
-          {
-            method: "POST",
-          },
-        );
-        if (response.ok) setConfirmed(true);
-        setBusy(false);
-      }}
+      onClick={() =>
+        meetingSafetyAcknowledged ? void record(false) : setShowSafety(true)
+      }
     >
       {confirmed ? "Meeting recorded" : busy ? "Saving…" : "We met in person"}
     </button>

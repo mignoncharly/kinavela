@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   CalendarDays,
+  HandHelping,
   Languages,
   MapPin,
   MessageCircle,
@@ -21,8 +22,12 @@ import {
   VillageChat,
   VillageMuteButton,
   VillageReportPanel,
+  VerificationQueue,
 } from "@/components/villages/village-actions";
 import { EventBoard } from "@/components/events/event-board";
+import { SupportBoard } from "@/components/villages/support-board";
+import { InvitationLinkCreator } from "@/components/invitations/invitation-sharing";
+import { parseEventMessages } from "@/features/playdates/results";
 import { parseConnectionResults } from "@/features/connections/results";
 import {
   parseEventAttendees,
@@ -35,12 +40,23 @@ import {
   parseVillageReports,
   parseVillageRequests,
 } from "@/features/villages/results";
+import { parseSupportPosts } from "@/features/villages/support-results";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { createClient } from "@/lib/supabase/server";
 import { villageIdSchema } from "@/lib/validation/villages";
+import { supportFilterSchema } from "@/lib/validation/support";
+import { trustStatusSchema } from "@/lib/validation/trust";
+import { villageVerificationRequestSchema } from "@/lib/validation/trust";
 
-const tabs = ["overview", "families", "events", "chat", "culture"] as const;
+const tabs = [
+  "overview",
+  "families",
+  "events",
+  "support",
+  "chat",
+  "culture",
+] as const;
 type Tab = (typeof tabs)[number];
 
 export default async function Page({
@@ -48,7 +64,13 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ locale: string; villageId: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{
+    tab?: string;
+    q?: string;
+    category?: string;
+    content_type?: string;
+    status?: string;
+  }>;
 }) {
   const [{ locale, villageId: rawId }, query] = await Promise.all([
     params,
@@ -60,6 +82,15 @@ export default async function Page({
   const tab: Tab = tabs.includes(query.tab as Tab)
     ? (query.tab as Tab)
     : "overview";
+  const parsedSupportFilters = supportFilterSchema.safeParse({
+    ...(query.q ? { q: query.q } : {}),
+    ...(query.category ? { category: query.category } : {}),
+    ...(query.content_type ? { content_type: query.content_type } : {}),
+    ...(query.status ? { status: query.status } : {}),
+  });
+  const supportFilters = parsedSupportFilters.success
+    ? parsedSupportFilters.data
+    : { status: "open" as const };
   const dictionary = getDictionary(locale);
   const copy = dictionary.villages;
   const eventCopy = dictionary.events;
@@ -88,6 +119,9 @@ export default async function Page({
     reportsResult,
     connectionsResult,
     eventsResult,
+    trustResult,
+    verificationRequestsResult,
+    supportPostsResult,
   ] = await Promise.all([
     supabase.rpc("list_village_members", { p_village_id: village.village_id }),
     tab === "chat"
@@ -115,6 +149,23 @@ export default async function Page({
           p_village_id: village.village_id,
         })
       : Promise.resolve({ data: [], error: null }),
+    supabase.rpc("get_my_trust_status"),
+    village.can_moderate
+      ? supabase.rpc("list_village_verification_requests", {
+          p_village_id: village.village_id,
+        })
+      : Promise.resolve({ data: [], error: null }),
+    tab === "support"
+      ? supabase.rpc("list_village_support_posts", {
+          p_village_id: village.village_id,
+          p_query: supportFilters.q ?? null,
+          p_category: supportFilters.category ?? null,
+          p_content_type: supportFilters.content_type ?? null,
+          p_status: supportFilters.status,
+          p_before: null,
+          p_limit: 30,
+        })
+      : Promise.resolve({ data: [], error: null }),
   ]);
   const members = parseVillageMembers(membersResult.data);
   const messages = parseMessageResults(messagesResult.data);
@@ -122,6 +173,13 @@ export default async function Page({
   const reports = parseVillageReports(reportsResult.data);
   const connections = parseConnectionResults(connectionsResult.data);
   const events = parseEventResults(eventsResult.data);
+  const trustStatus = trustStatusSchema.safeParse(
+    Array.isArray(trustResult.data) ? trustResult.data[0] : trustResult.data,
+  );
+  const verificationRequests = villageVerificationRequestSchema
+    .array()
+    .safeParse(verificationRequestsResult.data);
+  const supportPosts = parseSupportPosts(supportPostsResult.data);
   if (
     !members.success ||
     !messages.success ||
@@ -129,6 +187,9 @@ export default async function Page({
     !reports.success ||
     !connections.success ||
     !events.success ||
+    !verificationRequests.success ||
+    !supportPosts.success ||
+    supportPostsResult.error ||
     eventsResult.error
   )
     notFound();
@@ -145,6 +206,19 @@ export default async function Page({
       }),
   );
   const attendeesByEvent = Object.fromEntries(attendeeEntries);
+  const eventMessageEntries = await Promise.all(
+    events.data.map(async (event) => {
+      const result = await supabase.rpc("list_event_messages", {
+        p_event_id: event.event_id,
+        p_before: null,
+        p_limit: 100,
+      });
+      const parsed = parseEventMessages(result.data);
+      if (result.error || !parsed.success) notFound();
+      return [event.event_id, [...parsed.data].reverse()] as const;
+    }),
+  );
+  const eventMessagesByEvent = Object.fromEntries(eventMessageEntries);
   const href = (nextTab: Tab) =>
     `/${locale}/app/villages/${village.village_id}?tab=${nextTab}`;
   return (
@@ -187,6 +261,7 @@ export default async function Page({
             {item === "overview" && <ShieldCheck />}
             {item === "families" && <Users />}
             {item === "events" && <CalendarDays />}
+            {item === "support" && <HandHelping />}
             {item === "chat" && <MessageCircle />}
             {item === "culture" && <Languages />}
             {copy.tabs[item]}
@@ -235,6 +310,12 @@ export default async function Page({
                   connections={connections.data}
                   copy={copy}
                 />
+                <InvitationLinkCreator
+                  locale={locale}
+                  invitationKind="village"
+                  villageId={village.village_id}
+                  villageName={village.name}
+                />
                 <h3>{copy.joinRequests}</h3>
                 {requests.data.length === 0 ? (
                   <p className="muted-copy">{copy.noRequests}</p>
@@ -253,6 +334,12 @@ export default async function Page({
                     </article>
                   ))
                 )}
+                <h3>{copy.verificationRequests}</h3>
+                <VerificationQueue
+                  requests={verificationRequests.data}
+                  locale={locale}
+                  copy={copy}
+                />
               </section>
             )}
             <div className="member-list">
@@ -277,7 +364,11 @@ export default async function Page({
             {village.can_moderate && (
               <section className="governance-panel">
                 <h3>{copy.moderation}</h3>
-                <ModerationQueue reports={reports.data} copy={copy} />
+                <ModerationQueue
+                  reports={reports.data}
+                  locale={locale}
+                  copy={copy}
+                />
               </section>
             )}
           </>
@@ -287,9 +378,23 @@ export default async function Page({
             villageId={village.village_id}
             events={events.data}
             attendeesByEvent={attendeesByEvent}
+            messagesByEvent={eventMessagesByEvent}
             canCreate={["owner", "organizer"].includes(village.member_role)}
+            canInvite={village.can_moderate}
             locale={locale}
+            meetingSafetyAcknowledged={
+              trustStatus.success &&
+              trustStatus.data.meeting_safety_acknowledged
+            }
             copy={eventCopy}
+          />
+        )}
+        {tab === "support" && (
+          <SupportBoard
+            villageId={village.village_id}
+            posts={supportPosts.data}
+            filters={supportFilters}
+            locale={locale}
           />
         )}
         {tab === "chat" && (

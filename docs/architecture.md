@@ -1,6 +1,6 @@
 # Architecture
 
-Kinavela is a Next.js App Router application running as a dedicated Node.js process on loopback port 3020. Nginx terminates TLS and proxies only the Kinavela hostname to that port. Supabase provides managed PostgreSQL/Auth/Storage. Phases 0–23 cover the foundation, identity, onboarding, location/discovery, deterministic matching, family connections and messaging, private Villages and events, Roots missions and stories, AI jobs, notifications, moderation, billing, SEO, GDPR controls, PWA support, security hardening, and the Germany pilot control plane.
+Kinavela is a Next.js App Router application running as a dedicated Node.js process on loopback port 3020. Nginx terminates TLS and proxies only the Kinavela hostname to that port. Supabase provides managed PostgreSQL/Auth/Storage. Phases 0–23 cover the foundation, identity, onboarding, location/discovery, deterministic matching, family connections and messaging, private Villages and events, Roots missions and stories, AI jobs, notifications, moderation, billing, SEO, GDPR controls, PWA support, security hardening, and Germany-wide geocoded family access.
 
 Public pages use Server Components and static generation. Interactive browser code receives only the Supabase project URL and publishable key. Server-only modules are guarded with `server-only`. Environment validation fails startup when required production configuration is missing.
 
@@ -13,6 +13,25 @@ Phase 5 uses one canonical `family_connections` row per unordered family pair. A
 Phase 6 creates one `family` conversation per accepted connection and records profile/family participants separately. All writes use authenticated RPCs; direct table access is read-only and RLS rechecks the live accepted-connection predicate for every conversation and message row. `messages` is in the `supabase_realtime` publication, and clients subscribe only to inserts filtered by conversation UUID. The event triggers a server-data refresh, so sender display names continue to come from the authorized projection rather than denormalized realtime payloads.
 
 Phase 7 adds location-backed Village discovery without returning Village center coordinates. Family owners create, request, accept invitations, and leave on behalf of a family. One active owner is enforced per Village; only that owner assigns roles or transfers ownership. Organizers and moderators can process requests and remove ordinary members, but cannot promote themselves or alter ownership. Village chat reuses the shared message table and Realtime channel while its RLS path checks live Village membership.
+
+Phase 30 centralizes post-onboarding family mutations in an owner-only database RPC. Children remain family resources, direct profile-table writes are revoked, and location changes continue through the opaque geocoder-place RPC so profile display city and PostGIS geography cannot diverge.
+
+Phase 31 localizes daily-use application copy in German, French and English. Structural parity tests cover application and landing dictionaries. Interest labels resolve through database `name_key` values, while cultural family languages remain independent from the selected interface language.
+
+Phase 35 adds a bounded support board inside each private Village. Posts and replies are accessed only through membership-checking RPCs over forced-RLS, grant-free tables. Full-text search uses PostgreSQL's simple-language vector so German, French, English, and family cultural terms share one deterministic index. Reports extend the existing moderation queue instead of creating a separate safety system, while notifications carry only typed identifiers.
+
+Phase 9 of the new implementation plan versions cultural mission content and
+makes editorial review a database-enforced publication boundary. Versioned
+catalogue RPCs project cultural scope, materials, guardian guidance,
+attribution and Passport reflection prompts only for active, reviewed
+missions. Mission progress and Village assignment authorization remain
+unchanged.
+
+Phase 10 of the new implementation plan completes Roots Passport management.
+Caller-bound RPCs validate optional cultural and community metadata, record
+sharing transitions, and authorize private media paths. The existing privacy
+worker claims Passport export jobs and stores short-lived JSON timeline
+archives in a separate private bucket with a path-free media manifest.
 
 The application is structured around `app/`, `components/`, `features/`, `lib/`, `supabase/`, `tests/`, `deploy/`, and `docs/`. New domains must be implemented one blueprint phase at a time.
 
@@ -31,3 +50,5 @@ Recommendation reads are stable and side-effect free. Starting or dismissing req
 Billing is family-owned. A family owner uses server-validated Stripe-hosted Checkout and the Stripe Customer Portal; authorized guardians inherit the family entitlement but cannot manage billing. Supabase stores the family-to-Customer mapping, synchronized subscriptions and minimized event audit records behind forced RLS. The webhook route is `/api/billing/webhook`; Stripe is the billing source of truth and the database projection is a cache for entitlement checks. Community access is not gated by billing.
 
 The only active Roots Family entitlement is the existing Roots Stories AI workflow. AI creation is checked server-side by database entitlement triggers and remains subject to quotas and cost limits.
+
+Phase 14 archives retired admission-waitlist rows in the private schema for a bounded 180-day rollback window. Active application analytics use product-health and regional-outreach projections with no admission state. The privacy cron removes identifiable legacy rows after the window; de-identified city totals remain subject to periodic retention review.

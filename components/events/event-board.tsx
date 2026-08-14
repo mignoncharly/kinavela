@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Clock,
   MapPin,
+  Flag,
   ShieldCheck,
   Users,
   XCircle,
@@ -19,6 +20,15 @@ import type {
 } from "@/features/events/results";
 import type { Locale } from "@/lib/i18n/config";
 import { eventCategories } from "@/lib/validation/events";
+import { eventReportReasons } from "@/lib/validation/messaging";
+import {
+  InternalEventShare,
+  InvitationLinkCreator,
+} from "@/components/invitations/invitation-sharing";
+import { MeetingSafetyNotice } from "@/components/trust/meeting-safety-notice";
+import { EventCoordination } from "@/components/events/event-coordination";
+import type { EventMessageResult } from "@/features/playdates/results";
+import { eventCoordinationCopy } from "@/features/playdates/copy";
 
 export type EventCopy = (typeof import("@/messages/en.json"))["events"];
 
@@ -28,9 +38,9 @@ function localInputValue(value: string) {
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 }
 
-function formPayload(form: FormData) {
+function formPayload(form: FormData, includeRecurrence: boolean) {
   const capacity = String(form.get("max_families") ?? "").trim();
-  return {
+  const payload = {
     title: String(form.get("title") ?? ""),
     description: String(form.get("description") ?? ""),
     category: String(form.get("category") ?? "other"),
@@ -48,6 +58,15 @@ function formPayload(form: FormData) {
       String(form.get("registration_deadline")),
     ).toISOString(),
   };
+  if (!includeRecurrence) return payload;
+  const recurrence = String(form.get("recurrence_frequency") ?? "");
+  return {
+    ...payload,
+    recurrence_frequency: recurrence || null,
+    recurrence_ends_on: recurrence
+      ? String(form.get("recurrence_ends_on") ?? "")
+      : null,
+  };
 }
 
 async function eventAction(body: object) {
@@ -58,14 +77,84 @@ async function eventAction(body: object) {
   });
 }
 
+function EventReportPanel({
+  eventId,
+  copy,
+}: {
+  eventId: string;
+  copy: EventCopy;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState(false);
+  return (
+    <details className="report-panel event-report-panel">
+      <summary>
+        <Flag size={15} /> {copy.reportEvent}
+      </summary>
+      {sent ? (
+        <p role="status">{copy.reportSent}</p>
+      ) : (
+        <form
+          onSubmit={async (submitEvent) => {
+            submitEvent.preventDefault();
+            setBusy(true);
+            setError(false);
+            const form = new FormData(submitEvent.currentTarget);
+            const response = await fetch("/api/reports", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({
+                target_type: "event",
+                target_id: eventId,
+                reason: String(form.get("reason")),
+                details: String(form.get("details") ?? ""),
+              }),
+            });
+            setBusy(false);
+            if (response.ok) setSent(true);
+            else setError(true);
+          }}
+        >
+          <label>
+            {copy.reportReason}
+            <select name="reason" defaultValue="unsafe_location">
+              {eventReportReasons.map((reason) => (
+                <option value={reason} key={reason}>
+                  {copy.reportReasons[reason]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {copy.reportDetails}
+            <textarea name="details" maxLength={1000} rows={3} />
+            <small>{copy.reportPrivacy}</small>
+          </label>
+          <button className="button button-secondary" disabled={busy}>
+            {busy ? copy.saving : copy.submitReport}
+          </button>
+          {error && (
+            <p className="form-error" role="alert">
+              {copy.actionError}
+            </p>
+          )}
+        </form>
+      )}
+    </details>
+  );
+}
+
 function EventForm({
   villageId,
   event,
   copy,
+  locale,
 }: {
   villageId: string;
   event?: EventResult;
   copy: EventCopy;
+  locale: Locale;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -75,7 +164,10 @@ function EventForm({
     setBusy(true);
     setError(false);
     try {
-      const fields = formPayload(new FormData(submitEvent.currentTarget));
+      const fields = formPayload(
+        new FormData(submitEvent.currentTarget),
+        !event,
+      );
       const response = await fetch("/api/events", {
         method: event ? "PATCH" : "POST",
         headers: { "content-type": "application/json" },
@@ -132,6 +224,29 @@ function EventForm({
               ))}
             </select>
           </label>
+          {!event && (
+            <>
+              <label>
+                {eventCoordinationCopy[locale].recurring}
+                <select name="recurrence_frequency" defaultValue="">
+                  <option value="">{eventCoordinationCopy[locale].none}</option>
+                  <option value="weekly">
+                    {eventCoordinationCopy[locale].weekly}
+                  </option>
+                  <option value="biweekly">
+                    {eventCoordinationCopy[locale].biweekly}
+                  </option>
+                  <option value="monthly">
+                    {eventCoordinationCopy[locale].monthly}
+                  </option>
+                </select>
+              </label>
+              <label>
+                {eventCoordinationCopy[locale].until}
+                <input name="recurrence_ends_on" type="date" />
+              </label>
+            </>
+          )}
           <label>
             {copy.capacity}
             <input
@@ -241,15 +356,48 @@ function EventForm({
   );
 }
 
-function RsvpForm({ event, copy }: { event: EventResult; copy: EventCopy }) {
+function RsvpForm({
+  event,
+  copy,
+  locale,
+  safetyAcknowledged,
+}: {
+  event: EventResult;
+  copy: EventCopy;
+  locale: Locale;
+  safetyAcknowledged: boolean;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
+  const [safetyReady, setSafetyReady] = useState(safetyAcknowledged);
   const registrationOpen =
     event.status === "scheduled" &&
     new Date(event.registration_deadline) >= new Date();
   if (!registrationOpen)
     return <p className="event-closed">{copy.registrationClosed}</p>;
+  if (!safetyReady)
+    return (
+      <MeetingSafetyNotice
+        locale={locale}
+        busy={busy}
+        onConfirm={async () => {
+          setBusy(true);
+          setError(false);
+          const response = await fetch("/api/trust", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              action: "acknowledge_meeting_safety",
+              context: "event_rsvp",
+            }),
+          });
+          setBusy(false);
+          if (response.ok) setSafetyReady(true);
+          else setError(true);
+        }}
+      />
+    );
   return (
     <form
       className="event-rsvp"
@@ -425,15 +573,21 @@ export function EventBoard({
   villageId,
   events,
   attendeesByEvent,
+  messagesByEvent,
   canCreate,
+  canInvite,
   locale,
+  meetingSafetyAcknowledged,
   copy,
 }: {
   villageId: string;
   events: EventResult[];
   attendeesByEvent: Record<string, EventAttendeeResult[]>;
+  messagesByEvent: Record<string, EventMessageResult[]>;
   canCreate: boolean;
+  canInvite: boolean;
   locale: Locale;
+  meetingSafetyAcknowledged: boolean;
   copy: EventCopy;
 }) {
   const router = useRouter();
@@ -448,7 +602,9 @@ export function EventBoard({
         </div>
         {canCreate && <CalendarDays />}
       </header>
-      {canCreate && <EventForm villageId={villageId} copy={copy} />}
+      {canCreate && (
+        <EventForm villageId={villageId} copy={copy} locale={locale} />
+      )}
       {events.length === 0 ? (
         <div className="phase-empty">
           <CalendarDays />
@@ -460,6 +616,7 @@ export function EventBoard({
             <article
               className={`event-card ${event.status}`}
               key={event.event_id}
+              id={`event-${event.event_id}`}
             >
               {event.reminder_unread && (
                 <div className="event-reminder" role="status">
@@ -549,8 +706,42 @@ export function EventBoard({
                   {copy[event.current_rsvp_status]}
                 </span>
               )}
+              {event.recurrence_frequency && (
+                <p className="event-recurrence">
+                  {eventCoordinationCopy[locale].recurring}:{" "}
+                  {eventCoordinationCopy[locale][event.recurrence_frequency]}
+                </p>
+              )}
+              <EventCoordination
+                eventId={event.event_id}
+                messages={messagesByEvent[event.event_id] ?? []}
+                locale={locale}
+              />
+              <InternalEventShare
+                locale={locale}
+                villageId={villageId}
+                eventId={event.event_id}
+                eventTitle={event.title}
+              />
+              {!event.can_manage && (
+                <EventReportPanel eventId={event.event_id} copy={copy} />
+              )}
+              {canInvite && event.status === "scheduled" && (
+                <InvitationLinkCreator
+                  locale={locale}
+                  invitationKind="village"
+                  villageId={villageId}
+                  eventId={event.event_id}
+                  eventTitle={event.title}
+                />
+              )}
               {event.status === "scheduled" && (
-                <RsvpForm event={event} copy={copy} />
+                <RsvpForm
+                  event={event}
+                  copy={copy}
+                  locale={locale}
+                  safetyAcknowledged={meetingSafetyAcknowledged}
+                />
               )}
               {event.can_manage && (
                 <>
@@ -559,6 +750,7 @@ export function EventBoard({
                       villageId={villageId}
                       event={event}
                       copy={copy}
+                      locale={locale}
                     />
                   )}
                   <ManagerActions

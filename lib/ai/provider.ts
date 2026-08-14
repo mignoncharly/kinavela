@@ -183,3 +183,12 @@ export function assertAiProviderReady(): AiProvider {
     throw new AiProviderUnavailableError("No AI provider is configured");
   return getAiProvider();
 }
+
+export function isAiProviderReady() {
+  try {
+    assertAiProviderReady();
+    return true;
+  } catch {
+    return false;
+  }
+}

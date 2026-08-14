@@ -1,5 +1,10 @@
-const CACHE_NAME = "kinavela-shell-v2";
-const SHELL = ["/offline", "/icon.svg"];
+const CACHE_NAME = "kinavela-shell-v3";
+const SHELL = [
+  "/offline?locale=de",
+  "/offline?locale=fr",
+  "/offline?locale=en",
+  "/icon.svg",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -30,8 +35,13 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
   if (event.request.mode === "navigate") {
+    const locale = ["de", "fr", "en"].includes(url.pathname.split("/")[1])
+      ? url.pathname.split("/")[1]
+      : "de";
     event.respondWith(
-      fetch(event.request).catch(() => caches.match("/offline")),
+      fetch(event.request).catch(() =>
+        caches.match("/offline?locale=" + locale),
+      ),
     );
     return;
   }
@@ -65,11 +75,24 @@ self.addEventListener("push", (event) => {
   }
 
   const title = typeof message.title === "string" ? message.title : "Kinavela";
+  const locale =
+    typeof message.locale === "string" &&
+    ["de", "fr", "en"].includes(message.locale)
+      ? message.locale
+      : typeof message.url === "string" &&
+          ["de", "fr", "en"].includes(
+            new URL(message.url, self.location.origin).pathname.split("/")[1],
+          )
+        ? new URL(message.url, self.location.origin).pathname.split("/")[1]
+        : "de";
+  const fallbackBodies = {
+    de: "Du hast ein neues Familien-Update.",
+    fr: "Vous avez une nouvelle mise à jour familiale.",
+    en: "You have a new family update.",
+  };
   const options = {
     body:
-      typeof message.body === "string"
-        ? message.body
-        : "You have a new family update.",
+      typeof message.body === "string" ? message.body : fallbackBodies[locale],
     icon: "/icon.svg",
     badge: "/icon.svg",
     tag: typeof message.tag === "string" ? message.tag : undefined,

@@ -1,6 +1,14 @@
 "use client";
 
-import { Check, Copy, Mic, Square, Volume2 } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Mic,
+  RotateCcw,
+  Save,
+  Square,
+  Volume2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useRef, useState } from "react";
 
@@ -8,6 +16,8 @@ import type { StoriesCopy } from "@/features/stories/copy";
 import type { FamilyStory, StoryRequest } from "@/lib/validation/stories";
 import { storyLanguages } from "@/lib/validation/stories";
 import type { RootsPassport } from "@/lib/validation/roots";
+import { formatDate } from "@/lib/i18n/format";
+import type { Locale } from "@/lib/i18n/config";
 
 async function action(body: object) {
   return fetch("/api/stories/actions", {
@@ -21,10 +31,12 @@ export function StoryRequestForm({
   passports,
   copy,
   locale,
+  adaptationEnabled,
 }: {
   passports: RootsPassport[];
   copy: StoriesCopy;
   locale: string;
+  adaptationEnabled: boolean;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -93,17 +105,19 @@ export function StoryRequestForm({
             <option value="">{copy.noTranslation}</option>
             {storyLanguages.map((language) => (
               <option key={language} value={language}>
-                {language.toUpperCase()}
+                {copy.languageNames[language]}
               </option>
             ))}
           </select>
         </label>
-        <label>
-          <span>
-            <input name="adaptation" type="checkbox" defaultChecked />{" "}
-            {copy.adaptation}
-          </span>
-        </label>
+        {adaptationEnabled && (
+          <label>
+            <span>
+              <input name="adaptation" type="checkbox" defaultChecked />{" "}
+              {copy.adaptation}
+            </span>
+          </label>
+        )}
         {error && (
           <p className="form-error" role="alert">
             {copy.actionError}
@@ -129,13 +143,14 @@ export function StoryRequestForm({
     </div>
   );
 }
-
 export function StoryRequestList({
   requests,
   copy,
+  locale,
 }: {
   requests: StoryRequest[];
   copy: StoriesCopy;
+  locale: Locale;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
@@ -164,8 +179,7 @@ export function StoryRequestList({
                   : copy[request.status]}
               </span>
               <span>
-                {copy.expires}:{" "}
-                {new Date(request.expires_at).toLocaleDateString()}
+                {copy.expires}: {formatDate(locale, request.expires_at)}
               </span>
             </div>
             {request.status === "active" && (
@@ -194,6 +208,7 @@ export function StoryReviewList({
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   async function review(storyId: string, approval: "approved" | "rejected") {
     setBusy(storyId);
     const response = await action({
@@ -215,6 +230,31 @@ export function StoryReviewList({
     setBusy(null);
     if (response.ok) router.refresh();
   }
+  async function save(event: FormEvent<HTMLFormElement>, storyId: string) {
+    event.preventDefault();
+    setBusy(storyId);
+    setError(null);
+    const form = new FormData(event.currentTarget);
+    const response = await action({
+      action: "edit",
+      story_id: storyId,
+      transcript_original: String(form.get("transcript_original")),
+      transcript_translation:
+        String(form.get("transcript_translation")) || null,
+      adapted_story: String(form.get("adapted_story")) || null,
+    });
+    setBusy(null);
+    if (!response.ok) setError(storyId);
+    else router.refresh();
+  }
+  async function retry(storyId: string) {
+    setBusy(storyId);
+    setError(null);
+    const response = await action({ action: "retry", story_id: storyId });
+    setBusy(null);
+    if (!response.ok) setError(storyId);
+    else router.refresh();
+  }
   return (
     <div>
       {stories.length === 0 ? (
@@ -227,7 +267,11 @@ export function StoryReviewList({
             </h3>
             <div className="story-status">
               <span>
-                {story.ai_status === "ready" ? copy.ready : copy.processing}
+                {story.ai_status === "ready"
+                  ? copy.ready
+                  : story.ai_status === "failed"
+                    ? copy.failed
+                    : copy.statuses[story.ai_status]}
               </span>
               <span>
                 {story.approval_status === "approved"
@@ -245,25 +289,72 @@ export function StoryReviewList({
                 <Volume2 size={15} /> {copy.audio}
               </a>
             )}
-            {story.transcript_original && (
-              <details>
-                <summary>{copy.transcript}</summary>
-                <p className="story-text">{story.transcript_original}</p>
-              </details>
+            {story.ai_status === "failed" && (
+              <p className="form-error" role="status">
+                {copy.failedBody}
+              </p>
             )}
-            {story.transcript_translation && (
-              <details>
-                <summary>{copy.translationText}</summary>
-                <p className="story-text">{story.transcript_translation}</p>
-              </details>
-            )}
-            {story.adapted_story && (
-              <details open>
-                <summary>{copy.adaptationText}</summary>
-                <p className="story-text">{story.adapted_story}</p>
-              </details>
+            {(story.ai_status === "ready" || story.ai_status === "failed") &&
+              story.approval_status === "pending_review" &&
+              story.transcript_original && (
+                <form
+                  className="story-form story-editor"
+                  onSubmit={(event) => save(event, story.story_id)}
+                >
+                  <label>
+                    {copy.transcript}
+                    <textarea
+                      defaultValue={story.transcript_original}
+                      maxLength={20000}
+                      name="transcript_original"
+                      required
+                    />
+                  </label>
+                  {story.requested_translation_language && (
+                    <label>
+                      {copy.translationText} ·{" "}
+                      {copy.languageNames[story.requested_translation_language]}
+                      <textarea
+                        defaultValue={story.transcript_translation ?? ""}
+                        maxLength={20000}
+                        name="transcript_translation"
+                      />
+                    </label>
+                  )}
+                  {story.request_adaptation && (
+                    <label>
+                      {copy.adaptationText}
+                      <textarea
+                        defaultValue={story.adapted_story ?? ""}
+                        maxLength={20000}
+                        name="adapted_story"
+                      />
+                    </label>
+                  )}
+                  <button
+                    className="button button-secondary"
+                    disabled={busy !== null}
+                  >
+                    <Save size={15} /> {copy.saveEdits}
+                  </button>
+                </form>
+              )}
+            {error === story.story_id && (
+              <p className="form-error" role="alert">
+                {copy.actionError}
+              </p>
             )}
             <div className="inline-actions">
+              {story.ai_status === "failed" && story.retry_available && (
+                <button
+                  className="button button-secondary"
+                  disabled={busy !== null}
+                  type="button"
+                  onClick={() => retry(story.story_id)}
+                >
+                  <RotateCcw size={15} /> {copy.retry}
+                </button>
+              )}
               {story.ai_status === "ready" &&
                 story.approval_status === "pending_review" && (
                   <>
@@ -396,7 +487,7 @@ export function AnonymousStoryRecorder({
           {copy.titleLabel}
           <input
             name="title"
-            defaultValue="A family story"
+            defaultValue={copy.defaultStoryTitle}
             required
             minLength={2}
             maxLength={160}
@@ -405,12 +496,14 @@ export function AnonymousStoryRecorder({
         <label>
           {copy.originalLanguage}
           <select name="language" defaultValue="en">
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
+            <option value="en">{copy.languageNames.en}</option>
+            <option value="fr">{copy.languageNames.fr}</option>
+            <option value="de">{copy.languageNames.de}</option>
           </select>
         </label>
-        {recording && <span className="recording-indicator">Recording</span>}
+        {recording && (
+          <span className="recording-indicator">{copy.recording}</span>
+        )}
         {blob && <audio controls src={URL.createObjectURL(blob)} />}
         {error && (
           <p className="form-error" role="alert">

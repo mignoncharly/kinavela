@@ -24,6 +24,6 @@ Kinavela is a shared space for family heritage and trusted community. Participat
 
 ## Reports and moderation
 
-Use the in-product report flow for family, message, Village and event concerns. Safety and child-protection reports may also be sent to info@gestionatech.de. Moderators may limit visibility, remove content, preserve a minimal safety record and suspend accounts. No guaranteed moderation SLA is promised.
+Use the in-product report flow for family, message, Village, event and Village-support concerns. Do not put child names, schools, exact addresses, contact details or immigration documents in support posts or replies. Safety and child-protection reports may also be sent to contact@kinavela.com. Moderators may limit visibility, remove content, preserve a minimal safety record and suspend accounts. No guaranteed moderation SLA is promised.
 
-Appeals may be sent to info@gestionatech.de with the relevant account and action. Do not republish removed content while an appeal is pending.
+Appeals may be sent to contact@kinavela.com with the relevant account and action. Do not republish removed content while an appeal is pending.

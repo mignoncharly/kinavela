@@ -32,6 +32,8 @@ export async function POST(request: Request) {
       p_address_visibility: input.address_visibility,
       p_max_families: input.max_families,
       p_registration_deadline: input.registration_deadline,
+      p_recurrence_frequency: input.recurrence_frequency,
+      p_recurrence_ends_on: input.recurrence_ends_on,
     });
     if (error) throw error;
     return NextResponse.json({ ok: true, eventId: data });

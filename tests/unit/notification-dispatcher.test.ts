@@ -64,12 +64,14 @@ describe("notification dispatcher Web Push integration", () => {
       failed: 0,
       suppressed: 0,
     });
+    expect(rpc).toHaveBeenCalledWith("dispatch_compatible_family_alerts");
     expect(sendPushToProfile).toHaveBeenCalledWith(
       "profile-id",
       expect.objectContaining({
         title: "Kinavela",
         body: "Vous avez reçu un nouveau message privé.",
-        url: "/fr/app/notifications",
+        url: "/fr/app/messages",
+        tag: "kinavela:message_received:delivery-id",
       }),
       { admin },
     );

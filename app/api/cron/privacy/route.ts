@@ -20,7 +20,20 @@ export async function POST(request: Request) {
   if (!authorized(request))
     return NextResponse.json({ ok: false }, { status: 401 });
   const admin = createAdminClient();
-  const summary = { exports: 0, deletions: 0, retention: false };
+  const summary = {
+    exports: 0,
+    rootsExports: 0,
+    deletions: 0,
+    retention: false,
+    legacyCleanup: false,
+  };
+  const { data: expiredRootsExports } = await admin.rpc(
+    "claim_expired_roots_export_paths",
+  );
+  for (const item of expiredRootsExports ?? []) {
+    if (item?.path)
+      await admin.storage.from("roots-exports").remove([item.path]);
+  }
   const { data: expiredStoryMedia } = await admin.rpc(
     "claim_expired_story_media",
   );
@@ -67,6 +80,40 @@ export async function POST(request: Request) {
         p_error_code: "export_payload_failed",
       });
   }
+  const { data: rootsClaim } = await admin.rpc("claim_roots_passport_export");
+  const rootsRow = Array.isArray(rootsClaim) ? rootsClaim[0] : rootsClaim;
+  if (rootsRow?.export_id && rootsRow.passport_id) {
+    const { data: payload, error: payloadError } = await admin.rpc(
+      "get_roots_passport_export_payload",
+      { p_export_id: rootsRow.export_id },
+    );
+    const exportPath = `${rootsRow.passport_id}/${rootsRow.export_id}.json`;
+    if (!payloadError) {
+      const upload = await admin.storage
+        .from("roots-exports")
+        .upload(exportPath, JSON.stringify(payload, null, 2), {
+          contentType: "application/json",
+          upsert: true,
+        });
+      if (!upload.error) {
+        const completed = await admin.rpc("complete_roots_passport_export", {
+          p_export_id: rootsRow.export_id,
+          p_file_path: exportPath,
+        });
+        if (!completed.error) summary.rootsExports = 1;
+      } else {
+        await admin.rpc("fail_roots_passport_export", {
+          p_export_id: rootsRow.export_id,
+          p_error_code: "export_upload_failed",
+        });
+      }
+    } else {
+      await admin.rpc("fail_roots_passport_export", {
+        p_export_id: rootsRow.export_id,
+        p_error_code: "export_payload_failed",
+      });
+    }
+  }
   const { data: deletionClaim } = await admin.rpc("claim_account_deletion");
   const deletionRow = Array.isArray(deletionClaim)
     ? deletionClaim[0]
@@ -92,8 +139,10 @@ export async function POST(request: Request) {
   }
   const { error: retentionError } = await admin.rpc("run_gdpr_retention");
   summary.retention = !retentionError;
-  return NextResponse.json(
-    { ok: summary.retention, ...summary },
-    { status: summary.retention ? 200 : 503 },
+  const { error: legacyCleanupError } = await admin.rpc(
+    "purge_legacy_pilot_data",
   );
+  summary.legacyCleanup = !legacyCleanupError;
+  const ok = summary.retention && summary.legacyCleanup;
+  return NextResponse.json({ ok, ...summary }, { status: ok ? 200 : 503 });
 }

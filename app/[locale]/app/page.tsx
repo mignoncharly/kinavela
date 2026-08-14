@@ -12,15 +12,20 @@ import { AppHeader } from "@/components/app/app-header";
 import { notFound, redirect } from "next/navigation";
 
 import { isLocale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
+import { formatRegion } from "@/lib/i18n/format";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ welcome?: string }>;
 }) {
-  const { locale } = await params;
+  const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
+  const copy = getAppDictionary(locale).dashboard;
   const supabase = await createClient();
   const {
     data: { user },
@@ -63,56 +68,105 @@ export default async function Page({
         }
       />
       <section className="app-welcome">
-        <p className="eyebrow">YOUR FAMILY HOME</p>
-        <h1>Welcome, {profile.display_name}</h1>
-        <p>Your Kinavela space is active and private.</p>
+        <p className="eyebrow">{copy.eyebrow}</p>
+        <h1>{copy.welcome.replace("{name}", profile.display_name)}</h1>
+        <p>{copy.active}</p>
       </section>
+      {query.welcome === "1" && (
+        <section
+          className="welcome-next-actions"
+          aria-labelledby="welcome-next-title"
+        >
+          <p className="eyebrow">{copy.nextEyebrow}</p>
+          <h2 id="welcome-next-title">{copy.nextTitle}</h2>
+          <p>{copy.nextBody}</p>
+          <div>
+            <Link
+              className="button button-primary"
+              href={`/${locale}/app/discover`}
+            >
+              {copy.findFamilies}
+            </Link>
+            <Link
+              className="button button-secondary"
+              href={`/${locale}/app/villages`}
+            >
+              {copy.joinVillage}
+            </Link>
+            <Link
+              className="button button-secondary"
+              href={`/${locale}/app/villages#create-village`}
+            >
+              {copy.createVillage}
+            </Link>
+            <Link
+              className="button button-secondary"
+              href={`/${locale}/app/settings#family-referral`}
+            >
+              {copy.inviteFamily}
+            </Link>
+          </div>
+        </section>
+      )}
       <section className="dashboard-grid">
         <article>
           <Sprout />
-          <small>Family</small>
-          <h2>{family?.name ?? "Your family"}</h2>
-          <p>{family?.bio || "Your family profile is ready to grow."}</p>
+          <small>{copy.family}</small>
+          <h2>{family?.name ?? copy.yourFamily}</h2>
+          <p>{family?.bio || copy.familyReady}</p>
         </article>
         <Link className="dashboard-card" href={`/${locale}/app/discover`}>
           <MapPin />
-          <small>Discovery</small>
+          <small>{copy.discovery}</small>
           <h2>
-            {family?.city}, {family?.country_of_residence}
+            {family?.city},{" "}
+            {family ? formatRegion(locale, family.country_of_residence) : ""}
           </h2>
           <p>
             {family?.visibility === "private"
-              ? "Private"
-              : `Discoverable within ${family?.discovery_radius_km} km`}
-            —never an exact address.
+              ? copy.private
+              : copy.discoverable.replace(
+                  "{radius}",
+                  String(family?.discovery_radius_km),
+                )}
+            {copy.approximate}
           </p>
         </Link>
         <Link className="dashboard-card" href={`/${locale}/app/connections`}>
           <Users />
-          <small>Connections</small>
-          <h2>Build mutual trust</h2>
-          <p>Private details open only after both families agree.</p>
+          <small>{copy.connections}</small>
+          <h2>{copy.trust}</h2>
+          <p>{copy.trustBody}</p>
         </Link>
         <Link className="dashboard-card" href={`/${locale}/app/messages`}>
           <MessageCircle />
-          <small>Messages</small>
+          <small>{copy.messages}</small>
           <h2>
-            {typeof unreadMessageCount === "number" ? unreadMessageCount : 0}{" "}
-            unread
+            {copy.unread.replace(
+              "{count}",
+              String(
+                typeof unreadMessageCount === "number" ? unreadMessageCount : 0,
+              ),
+            )}
           </h2>
-          <p>Private conversations with mutually connected families.</p>
+          <p>{copy.messagesBody}</p>
         </Link>
         <Link className="dashboard-card" href={`/${locale}/app/villages`}>
           <Trees />
-          <small>Villages</small>
-          <h2>{Array.isArray(villages) ? villages.length : 0} joined</h2>
-          <p>Build a private local community with trusted families.</p>
+          <small>{copy.villages}</small>
+          <h2>
+            {copy.joined.replace(
+              "{count}",
+              String(Array.isArray(villages) ? villages.length : 0),
+            )}
+          </h2>
+          <p>{copy.villagesBody}</p>
         </Link>
         <article>
           <ShieldCheck />
-          <small>Children</small>
-          <h2>{childCount ?? 0} protected profiles</h2>
-          <p>Visible only inside your family by default.</p>
+          <small>{copy.children}</small>
+          <h2>{copy.protected.replace("{count}", String(childCount ?? 0))}</h2>
+          <p>{copy.childrenBody}</p>
         </article>
       </section>
     </main>

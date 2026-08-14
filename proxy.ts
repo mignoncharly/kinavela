@@ -4,6 +4,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import { publicEnv } from "@/lib/env.public";
 
 export async function proxy(request: NextRequest) {
+  const candidateOrigin = process.env.KINAVELA_RELEASE_CANDIDATE_ORIGIN;
+  const parsedCandidateOrigin = candidateOrigin
+    ? new URL(candidateOrigin)
+    : null;
+  const redirectOrigin =
+    parsedCandidateOrigin?.protocol === "http:" &&
+    parsedCandidateOrigin.hostname === "127.0.0.1"
+      ? parsedCandidateOrigin.origin
+      : publicEnv.NEXT_PUBLIC_APP_URL;
   const nonce = crypto.randomUUID().replaceAll("-", "");
   const q = String.fromCharCode(39);
   const supabaseOrigin = new URL(publicEnv.NEXT_PUBLIC_SUPABASE_URL).origin;
@@ -44,6 +53,17 @@ export async function proxy(request: NextRequest) {
     "frame-ancestors " + q + "none" + q,
   ].join("; ");
   const requestHeaders = new Headers(request.headers);
+  const pathLocale = request.nextUrl.pathname.split("/")[1];
+  const requestedLocale =
+    request.nextUrl.pathname === "/offline"
+      ? request.nextUrl.searchParams.get("locale")
+      : pathLocale;
+  requestHeaders.set(
+    "x-kinavela-locale",
+    ["de", "fr", "en"].includes(requestedLocale ?? "")
+      ? (requestedLocale ?? "de")
+      : "de",
+  );
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", csp);
   let response = NextResponse.next({ request: { headers: requestHeaders } });
@@ -79,7 +99,7 @@ export async function proxy(request: NextRequest) {
     const locale = request.nextUrl.pathname.split("/")[1] || "de";
     // Base the redirect on the public app URL: behind the reverse proxy
     // request.nextUrl resolves to the internal host (localhost:3020).
-    const url = new URL(`/${locale}/auth/login`, publicEnv.NEXT_PUBLIC_APP_URL);
+    const url = new URL(`/${locale}/auth/login`, redirectOrigin);
     url.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
@@ -100,7 +120,7 @@ export async function proxy(request: NextRequest) {
       }
       const locale = request.nextUrl.pathname.split("/")[1] || "de";
       const blocked = NextResponse.redirect(
-        new URL(`/${locale}/suspended`, publicEnv.NEXT_PUBLIC_APP_URL),
+        new URL(`/${locale}/suspended`, redirectOrigin),
       );
       blocked.headers.set("Content-Security-Policy", csp);
       return blocked;

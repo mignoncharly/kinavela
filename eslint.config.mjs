@@ -7,6 +7,9 @@ export default defineConfig([
   ...nextTypeScript,
   globalIgnores([
     ".next/**",
+    // next.config.ts builds production into .next-production; without this,
+    // `npm run lint` fails on generated output after any production build.
+    ".next-production/**",
     "coverage/**",
     "playwright-report/**",
     "test-results/**",

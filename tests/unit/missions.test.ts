@@ -26,6 +26,18 @@ const mission = {
   min_age: 3,
   max_age: 18,
   estimated_minutes: 30,
+  cultural_context:
+    "Cameroon is multilingual, so every greeting keeps its specific language and family context.",
+  materials: ["Paper", "A trusted speaker"],
+  guardian_guidance:
+    "Ask before recording and let every child participate in a comfortable way.",
+  respectful_attribution:
+    "Credit the person, language and community that taught each family greeting.",
+  passport_reflection_prompt:
+    "Which greeting would your family like to remember and why?",
+  context_scope: "country",
+  content_version: 2,
+  content_locale: "en",
   steps: [
     {
       step_id: stepId,
@@ -78,6 +90,21 @@ describe("Cultural mission contracts", () => {
         step_id: stepId,
         extra: true,
       }).success,
+    ).toBe(false);
+  });
+
+  it("requires the complete reviewed-content projection", () => {
+    expect(parseCulturalMissions([mission]).success).toBe(true);
+    expect(
+      parseCulturalMissions([{ ...mission, respectful_attribution: undefined }])
+        .success,
+    ).toBe(false);
+    expect(
+      parseCulturalMissions([{ ...mission, context_scope: "universal" }])
+        .success,
+    ).toBe(false);
+    expect(
+      parseCulturalMissions([{ ...mission, content_locale: "es" }]).success,
     ).toBe(false);
   });
 });

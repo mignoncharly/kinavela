@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   getPublicCommunityPage,
+  localizedCommunityCity,
   publicCommunityPages,
 } from "@/features/seo/public-pages";
 import { publicCommunityAggregateSchema } from "@/lib/validation/seo";
@@ -10,8 +11,11 @@ describe("Public SEO aggregates", () => {
   it("keeps the acquisition directory to the approved page set", () => {
     expect(publicCommunityPages).toHaveLength(5);
     expect(
-      getPublicCommunityPage("cameroonian-families-in-munich")?.cityLabel,
-    ).toBe("Munich");
+      localizedCommunityCity(
+        getPublicCommunityPage("cameroonian-families-in-munich")!,
+        "de",
+      ),
+    ).toBe("München");
     expect(getPublicCommunityPage("family-secret-profile")).toBeUndefined();
   });
 

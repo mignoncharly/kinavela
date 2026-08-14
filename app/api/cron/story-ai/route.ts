@@ -70,22 +70,33 @@ export async function POST(request: Request) {
   if (!authorized(request))
     return NextResponse.json({ ok: false }, { status: 401 });
 
+  const admin = createAdminClient();
+  await admin.rpc("record_story_worker_run", { p_state: "started" });
   let provider;
   try {
     provider = assertAiProviderReady();
   } catch (error) {
+    await admin.rpc("record_story_worker_run", {
+      p_state: "provider_unavailable",
+      p_error_code: aiErrorCode(error),
+    });
     return NextResponse.json(
       { ok: false, errorCode: aiErrorCode(error) },
       { status: 503 },
     );
   }
 
-  const admin = createAdminClient();
   let processed = 0;
   let failed = 0;
   for (let index = 0; index < MAX_JOBS_PER_RUN; index += 1) {
     const { data, error } = await admin.rpc("claim_story_ai_job");
-    if (error) return NextResponse.json({ ok: false }, { status: 503 });
+    if (error) {
+      await admin.rpc("record_story_worker_run", {
+        p_state: "failed",
+        p_error_code: "story_job_claim_failed",
+      });
+      return NextResponse.json({ ok: false }, { status: 503 });
+    }
     const job = Array.isArray(data) ? data[0] : data;
     if (!job?.job_id) break;
     processed += 1;
@@ -163,5 +174,10 @@ export async function POST(request: Request) {
       await failStoryJob(admin, job.job_id, error);
     }
   }
+  await admin.rpc("record_story_worker_run", {
+    p_state: "completed",
+    p_processed: processed,
+    p_failed: failed,
+  });
   return NextResponse.json({ ok: true, processed, failed });
 }

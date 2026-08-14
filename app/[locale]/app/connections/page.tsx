@@ -12,12 +12,19 @@ import {
 import { BlockFamilyButton } from "@/components/discovery/discovery-actions";
 import { MessageFamilyButton } from "@/components/messaging/messaging-actions";
 import {
+  PlaydateBoard,
+  PlaydateProposal,
+} from "@/components/playdates/playdate-board";
+import {
+  parseConnectionChildSummaries,
   parseConnectionResults,
   parseNotificationResults,
 } from "@/features/connections/results";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { createClient } from "@/lib/supabase/server";
+import { trustStatusSchema } from "@/lib/validation/trust";
+import { parsePlaydates } from "@/features/playdates/results";
 
 export default async function Page({
   params,
@@ -40,23 +47,41 @@ export default async function Page({
     .single();
   if (!profile?.onboarding_completed) redirect(`/${locale}/onboarding`);
 
-  const [connectionsResult, notificationsResult] = await Promise.all([
+  const [
+    connectionsResult,
+    notificationsResult,
+    childrenResult,
+    trustResult,
+    playdatesResult,
+  ] = await Promise.all([
     supabase.rpc("list_family_connections"),
     supabase.rpc("list_notifications", { p_limit: 30 }),
+    supabase.rpc("list_connection_child_summaries"),
+    supabase.rpc("get_my_trust_status"),
+    supabase.rpc("list_my_playdates"),
   ]);
   const parsedConnections = parseConnectionResults(connectionsResult.data);
   const parsedNotifications = parseNotificationResults(
     notificationsResult.data,
   );
+  const parsedChildren = parseConnectionChildSummaries(childrenResult.data);
   const connections = parsedConnections.success ? parsedConnections.data : [];
   const notifications = parsedNotifications.success
     ? parsedNotifications.data
     : [];
+  const visibleChildren = parsedChildren.success ? parsedChildren.data : [];
+  const trustStatus = trustStatusSchema.safeParse(
+    Array.isArray(trustResult.data) ? trustResult.data[0] : trustResult.data,
+  );
+  const parsedPlaydates = parsePlaydates(playdatesResult.data);
   const unavailable =
     Boolean(connectionsResult.error) ||
     Boolean(notificationsResult.error) ||
+    Boolean(childrenResult.error) ||
     !parsedConnections.success ||
-    !parsedNotifications.success;
+    !parsedNotifications.success ||
+    !parsedChildren.success ||
+    !parsedPlaydates.success;
   const incoming = connections.filter(
     (item) => item.status === "requested" && item.direction === "incoming",
   );
@@ -176,13 +201,45 @@ export default async function Page({
                     {item.guardian_names.join(", ")}
                   </p>
                 )}
+                {visibleChildren.some(
+                  (child) => child.connection_id === item.connection_id,
+                ) && (
+                  <div className="connection-children">
+                    <strong>{copy.children}</strong>
+                    <ul>
+                      {visibleChildren
+                        .filter(
+                          (child) => child.connection_id === item.connection_id,
+                        )
+                        .map((child, childIndex) => (
+                          <li
+                            key={`${child.connection_id}-${child.child_nickname}-${childIndex}`}
+                          >
+                            {child.child_nickname} ·{" "}
+                            {copy.ageRange.replace("{range}", child.age_range)}
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
                 <p className="privacy-note">{copy.acceptedPrivacy}</p>
                 <MessageFamilyButton
                   familyId={item.other_family_id}
                   locale={locale}
                   copy={messageCopy}
                 />
-                <RealLifeMeetingButton connectionId={item.connection_id} />
+                <RealLifeMeetingButton
+                  connectionId={item.connection_id}
+                  locale={locale}
+                  meetingSafetyAcknowledged={
+                    trustStatus.success &&
+                    trustStatus.data.meeting_safety_acknowledged
+                  }
+                />
+                <PlaydateProposal
+                  connectionId={item.connection_id}
+                  locale={locale}
+                />
                 <BlockFamilyButton
                   familyId={item.other_family_id}
                   copy={copy}
@@ -192,6 +249,11 @@ export default async function Page({
           </div>
         )}
       </section>
+
+      <PlaydateBoard
+        playdates={parsedPlaydates.success ? parsedPlaydates.data : []}
+        locale={locale}
+      />
 
       {outgoing.length > 0 && (
         <section className="connection-section">

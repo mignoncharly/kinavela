@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { assertAiProviderReady } from "@/lib/ai/provider";
 
 import { assertSameOrigin } from "@/lib/security/request";
 import { createClient } from "@/lib/supabase/server";
@@ -14,6 +15,7 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ ok: false }, { status: 401 });
     if (input.action === "create_request") {
+      assertAiProviderReady();
       const { data, error } = await supabase.rpc("create_story_request", {
         p_child_id: input.child_id,
         p_question: input.question,
@@ -40,6 +42,23 @@ export async function POST(request: Request) {
       });
       if (error) throw error;
       return NextResponse.json({ ok: true, reviewed: data });
+    }
+    if (input.action === "edit") {
+      const { data, error } = await supabase.rpc("update_family_story_text", {
+        p_story_id: input.story_id,
+        p_transcript_original: input.transcript_original,
+        p_transcript_translation: input.transcript_translation,
+        p_adapted_story: input.adapted_story,
+      });
+      if (error) throw error;
+      return NextResponse.json({ ok: true, updated: data });
+    }
+    if (input.action === "retry") {
+      const { data, error } = await supabase.rpc("retry_family_story", {
+        p_story_id: input.story_id,
+      });
+      if (error) throw error;
+      return NextResponse.json({ ok: true, retried: data });
     }
     const { data, error } = await supabase.rpc(
       "create_roots_entry_from_story",

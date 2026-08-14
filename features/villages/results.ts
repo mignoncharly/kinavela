@@ -81,13 +81,27 @@ export const villageRequestSchema = z
 export const villageReportResultSchema = z
   .object({
     report_id: z.string().uuid(),
-    target_type: z.enum(["message", "village"]),
+    target_type: z.enum([
+      "message",
+      "village",
+      "event",
+      "support_post",
+      "support_reply",
+    ]),
     target_family_id: z.string().uuid().nullable(),
     target_family_name: z.string().min(2).max(100).nullable(),
     target_message_id: z.string().uuid().nullable(),
+    target_event_id: z.string().uuid().nullable(),
+    target_event_title: z.string().min(3).max(120).nullable(),
+    target_support_post_id: z.string().uuid().nullable(),
+    target_support_post_title: z.string().min(5).max(120).nullable(),
+    target_support_reply_id: z.string().uuid().nullable(),
     reason: z.string(),
     details: z.string().nullable(),
     status: z.enum(["open", "reviewing"]),
+    severity: z.enum(["low", "medium", "high", "critical"]),
+    urgent_child_safety: z.boolean(),
+    response_due_at: z.string().datetime({ offset: true }),
     created_at: z.string().datetime({ offset: true }),
   })
   .strict();

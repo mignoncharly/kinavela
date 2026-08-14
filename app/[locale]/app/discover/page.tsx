@@ -1,4 +1,4 @@
-import { Baby, Languages, MapPin, ShieldCheck, Sparkles } from "lucide-react";
+import { Baby, Languages, MapPin, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 import { AppHeader } from "@/components/app/app-header";
@@ -11,14 +11,23 @@ import {
 } from "@/components/discovery/discovery-actions";
 import { ConnectionRequestButton } from "@/components/connections/connection-actions";
 import { ProductEventTracker } from "@/components/metrics/product-event-tracker";
+import { DiscoveryEmptyState } from "@/components/discovery/discovery-empty-state";
+import { DiscoveryAlertStatus } from "@/components/discovery/discovery-alert-status";
 import { parseConnectionResults } from "@/features/connections/results";
+import {
+  parseDiscoveryAlert,
+  type DiscoveryAlert,
+} from "@/features/discovery-activation/results";
 import {
   parseMatchResults,
   type MatchReason,
   type MatchResult,
 } from "@/features/matching/results";
 import { isLocale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { parseVillageClusterRecommendations } from "@/features/village-discovery/results";
+import { parseDiscoverVillages } from "@/features/villages/results";
 import { createClient } from "@/lib/supabase/server";
 import {
   blockedFamilySchema,
@@ -41,6 +50,7 @@ export default async function Page({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const copy = getDictionary(locale).discovery;
+  const referenceCopy = getAppDictionary(locale).reference;
   const supabase = await createClient();
   const {
     data: { user },
@@ -63,17 +73,17 @@ export default async function Page({
     supabase
       .from("family_members")
       .select(
-        "family_id,families(city,country_of_residence,discovery_radius_km,location)",
+        "family_id,role,families(city,country_of_residence,discovery_radius_km,location)",
       )
       .eq("profile_id", profile.id)
       .eq("status", "active")
       .single(),
-    supabase.from("countries").select("iso2,name,emoji").order("name"),
-    supabase.from("cultures").select("id,name").order("name"),
-    supabase.from("languages").select("id,name").order("name"),
+    supabase.rpc("list_localized_countries", { p_locale: locale }),
+    supabase.rpc("list_localized_cultures", { p_locale: locale }),
+    supabase.rpc("list_localized_languages", { p_locale: locale }),
     supabase
       .from("interests")
-      .select("id,slug")
+      .select("id,name_key")
       .eq("active", true)
       .order("sort_order"),
   ]);
@@ -97,6 +107,14 @@ export default async function Page({
     period: availability?.[1],
   });
   const filters = parsedFilters.success ? parsedFilters.data : {};
+  const maximumRadius = family.discovery_radius_km;
+  const currentRadius = Math.min(
+    filters.radius ?? maximumRadius,
+    maximumRadius,
+  );
+  const hasAdditionalFilters = Object.entries(raw).some(
+    ([key, value]) => key !== "radius" && Boolean(scalar(value)),
+  );
   let families: MatchResult[] = [];
   let discoveryError = false;
   let blockedFamilies: ReturnType<typeof blockedFamilySchema.parse>[] = [];
@@ -140,6 +158,88 @@ export default async function Page({
     }
   }
 
+  let broaderFamilyCount = 0;
+  let villageSuggestions: {
+    village_id: string;
+    name: string;
+    city: string;
+    member_count: number;
+  }[] = [];
+  let clusterSuggestions: {
+    country_id: string;
+    country_name: string;
+    family_count: number;
+  }[] = [];
+  let discoveryAlert: DiscoveryAlert | null = null;
+
+  if (family.location) {
+    const alertResult = await supabase.rpc("get_my_discovery_alert");
+    const parsedAlert = parseDiscoveryAlert(alertResult.data);
+    if (!alertResult.error && parsedAlert.success)
+      discoveryAlert = parsedAlert.data[0] ?? null;
+  }
+
+  if (family.location && !discoveryError && families.length === 0) {
+    const [villagesResult, clustersResult, broaderResult] = await Promise.all([
+      supabase.rpc("discover_villages"),
+      supabase.rpc("list_village_cluster_recommendations"),
+      currentRadius < maximumRadius || hasAdditionalFilters
+        ? supabase.rpc("match_families", {
+            p_radius_km: maximumRadius,
+            p_country_code: null,
+            p_culture_ids: null,
+            p_language_ids: null,
+            p_interest_ids: null,
+            p_min_child_age: null,
+            p_max_child_age: null,
+            p_weekday: null,
+            p_period: null,
+            p_limit: 50,
+            p_offset: 0,
+          })
+        : Promise.resolve({ data: [], error: null }),
+    ]);
+    const parsedVillages = parseDiscoverVillages(villagesResult.data);
+    const parsedClusters = parseVillageClusterRecommendations(
+      clustersResult.data,
+    );
+    const parsedBroader = parseMatchResults(broaderResult.data);
+    if (!villagesResult.error && parsedVillages.success)
+      villageSuggestions = parsedVillages.data.slice(0, 3).map((village) => ({
+        village_id: village.village_id,
+        name: village.name,
+        city: village.city,
+        member_count: village.member_count,
+      }));
+    if (!clustersResult.error && parsedClusters.success)
+      clusterSuggestions = parsedClusters.data.map((cluster) => ({
+        country_id: cluster.country_id,
+        country_name: cluster.country_name,
+        family_count: cluster.family_count,
+      }));
+    if (!broaderResult.error && parsedBroader.success)
+      broaderFamilyCount = parsedBroader.data.length;
+  }
+
+  const radiusSteps = [5, 10, 20, 30, 40, 50, 75, 100]
+    .filter((value) => value <= maximumRadius)
+    .concat([maximumRadius])
+    .filter((value, index, values) => values.indexOf(value) === index)
+    .sort((left, right) => left - right);
+  const nextRadius =
+    radiusSteps.find((radius) => radius > currentRadius) ?? null;
+  const queryForRadius = (radius: number, keepFilters: boolean) => {
+    const query = new URLSearchParams();
+    if (keepFilters) {
+      for (const [key, value] of Object.entries(raw)) {
+        const normalized = scalar(value);
+        if (normalized && key !== "radius") query.set(key, normalized);
+      }
+    }
+    query.set("radius", String(radius));
+    return `/${locale}/app/discover?${query.toString()}`;
+  };
+
   const reasonLabels = {
     children_similar_age: copy.reasonChildren,
     shared_culture: copy.reasonCulture,
@@ -181,6 +281,11 @@ export default async function Page({
               >
                 {[5, 10, 20, 30, 40, 50, 75, 100]
                   .filter((value) => value <= family.discovery_radius_km)
+                  .concat([family.discovery_radius_km])
+                  .filter(
+                    (value, index, values) => values.indexOf(value) === index,
+                  )
+                  .sort((left, right) => left - right)
                   .map((value) => (
                     <option value={value} key={value}>
                       {value} km
@@ -192,7 +297,13 @@ export default async function Page({
               {copy.country}
               <select name="country" defaultValue={filters.country ?? ""}>
                 <option value="">{copy.all}</option>
-                {(countriesResult.data ?? []).map((item) => (
+                {(
+                  (countriesResult.data ?? []) as {
+                    iso2: string;
+                    name: string;
+                    emoji: string;
+                  }[]
+                ).map((item) => (
                   <option value={item.iso2} key={item.iso2}>
                     {item.emoji} {item.name}
                   </option>
@@ -203,7 +314,9 @@ export default async function Page({
               {copy.culture}
               <select name="culture" defaultValue={filters.culture ?? ""}>
                 <option value="">{copy.all}</option>
-                {(culturesResult.data ?? []).map((item) => (
+                {(
+                  (culturesResult.data ?? []) as { id: string; name: string }[]
+                ).map((item) => (
                   <option value={item.id} key={item.id}>
                     {item.name}
                   </option>
@@ -214,7 +327,9 @@ export default async function Page({
               {copy.language}
               <select name="language" defaultValue={filters.language ?? ""}>
                 <option value="">{copy.all}</option>
-                {(languagesResult.data ?? []).map((item) => (
+                {(
+                  (languagesResult.data ?? []) as { id: string; name: string }[]
+                ).map((item) => (
                   <option value={item.id} key={item.id}>
                     {item.name}
                   </option>
@@ -227,7 +342,14 @@ export default async function Page({
                 <option value="">{copy.all}</option>
                 {(interestsResult.data ?? []).map((item) => (
                   <option value={item.id} key={item.id}>
-                    {item.slug.replaceAll("-", " ")}
+                    {
+                      referenceCopy.interests[
+                        item.name_key.replace(
+                          "interests.",
+                          "",
+                        ) as keyof typeof referenceCopy.interests
+                      ]
+                    }
                   </option>
                 ))}
               </select>
@@ -293,11 +415,33 @@ export default async function Page({
             </p>
           )}
           {!discoveryError && families.length === 0 && (
-            <div className="empty-discovery">
-              <ShieldCheck />
-              <p>{copy.noResults}</p>
-            </div>
+            <DiscoveryEmptyState
+              locale={locale}
+              city={family.city}
+              currentRadius={currentRadius}
+              maximumRadius={maximumRadius}
+              nextRadius={nextRadius}
+              increaseHref={queryForRadius(nextRadius ?? maximumRadius, true)}
+              widerHref={queryForRadius(maximumRadius, false)}
+              clearHref={`/${locale}/app/discover`}
+              hasAdditionalFilters={hasAdditionalFilters}
+              broaderFamilyCount={broaderFamilyCount}
+              villages={villageSuggestions}
+              clusters={clusterSuggestions}
+              initialAlert={discoveryAlert}
+              canManageAlert={membershipResult.data?.role === "owner"}
+            />
           )}
+          {!discoveryError &&
+            families.length > 0 &&
+            discoveryAlert?.active &&
+            membershipResult.data?.role === "owner" && (
+              <DiscoveryAlertStatus
+                locale={locale}
+                maximumRadius={maximumRadius}
+                initialAlert={discoveryAlert}
+              />
+            )}
           <section className="discovery-grid" aria-live="polite">
             {families.map((item) => (
               <article className="family-card" key={item.family_id}>

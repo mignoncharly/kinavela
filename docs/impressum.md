@@ -19,7 +19,7 @@ No USt-IdNr. / VAT ID has been provided. None is invented or published. The tax 
 
 ## Contact
 
-General email: info@gestionatech.de  
+General email: contact@kinavela.com
 Privacy contact: privacy@gestionatech.de
 
 No formal Data Protection Officer has been appointed. The privacy contact is not a DPO.

@@ -69,6 +69,23 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+.roots-export-panel {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+.roots-export-row,
+.roots-media-controls,
+.roots-entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.roots-export-row {
+  color: var(--muted);
+  font-size: 12px;
+}
 .roots-form {
   display: grid;
   gap: 14px;
@@ -160,12 +177,28 @@
   font-size: 13px;
   line-height: 1.5;
 }
+.roots-media-controls {
+  margin-top: 14px;
+}
+.roots-media-controls label {
+  cursor: pointer;
+}
+.roots-edit-form {
+  margin: 0;
+}
 @media (max-width: 760px) {
   .roots-layout,
   .roots-form-grid {
     grid-template-columns: 1fr;
   }
   .roots-panel-heading {
+    flex-direction: column;
+  }
+  .roots-export-panel {
+    width: 100%;
+    justify-items: stretch;
+  }
+  .roots-entry-top {
     flex-direction: column;
   }
 }

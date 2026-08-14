@@ -19,6 +19,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Keep development compilation away from the artifacts read by the live server.
+  distDir: process.env.NODE_ENV === "production" ? ".next-production" : ".next",
   poweredByHeader: false,
   reactStrictMode: true,
   experimental: {

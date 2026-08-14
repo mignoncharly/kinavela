@@ -44,6 +44,10 @@ describe("Roots Stories contracts", () => {
           approval_status: "pending_review",
           audio_available: true,
           roots_entry_id: null,
+          requested_translation_language: "fr",
+          request_adaptation: true,
+          failure_code: null,
+          retry_available: false,
           created_at: "2026-08-11T08:00:00+00:00",
           updated_at: "2026-08-11T08:00:00+00:00",
         },
@@ -103,6 +107,19 @@ describe("Roots Stories contracts", () => {
         story_id: storyId,
         approval: "approved",
       }).success,
+    ).toBe(true);
+    expect(
+      storyActionSchema.safeParse({
+        action: "edit",
+        story_id: storyId,
+        transcript_original: "Guardian-corrected transcript.",
+        transcript_translation: null,
+        adapted_story: null,
+      }).success,
+    ).toBe(true);
+    expect(
+      storyActionSchema.safeParse({ action: "retry", story_id: storyId })
+        .success,
     ).toBe(true);
   });
 });

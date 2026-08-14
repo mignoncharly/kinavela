@@ -28,9 +28,13 @@ export async function POST(request: Request) {
       .single();
     return NextResponse.json({
       ok: true,
-      redirect: profile?.onboarding_completed
-        ? `/${input.locale}/app`
-        : `/${input.locale}/onboarding`,
+      redirect: input.invite_token
+        ? profile?.onboarding_completed
+          ? `/${input.locale}/invite/${input.invite_token}`
+          : `/${input.locale}/onboarding?invite=${input.invite_token}`
+        : profile?.onboarding_completed
+          ? `/${input.locale}/app`
+          : `/${input.locale}/onboarding`,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown";

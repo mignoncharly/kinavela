@@ -3,16 +3,19 @@
 import { ArrowLeft, ArrowRight, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   CitySearch,
   type CitySearchCopy,
 } from "@/components/discovery/city-search";
 import type { Locale } from "@/lib/i18n/config";
+import type { OnboardingDraft } from "@/lib/validation/onboarding";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
+import { formatNumber } from "@/lib/i18n/format";
 
 type Reference = { id: string; name: string };
-type Interest = { id: string; slug: string };
+type Interest = { id: string; name_key: string };
 type Props = {
   locale: Locale;
   profileName: string;
@@ -21,22 +24,14 @@ type Props = {
   languages: Reference[];
   interests: Interest[];
   discoveryCopy: CitySearchCopy;
+  inviteToken?: string;
+  inviteContext?: { kind: "family_referral" | "village"; name?: string };
+  initialDraft?: OnboardingDraft;
 };
 type Child = { id: number };
+type Row = { id: number };
+const sections = [[0, 1], [2, 3], [4, 5], [6, 7], [8], [9], [10]] as const;
 
-const steps = [
-  "Welcome",
-  "Your profile",
-  "Your family",
-  "Children",
-  "Origins",
-  "Languages",
-  "Preservation",
-  "Interests",
-  "Availability",
-  "Discovery",
-  "Review",
-];
 const goals = [
   "language",
   "stories",
@@ -45,8 +40,8 @@ const goals = [
   "history",
   "music",
   "family_connections",
-];
-const periods = ["morning", "afternoon", "evening"];
+] as const;
+const periods = ["morning", "afternoon", "evening"] as const;
 
 export function OnboardingWizard({
   locale,
@@ -56,21 +51,94 @@ export function OnboardingWizard({
   languages,
   interests,
   discoveryCopy,
+  inviteToken,
+  inviteContext,
+  initialDraft,
 }: Props) {
   const router = useRouter();
-  const [step, setStep] = useState(0);
-  const [children, setChildren] = useState<Child[]>([{ id: 1 }]);
+  const dictionary = getAppDictionary(locale);
+  const t = dictionary.onboarding;
+  const steps = t.steps;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [step, setStep] = useState(initialDraft?.step ?? 0);
+  const [children, setChildren] = useState<Child[]>(
+    (initialDraft?.children ?? [1]).map((id) => ({ id })),
+  );
+  const [languageRows, setLanguageRows] = useState<Row[]>(
+    (initialDraft?.languageRows ?? [1]).map((id) => ({ id })),
+  );
+  const [availabilityRows, setAvailabilityRows] = useState<Row[]>(
+    (initialDraft?.availabilityRows ?? [1]).map((id) => ({ id })),
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [country, setCountry] = useState("DE");
+  const [country, setCountry] = useState(
+    String(initialDraft?.values.country ?? "DE"),
+  );
+
+  useEffect(() => {
+    if (!initialDraft || !formRef.current) return;
+    for (const [name, value] of Object.entries(initialDraft.values)) {
+      const controls = formRef.current.querySelectorAll<
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >(`[name="${CSS.escape(name)}"]`);
+      controls.forEach((control) => {
+        if (
+          control instanceof HTMLInputElement &&
+          control.type === "checkbox"
+        ) {
+          control.checked = Array.isArray(value)
+            ? value.includes(control.value)
+            : value === control.value;
+        } else if (!Array.isArray(value)) control.value = value;
+      });
+    }
+  }, [initialDraft]);
+
+  async function saveDraft(form: HTMLFormElement, nextStep: number) {
+    const data = new FormData(form);
+    const values: Record<string, string | string[]> = {};
+    for (const [name, rawValue] of data.entries()) {
+      const value = String(rawValue);
+      const existing = values[name];
+      values[name] =
+        existing === undefined
+          ? value
+          : Array.isArray(existing)
+            ? [...existing, value]
+            : [existing, value];
+    }
+    for (const checkbox of form.querySelectorAll<HTMLInputElement>(
+      `input[type="checkbox"][name]`,
+    )) {
+      if (!data.has(checkbox.name)) values[checkbox.name] = [];
+    }
+    await fetch("/api/onboarding/draft", {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        version: 1,
+        step: nextStep,
+        children: children.map(({ id }) => id),
+        languageRows: languageRows.map(({ id }) => id),
+        availabilityRows: availabilityRows.map(({ id }) => id),
+        values,
+      }),
+    }).catch(() => undefined);
+  }
 
   function next(form: HTMLFormElement) {
-    const fieldset = form.querySelectorAll("fieldset")[step];
-    const invalid = fieldset?.querySelector<
-      HTMLInputElement | HTMLSelectElement
-    >(":invalid");
-    if (invalid) return invalid.reportValidity();
-    setStep((value) => Math.min(10, value + 1));
+    for (const section of sections[step]!) {
+      const invalid = form
+        .querySelectorAll("fieldset")
+        [section]?.querySelector<HTMLInputElement | HTMLSelectElement>(
+          ":invalid",
+        );
+      if (invalid) return invalid.reportValidity();
+    }
+    const nextStep = Math.min(6, step + 1);
+    void saveDraft(form, nextStep);
+    setStep(nextStep);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -83,14 +151,12 @@ export function OnboardingWizard({
     const preservation = selected("preservation");
     const locationPlaceId = String(form.get("locationPlaceId") ?? "");
     if (!cultureIds.length || !interestIds.length || !preservation.length) {
-      setError(
-        "Please select at least one origin, preservation goal and interest.",
-      );
+      setError(t.selectRequired);
       return;
     }
     if (!locationPlaceId) {
-      setStep(9);
-      setError("Please search for and select an approximate city area.");
+      setStep(5);
+      setError(t.locationRequired);
       return;
     }
     setBusy(true);
@@ -118,18 +184,17 @@ export function OnboardingWizard({
         gender: form.get(`child-${child.id}-gender`) || null,
       })),
       culture_ids: cultureIds,
-      languages: [
-        {
-          language_id: form.get("language"),
-          proficiency: form.get("proficiency"),
-          transmission_goal: form.get("languageGoal"),
-        },
-      ],
+      languages: languageRows.map((row) => ({
+        language_id: form.get(`language-${row.id}`),
+        proficiency: form.get(`proficiency-${row.id}`),
+        transmission_goal: form.get(`languageGoal-${row.id}`),
+      })),
       preservation_goals: preservation,
       interest_ids: interestIds,
-      availability: [
-        { weekday: Number(form.get("weekday")), period: form.get("period") },
-      ],
+      availability: availabilityRows.map((row) => ({
+        weekday: Number(form.get(`weekday-${row.id}`)),
+        period: form.get(`period-${row.id}`),
+      })),
       preferences: {
         open_to_other_african_families: form.get("africanFamilies") === "on",
         open_to_all_diaspora_families: form.get("allDiaspora") === "on",
@@ -144,12 +209,30 @@ export function OnboardingWizard({
         headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!response.ok) throw new Error("failed");
-      router.push(`/${locale}/app?welcome=1`);
+      const body = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(body.error ?? "validation_failed");
+      await fetch("/api/onboarding/draft", { method: "DELETE" }).catch(
+        () => undefined,
+      );
+      router.push(
+        inviteToken
+          ? `/${locale}/invite/${inviteToken}`
+          : `/${locale}/app?welcome=1`,
+      );
       router.refresh();
-    } catch {
+    } catch (submissionError) {
+      const code =
+        submissionError instanceof Error
+          ? submissionError.message
+          : "validation_failed";
       setError(
-        "We could not save your family. Please review your details and try again.",
+        code === "invalid_location"
+          ? discoveryCopy.invalidLocation
+          : code === "germany_location_required"
+            ? discoveryCopy.germanyOnly
+            : code === "not_authenticated" || code === "email_not_verified"
+              ? discoveryCopy.authenticationRequired
+              : discoveryCopy.validationFailed,
       );
       setBusy(false);
     }
@@ -169,79 +252,90 @@ export function OnboardingWizard({
       <div className="onboarding-progress" aria-hidden="true">
         <span style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
       </div>
-      <nav className="onboarding-legal-links" aria-label="Legal">
-        <Link href={"/" + locale + "/privacy"}>Privacy</Link>{" "}
-        <Link href={"/" + locale + "/terms"}>Terms</Link>{" "}
-        <Link href={"/" + locale + "/community-guidelines"}>Community</Link>{" "}
-        <Link href={"/" + locale + "/child-safety"}>Child safety</Link>
+      <nav className="onboarding-legal-links" aria-label={t.legal}>
+        <Link href={"/" + locale + "/privacy"}>{t.privacy}</Link>{" "}
+        <Link href={"/" + locale + "/terms"}>{t.terms}</Link>{" "}
+        <Link href={"/" + locale + "/community-guidelines"}>{t.community}</Link>{" "}
+        <Link href={"/" + locale + "/child-safety"}>{t.childSafety}</Link>
       </nav>
-      <form className="onboarding-card" onSubmit={submit}>
+      <form ref={formRef} className="onboarding-card" onSubmit={submit}>
+        {inviteContext && (
+          <aside className="onboarding-invite" role="status">
+            <strong>
+              {inviteContext.kind === "village"
+                ? t.inviteVillage.replace(
+                    "{name}",
+                    inviteContext.name ?? "Kinavela",
+                  )
+                : t.inviteFamily}
+            </strong>
+            <span>{t.inviteReturn}</span>
+          </aside>
+        )}
         <p className="eyebrow">{steps[step]}</p>
-        <fieldset hidden={step !== 0}>
-          <legend>Build a safe home for your family’s roots</legend>
-          <p>
-            Kinavela helps your family preserve culture and discover trusted
-            community. Your children remain private and we show only approximate
-            location information.
-          </p>
+        <fieldset hidden={!sections[step]!.includes(0 as never)}>
+          <legend>{t.welcomeTitle}</legend>
+          <p>{t.welcomeBody}</p>
           <div className="privacy-notice">
-            <ShieldCheck /> Exact addresses are never requested or published.
+            <ShieldCheck /> {t.exactAddress}
           </div>
         </fieldset>
-        <fieldset hidden={step !== 1}>
-          <legend>Tell us about you</legend>
+        <fieldset hidden={!sections[step]!.includes(1 as never)}>
+          <legend>{t.profileTitle}</legend>
           <label>
-            Display name
+            {t.displayName}
             <input
               name="displayName"
+              autoComplete="name"
               defaultValue={profileName}
               minLength={2}
               maxLength={80}
               required
             />
           </label>
-          <p className="field-help">
-            This is visible only to approved family connections.
-          </p>
+          <p className="field-help">{t.profileHelp}</p>
         </fieldset>
-        <fieldset hidden={step !== 2}>
-          <legend>Create your family profile</legend>
+        <fieldset hidden={!sections[step]!.includes(2 as never)}>
+          <legend>{t.familyTitle}</legend>
           <label>
-            Family name
+            {t.familyName}
             <input
               name="familyName"
-              placeholder="The Nkom family"
+              autoComplete="organization"
+              placeholder={t.familyPlaceholder}
               minLength={2}
               maxLength={100}
               required
             />
           </label>
           <label>
-            About your family
+            {t.familyBio}
             <textarea
               name="bio"
               maxLength={600}
-              placeholder="Languages, traditions and what brings you here…"
+              placeholder={t.bioPlaceholder}
             />
           </label>
         </fieldset>
-        <fieldset hidden={step !== 3}>
-          <legend>Add your children privately</legend>
+        <fieldset hidden={!sections[step]!.includes(3 as never)}>
+          <legend>{t.childrenTitle}</legend>
           {children.map((child, index) => (
             <div className="child-row" key={child.id}>
-              <strong>Child {index + 1}</strong>
+              <strong>{t.child.replace("{number}", String(index + 1))}</strong>
               <label>
-                Nickname
+                {t.nickname}
                 <input
                   name={`child-${child.id}-name`}
+                  autoComplete="off"
                   maxLength={40}
                   required
                 />
               </label>
               <label>
-                Birth year
+                {t.birthYear}
                 <input
                   name={`child-${child.id}-year`}
+                  inputMode="numeric"
                   type="number"
                   min="2005"
                   max={new Date().getFullYear()}
@@ -249,22 +343,23 @@ export function OnboardingWizard({
                 />
               </label>
               <label>
-                Birth month (optional)
+                {t.birthMonth}
                 <input
                   name={`child-${child.id}-month`}
+                  inputMode="numeric"
                   type="number"
                   min="1"
                   max="12"
                 />
               </label>
               <label>
-                Gender (optional)
+                {t.gender}
                 <select name={`child-${child.id}-gender`} defaultValue="">
-                  <option value="">Prefer not to add</option>
-                  <option value="female">Girl</option>
-                  <option value="male">Boy</option>
-                  <option value="nonbinary">Non-binary</option>
-                  <option value="prefer_not_to_say">Prefer not to say</option>
+                  <option value="">{t.noGender}</option>
+                  <option value="female">{t.girl}</option>
+                  <option value="male">{t.boy}</option>
+                  <option value="nonbinary">{t.nonbinary}</option>
+                  <option value="prefer_not_to_say">{t.preferNot}</option>
                 </select>
               </label>
               {children.length > 1 && (
@@ -277,7 +372,7 @@ export function OnboardingWizard({
                     )
                   }
                 >
-                  <Trash2 size={18} /> Remove
+                  <Trash2 size={18} /> {dictionary.common.remove}
                 </button>
               )}
             </div>
@@ -293,12 +388,12 @@ export function OnboardingWizard({
                 ])
               }
             >
-              <Plus size={18} /> Add child
+              <Plus size={18} /> {t.addChild}
             </button>
           )}
         </fieldset>
-        <fieldset hidden={step !== 4}>
-          <legend>Which cultures form your roots?</legend>
+        <fieldset hidden={!sections[step]!.includes(4 as never)}>
+          <legend>{t.culturesTitle}</legend>
           <div className="choice-grid">
             {cultures.map((item) => (
               <label className="choice" key={item.id}>
@@ -308,106 +403,187 @@ export function OnboardingWizard({
             ))}
           </div>
         </fieldset>
-        <fieldset hidden={step !== 5}>
-          <legend>Languages in your family</legend>
-          <label>
-            Main language
-            <select name="language" required defaultValue="">
-              <option value="" disabled>
-                Select…
-              </option>
-              {languages.map((item) => (
-                <option value={item.id} key={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Current level
-            <select name="proficiency" defaultValue="conversational">
-              <option value="beginner">Beginner</option>
-              <option value="conversational">Conversational</option>
-              <option value="fluent">Fluent</option>
-              <option value="native">Native</option>
-            </select>
-          </label>
-          <label>
-            Your goal
-            <select name="languageGoal" defaultValue="want_to_teach_children">
-              <option value="already_speaking">Already speaking</option>
-              <option value="learning">Learning</option>
-              <option value="want_to_teach_children">Teach our children</option>
-              <option value="cultural_interest">Cultural interest</option>
-            </select>
-          </label>
+        <fieldset hidden={!sections[step]!.includes(5 as never)}>
+          <legend>{t.languagesTitle}</legend>
+          <p className="field-help">{t.languagesHelp}</p>
+          {languageRows.map((row, index) => (
+            <div className="child-row compact-row" key={row.id}>
+              <strong>
+                {t.languageNumber.replace("{number}", String(index + 1))}
+              </strong>
+              <label>
+                {t.mainLanguage}
+                <select name={`language-${row.id}`} required defaultValue="">
+                  <option value="" disabled>
+                    {t.select}
+                  </option>
+                  {languages.map((item) => (
+                    <option value={item.id} key={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {t.currentLevel}
+                <select
+                  name={`proficiency-${row.id}`}
+                  defaultValue="conversational"
+                >
+                  <option value="beginner">{t.beginner}</option>
+                  <option value="conversational">{t.conversational}</option>
+                  <option value="fluent">{t.fluent}</option>
+                  <option value="native">{t.native}</option>
+                </select>
+              </label>
+              <label>
+                {t.languageGoal}
+                <select
+                  name={`languageGoal-${row.id}`}
+                  defaultValue="want_to_teach_children"
+                >
+                  <option value="already_speaking">{t.alreadySpeaking}</option>
+                  <option value="learning">{t.learning}</option>
+                  <option value="want_to_teach_children">
+                    {t.teachChildren}
+                  </option>
+                  <option value="cultural_interest">
+                    {t.culturalInterest}
+                  </option>
+                </select>
+              </label>
+              {languageRows.length > 1 && (
+                <button
+                  type="button"
+                  className="icon-button"
+                  onClick={() =>
+                    setLanguageRows((items) =>
+                      items.filter((item) => item.id !== row.id),
+                    )
+                  }
+                >
+                  <Trash2 size={18} /> {dictionary.common.remove}
+                </button>
+              )}
+            </div>
+          ))}
+          {languageRows.length < 10 && (
+            <button
+              type="button"
+              className="button button-secondary"
+              onClick={() =>
+                setLanguageRows((items) => [
+                  ...items,
+                  { id: Math.max(...items.map((item) => item.id)) + 1 },
+                ])
+              }
+            >
+              <Plus size={18} /> {t.addLanguage}
+            </button>
+          )}
         </fieldset>
-        <fieldset hidden={step !== 6}>
-          <legend>What should live on?</legend>
+        <fieldset hidden={!sections[step]!.includes(6 as never)}>
+          <legend>{t.preservationTitle}</legend>
           <div className="choice-grid">
             {goals.map((goal) => (
               <label className="choice" key={goal}>
                 <input type="checkbox" name="preservation" value={goal} />
-                {goal.replaceAll("_", " ")}
+                {dictionary.reference.goals[goal]}
               </label>
             ))}
           </div>
         </fieldset>
-        <fieldset hidden={step !== 7}>
-          <legend>What would your family enjoy?</legend>
+        <fieldset hidden={!sections[step]!.includes(7 as never)}>
+          <legend>{t.interestsTitle}</legend>
           <div className="choice-grid">
             {interests.map((interest) => (
               <label className="choice" key={interest.id}>
                 <input type="checkbox" name="interests" value={interest.id} />
-                {interest.slug.replaceAll("-", " ")}
+                {
+                  dictionary.reference.interests[
+                    interest.name_key.replace(
+                      "interests.",
+                      "",
+                    ) as keyof typeof dictionary.reference.interests
+                  ]
+                }
               </label>
             ))}
           </div>
         </fieldset>
-        <fieldset hidden={step !== 8}>
-          <legend>When are you usually available?</legend>
-          <label>
-            Day
-            <select name="weekday" defaultValue="6">
-              {[
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-              ].map((day, index) => (
-                <option value={index} key={day}>
-                  {day}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Time
-            <select name="period" defaultValue="afternoon">
-              {periods.map((period) => (
-                <option key={period}>{period}</option>
-              ))}
-            </select>
-          </label>
+        <fieldset hidden={!sections[step]!.includes(8 as never)}>
+          <legend>{t.availabilityTitle}</legend>
+          <p className="field-help">{t.availabilityHelp}</p>
+          {availabilityRows.map((row, index) => (
+            <div className="child-row compact-row" key={row.id}>
+              <strong>{t.slot.replace("{number}", String(index + 1))}</strong>
+              <label>
+                {t.day}
+                <select name={`weekday-${row.id}`} defaultValue="6">
+                  {dictionary.reference.weekdays.map((day, dayIndex) => (
+                    <option value={dayIndex} key={day}>
+                      {day}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {t.time}
+                <select name={`period-${row.id}`} defaultValue="afternoon">
+                  {periods.map((period) => (
+                    <option value={period} key={period}>
+                      {dictionary.reference.periods[period]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {availabilityRows.length > 1 && (
+                <button
+                  type="button"
+                  className="icon-button"
+                  onClick={() =>
+                    setAvailabilityRows((items) =>
+                      items.filter((item) => item.id !== row.id),
+                    )
+                  }
+                >
+                  <Trash2 size={18} /> {dictionary.common.remove}
+                </button>
+              )}
+            </div>
+          ))}
+          {availabilityRows.length < 7 && (
+            <button
+              type="button"
+              className="button button-secondary"
+              onClick={() =>
+                setAvailabilityRows((items) => [
+                  ...items,
+                  { id: Math.max(...items.map((item) => item.id)) + 1 },
+                ])
+              }
+            >
+              <Plus size={18} /> {t.addAvailability}
+            </button>
+          )}
         </fieldset>
-        <fieldset hidden={step !== 9}>
-          <legend>Set your discovery boundaries</legend>
+        <fieldset hidden={!sections[step]!.includes(9 as never)}>
+          <legend>{t.discoveryTitle}</legend>
           <label>
-            Country
+            {t.country}
             <select
               name="country"
               value={country}
               onChange={(event) => setCountry(event.target.value)}
               required
             >
-              {countries.map((country) => (
-                <option value={country.iso2} key={country.id}>
-                  {country.emoji} {country.name}
-                </option>
-              ))}
+              {countries
+                .filter((item) => item.iso2 === "DE")
+                .map((country) => (
+                  <option value={country.iso2} key={country.id}>
+                    {country.emoji} {country.name}
+                  </option>
+                ))}
             </select>
           </label>
           <CitySearch
@@ -415,9 +591,24 @@ export function OnboardingWizard({
             country={country}
             locale={locale}
             copy={discoveryCopy}
+            initialSelection={
+              typeof initialDraft?.values.locationPlaceId === "string" &&
+              typeof initialDraft?.values.city === "string"
+                ? {
+                    placeId: initialDraft.values.locationPlaceId,
+                    city: initialDraft.values.city,
+                  }
+                : undefined
+            }
           />
+          <p className="privacy-notice compact-notice">
+            <ShieldCheck size={19} /> {t.locationPrivacy}
+          </p>
           <label>
-            Search radius: <output>40 km</output>
+            {t.radius}:{" "}
+            <output>
+              {formatNumber(locale, 40)} {t.distanceUnit}
+            </output>
             <input
               name="radius"
               type="range"
@@ -428,27 +619,25 @@ export function OnboardingWizard({
             />
           </label>
           <label>
-            Visibility
+            {t.visibility}
             <select name="visibility" defaultValue="discoverable">
-              <option value="discoverable">
-                Discoverable by compatible families
-              </option>
-              <option value="private">Private—not shown in discovery</option>
+              <option value="discoverable">{t.discoverable}</option>
+              <option value="private">{t.private}</option>
             </select>
           </label>
           <label className="consent">
-            <input name="africanFamilies" type="checkbox" defaultChecked /> Open
-            to other African families
+            <input name="africanFamilies" type="checkbox" defaultChecked />{" "}
+            {t.africanFamilies}
           </label>
           <label className="consent">
-            <input name="allDiaspora" type="checkbox" /> Open to all diaspora
-            families
+            <input name="allDiaspora" type="checkbox" /> {t.diasporaFamilies}
           </label>
           <div className="two-columns">
             <label>
-              Youngest child age
+              {t.youngestAge}
               <input
                 name="minAge"
+                inputMode="numeric"
                 type="number"
                 min="0"
                 max="20"
@@ -456,9 +645,10 @@ export function OnboardingWizard({
               />
             </label>
             <label>
-              Oldest child age
+              {t.oldestAge}
               <input
                 name="maxAge"
+                inputMode="numeric"
                 type="number"
                 min="0"
                 max="20"
@@ -467,20 +657,14 @@ export function OnboardingWizard({
             </label>
           </div>
         </fieldset>
-        <fieldset hidden={step !== 10}>
-          <legend>Your family is ready to take root</legend>
-          <p>
-            We’ll create a private family profile using your choices. You can
-            change visibility and discovery preferences at any time.
-          </p>
+        <fieldset hidden={!sections[step]!.includes(10 as never)}>
+          <legend>{t.reviewTitle}</legend>
+          <p>{t.reviewBody}</p>
           <div className="privacy-notice">
-            <ShieldCheck /> Child details are accessible only to your family.
-            Nearby families never receive an exact address.
+            <ShieldCheck /> {t.reviewPrivacy}
           </div>
           <label className="consent">
-            <input name="guidelines" type="checkbox" required /> I accept the
-            community guidelines and commit to respectful, child-safe
-            participation.
+            <input name="guidelines" type="checkbox" required /> {t.guidelines}
           </label>
         </fieldset>
         {error && (
@@ -493,18 +677,22 @@ export function OnboardingWizard({
             <button
               type="button"
               className="button button-secondary"
-              onClick={() => setStep((value) => value - 1)}
+              onClick={() => {
+                const previous = step - 1;
+                if (formRef.current) void saveDraft(formRef.current, previous);
+                setStep(previous);
+              }}
             >
-              <ArrowLeft size={18} /> Back
+              <ArrowLeft size={18} /> {dictionary.common.back}
             </button>
           )}
-          {step < 10 ? (
+          {step < 6 ? (
             <button
               type="button"
               className="button button-primary"
               onClick={(event) => next(event.currentTarget.form!)}
             >
-              Continue <ArrowRight size={18} />
+              {dictionary.common.continue} <ArrowRight size={18} />
             </button>
           ) : (
             <button
@@ -512,7 +700,7 @@ export function OnboardingWizard({
               className="button button-primary"
               disabled={busy}
             >
-              {busy ? "Creating…" : "Create family"}
+              {busy ? t.creating : t.createFamily}
             </button>
           )}
         </div>

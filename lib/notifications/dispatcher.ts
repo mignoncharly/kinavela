@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getNotificationDeliveryCopy } from "@/features/notifications/email-copy";
 import { sendNotificationEmail } from "@/features/notifications/email";
 import {
   sendPushToProfile,
@@ -7,6 +8,7 @@ import {
 } from "@/lib/notifications/push";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { NotificationFeedItem } from "@/lib/validation/notifications";
+import { notificationPath } from "@/lib/notifications/links";
 
 type Delivery = {
   delivery_id: string;
@@ -19,49 +21,27 @@ type Delivery = {
   payload: Record<string, unknown>;
 };
 
-const pushBodies = {
-  de: {
-    connection_request: "Eine Familie möchte sich mit Ihnen verbinden.",
-    connection_accepted: "Ihre Familienverbindung wurde bestätigt.",
-    message_received: "Sie haben eine neue private Nachricht.",
-    event_reminder: "Eine Familienaktivität beginnt bald.",
-    village_activity: "In Ihrem Village gibt es eine neue Aktivität.",
-    story_ready: "Eine Familiengeschichte ist zur Prüfung bereit.",
-  },
-  fr: {
-    connection_request: "Une famille souhaite entrer en contact avec vous.",
-    connection_accepted: "Votre mise en relation familiale a été acceptée.",
-    message_received: "Vous avez reçu un nouveau message privé.",
-    event_reminder: "Une activité familiale commence bientôt.",
-    village_activity: "Il y a une nouvelle activité dans votre Village.",
-    story_ready: "Une histoire familiale est prête à être vérifiée.",
-  },
-  en: {
-    connection_request: "A family would like to connect with you.",
-    connection_accepted: "Your family connection was accepted.",
-    message_received: "You have a new private message.",
-    event_reminder: "A family activity is starting soon.",
-    village_activity: "There is new activity in your Village.",
-    story_ready: "A family story is ready for review.",
-  },
-} as const;
-
 function pushPayload(delivery: Delivery): PushNotificationPayload {
   const locale =
     delivery.locale === "de" || delivery.locale === "fr"
       ? delivery.locale
       : "en";
+  const copy = getNotificationDeliveryCopy(locale);
   return {
     title: "Kinavela",
-    body: pushBodies[locale][delivery.notification_kind],
-    url: `/${locale}/app/notifications`,
-    tag: `kinavela:${delivery.notification_kind}`,
+    body: copy.bodies[delivery.notification_kind],
+    url: notificationPath(locale, delivery.notification_kind, delivery.payload),
+    tag: `kinavela:${delivery.notification_kind}:${delivery.delivery_id}`,
     data: { notificationKind: delivery.notification_kind },
   };
 }
 
 export async function dispatchNotificationDeliveries() {
   const admin = createAdminClient();
+  const { error: alertError } = await admin.rpc(
+    "dispatch_compatible_family_alerts",
+  );
+  if (alertError) throw alertError;
   const { data, error } = await admin.rpc("claim_notification_deliveries");
   if (error) throw error;
 
@@ -103,6 +83,13 @@ export async function dispatchNotificationDeliveries() {
           delivery.recipient_email,
           delivery.locale,
           delivery.notification_kind,
+          `${(process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "")}${notificationPath(
+            delivery.locale === "de" || delivery.locale === "fr"
+              ? delivery.locale
+              : "en",
+            delivery.notification_kind,
+            delivery.payload,
+          )}`,
         );
         await complete(admin, delivery.delivery_id, "sent");
         sent += 1;

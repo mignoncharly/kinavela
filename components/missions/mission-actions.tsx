@@ -1,6 +1,16 @@
 "use client";
 
-import { Check, Clock3, ListChecks, LockKeyhole, Play } from "lucide-react";
+import {
+  Check,
+  Clock3,
+  HeartHandshake,
+  ListChecks,
+  LockKeyhole,
+  PackageCheck,
+  Play,
+  Quote,
+  UsersRound,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -92,7 +102,42 @@ function MissionCard({
           {copy.years}
         </span>
         {mission.country_name && <span>{mission.country_name}</span>}
+        <span>{copy.scopes[mission.context_scope]}</span>
       </div>
+      <div className="mission-context">
+        <UsersRound size={17} aria-hidden="true" />
+        <div>
+          <strong>{copy.context}</strong>
+          <p>{mission.cultural_context}</p>
+        </div>
+      </div>
+      <details className="mission-preparation">
+        <summary>{copy.prepare}</summary>
+        <div className="mission-preparation-grid">
+          <section>
+            <h4>
+              <PackageCheck size={16} aria-hidden="true" /> {copy.materials}
+            </h4>
+            <ul>
+              {mission.materials.map((material) => (
+                <li key={material}>{material}</li>
+              ))}
+            </ul>
+          </section>
+          <section>
+            <h4>
+              <HeartHandshake size={16} aria-hidden="true" /> {copy.guidance}
+            </h4>
+            <p>{mission.guardian_guidance}</p>
+          </section>
+          <section>
+            <h4>
+              <Quote size={16} aria-hidden="true" /> {copy.attribution}
+            </h4>
+            <p>{mission.respectful_attribution}</p>
+          </section>
+        </div>
+      </details>
       <ol className="mission-steps">
         {mission.steps.map((step) => {
           const done = completed.has(step.step_id);
@@ -133,7 +178,12 @@ function MissionCard({
         <p className="mission-progress-note">{copy.progressNote}</p>
       )}
       {isComplete && (
-        <p className="mission-complete-note">{copy.completedBody}</p>
+        <div className="mission-complete-note">
+          <strong>{copy.completedBody}</strong>
+          <p>
+            {copy.reflection}: {mission.passport_reflection_prompt}
+          </p>
+        </div>
       )}
       {error && (
         <p className="form-error" role="alert">

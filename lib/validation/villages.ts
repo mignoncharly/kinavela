@@ -75,6 +75,14 @@ export const villageReportSchema = villageIdSchema.extend({
 export const villageReportResolutionSchema = z
   .object({
     report_id: z.string().uuid(),
-    resolution: z.enum(["dismiss", "delete_message", "remove_member"]),
+    resolution: z.enum([
+      "dismiss",
+      "delete_message",
+      "remove_member",
+      "escalate",
+      "cancel_event",
+      "restrict_event",
+      "delete_support_content",
+    ]),
   })
   .strict();

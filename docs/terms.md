@@ -38,4 +38,4 @@ German law applies, subject to mandatory consumer-protection provisions in the c
 
 ## 8. Contact
 
-General and safety contact: info@gestionatech.de.
+General and safety contact: contact@kinavela.com.

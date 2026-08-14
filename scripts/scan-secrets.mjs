@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 const files = execFileSync(
   "git",
@@ -24,7 +24,7 @@ const rules = [
 
 const findings = [];
 for (const file of files) {
-  if (file === ".github/workflows/ci.yml") continue;
+  if (file === ".github/workflows/ci.yml" || !existsSync(file)) continue;
   const source = readFileSync(file, "utf8");
   for (const [name, pattern] of rules) {
     if (pattern.test(source)) findings.push({ file, name });

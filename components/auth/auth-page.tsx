@@ -2,10 +2,22 @@ import Link from "next/link";
 
 import { AuthForm } from "@/components/auth/auth-form";
 import type { Locale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 
 type Mode = "signup" | "login" | "forgot" | "update";
 
-export function AuthPage({ locale, mode }: { locale: Locale; mode: Mode }) {
+export function AuthPage({
+  locale,
+  mode,
+  inviteToken,
+  initialError,
+}: {
+  locale: Locale;
+  mode: Mode;
+  inviteToken?: string;
+  initialError?: string;
+}) {
+  const copy = getAppDictionary(locale).authPage;
   const title =
     mode === "signup"
       ? {
@@ -35,30 +47,42 @@ export function AuthPage({ locale, mode }: { locale: Locale; mode: Mode }) {
           <span className="brand-mark">K</span>
           <span>KINAVELA</span>
         </Link>
-        <p className="eyebrow">PRIVATE BY DESIGN</p>
+        <p className="eyebrow">{copy.private}</p>
         <h1>{title}</h1>
-        <AuthForm locale={locale} mode={mode} />
+        <AuthForm
+          locale={locale}
+          mode={mode}
+          inviteToken={inviteToken}
+          initialError={initialError}
+        />
         {mode !== "login" && mode !== "update" && (
           <p className="auth-switch">
-            <Link href={`/${locale}/auth/login`}>Sign in</Link>
+            <Link
+              href={`/${locale}/auth/login${inviteToken ? `?invite=${inviteToken}` : ""}`}
+            >
+              {copy.signIn}
+            </Link>
           </p>
         )}
         {mode === "login" && (
           <p className="auth-switch">
-            <Link href={`/${locale}/auth/forgot-password`}>
-              Forgot password?
-            </Link>{" "}
-            · <Link href={`/${locale}/auth/signup`}>Create account</Link>
+            <Link href={`/${locale}/auth/forgot-password`}>{copy.forgot}</Link>{" "}
+            ·{" "}
+            <Link
+              href={`/${locale}/auth/signup${inviteToken ? `?invite=${inviteToken}` : ""}`}
+            >
+              {copy.create}
+            </Link>
           </p>
         )}
       </section>
       <aside className="auth-aside">
         <p className="eyebrow light">ROOTS × VILLAGE</p>
-        <h2>Family, culture and community—with privacy at the centre.</h2>
+        <h2>{copy.aside}</h2>
         <ul>
-          <li>Exact addresses are never public</li>
-          <li>Children are private by default</li>
-          <li>You control discovery visibility</li>
+          {copy.points.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
         </ul>
       </aside>
     </main>

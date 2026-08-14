@@ -314,11 +314,6 @@ footer {
   font-size: clamp(2rem, 3.5vw, 2.8rem);
 }
 
-.pilot-waitlist h2 {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  line-height: 1.08;
-}
-
 .discovery-filters {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.875rem;
@@ -712,5 +707,90 @@ input[type="radio"] {
 
   .public-community-header .brand {
     letter-spacing: 0.12em;
+  }
+}
+
+.onboarding-invite {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border));
+  border-radius: 0.875rem;
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+.onboarding-invite span {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.compact-notice {
+  margin-block: 1rem;
+  padding: 0.9rem;
+  font-size: 0.875rem;
+}
+.compact-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.welcome-next-actions {
+  margin-bottom: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+}
+.welcome-next-actions h2 {
+  margin: 0.35rem 0;
+}
+.welcome-next-actions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+@media (max-width: 39.9375rem) {
+  .onboarding-shell {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+  .onboarding-header {
+    min-height: 4.25rem;
+  }
+  .onboarding-card {
+    width: calc(100% - 1rem);
+    margin-top: 1rem;
+    padding: 1.1rem;
+    border-radius: 1rem;
+  }
+  .onboarding-card input,
+  .onboarding-card select,
+  .onboarding-card textarea {
+    font-size: 16px;
+  }
+  .onboarding-card fieldset {
+    scroll-margin-top: 1rem;
+  }
+  .choice {
+    min-height: 3rem;
+  }
+  .compact-row {
+    grid-template-columns: 1fr;
+  }
+  .wizard-actions {
+    position: sticky;
+    z-index: 10;
+    bottom: 0;
+    margin: 2rem -1.1rem -1.1rem;
+    padding: 0.85rem 1.1rem calc(0.85rem + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  .wizard-actions .button {
+    min-height: 3rem;
+  }
+  .welcome-next-actions > div {
+    display: grid;
+  }
+  .welcome-next-actions .button {
+    width: 100%;
   }
 }

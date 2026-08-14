@@ -32,9 +32,14 @@ export async function POST(request: Request) {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ ok: false }, { status: 401 });
-    const { error } = await supabase.rpc("update_notification_preferences", {
+    const { error } = await supabase.rpc("update_notification_preferences_v2", {
       p_email_enabled: input.email_enabled,
       p_push_enabled: input.push_enabled,
+      p_community_enabled: input.community_enabled,
+      p_events_enabled: input.events_enabled,
+      p_direct_enabled: input.direct_enabled,
+      p_heritage_enabled: input.heritage_enabled,
+      p_safety_enabled: input.safety_enabled,
     });
     if (error) throw error;
     return NextResponse.json({ ok: true });

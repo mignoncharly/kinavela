@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import {
   getPublicCommunityPage,
+  localizedCommunityCity,
   localizedCommunityTitle,
   publicCommunityPages,
 } from "@/features/seo/public-pages";
@@ -22,29 +23,44 @@ export function generateStaticParams() {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { locale, slug } = await params;
   const page = getPublicCommunityPage(slug);
   if (!page || !isLocale(locale)) return {};
+  // See app/[locale]/page.tsx — openGraph overwrites rather than merges.
+  const parentImages = (await parent).openGraph?.images ?? [];
   const title = localizedCommunityTitle(page, locale);
+  const city = localizedCommunityCity(page, locale);
   const description =
     locale === "de"
-      ? `Aggregierte, datensparsame Informationen über die kamerunische Familiengemeinschaft in ${page.cityLabel}.`
+      ? `Aggregierte, datensparsame Informationen über die kamerunische Familiengemeinschaft in ${city}.`
       : locale === "fr"
-        ? `Informations agrégées et respectueuses de la vie privée sur les familles camerounaises à ${page.cityLabel}.`
-        : `Privacy-safe, aggregated information about the Cameroonian family community in ${page.cityLabel}.`;
+        ? `Informations agrégées et respectueuses de la vie privée sur les familles camerounaises à ${city}.`
+        : `Privacy-safe, aggregated information about the Cameroonian family community in ${city}.`;
   return {
     title,
     description,
     alternates: {
       canonical: `/${locale}/community/${slug}`,
-      languages: Object.fromEntries(
-        locales.map((item) => [item, `/${item}/community/${slug}`]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          locales.map((item) => [item, `/${item}/community/${slug}`]),
+        ),
+        "x-default": `/de/community/${slug}`,
+      },
     },
-    openGraph: { type: "website", title, description, siteName: "Kinavela" },
+    openGraph: {
+      type: "website",
+      locale,
+      url: `/${locale}/community/${slug}`,
+      title,
+      description,
+      siteName: "Kinavela",
+      images: parentImages,
+    },
   };
 }
 
@@ -62,6 +78,10 @@ function copy(locale: Locale, city: string) {
       villages: "aktive Villages",
       events: "geplante öffentliche Aktivitäten",
       explore: "Kinavela kennenlernen",
+      navigation: "Öffentliche Navigation",
+      privacyLink: "Datenschutz",
+      formingTitle: "Die Community entsteht",
+      footer: "Datenschutz von Anfang an · Nur aggregierte Daten",
     };
   }
   if (locale === "fr") {
@@ -77,6 +97,10 @@ function copy(locale: Locale, city: string) {
       villages: "Villages actifs",
       events: "activités publiques planifiées",
       explore: "Découvrir Kinavela",
+      navigation: "Navigation publique",
+      privacyLink: "Confidentialité",
+      formingTitle: "La communauté se construit",
+      footer: "Confidentialité dès la conception · Données agrégées uniquement",
     };
   }
   return {
@@ -91,6 +115,10 @@ function copy(locale: Locale, city: string) {
     villages: "active Villages",
     events: "planned public activities",
     explore: "Explore Kinavela",
+    navigation: "Public navigation",
+    privacyLink: "Privacy",
+    formingTitle: "Community is forming",
+    footer: "Privacy by design · Aggregates only",
   };
 }
 
@@ -105,24 +133,63 @@ export default async function CommunityPage({ params }: PageProps) {
   const value = Array.isArray(data) ? data[0] : data;
   const aggregate = publicCommunityAggregateSchema.safeParse(value);
   if (error || !aggregate.success) notFound();
-  const content = copy(locale, page.cityLabel);
+  const city = localizedCommunityCity(page, locale);
+  const content = copy(locale, city);
   const stats = aggregate.data;
+  const title = localizedCommunityTitle(page, locale);
+  const pageUrl = `https://www.kinavela.com/${locale}/community/${page.slug}`;
+
+  // Breadcrumbs give the page a labelled place in the site hierarchy, which is
+  // what both Google's result trail and assistant citations read.
+  const communityJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: title,
+        inLanguage: locale,
+        about: { "@type": "Place", name: city },
+        isPartOf: { "@id": "https://www.kinavela.com/#website" },
+        publisher: { "@id": "https://www.kinavela.com/#organization" },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Kinavela",
+            item: `https://www.kinavela.com/${locale}`,
+          },
+          { "@type": "ListItem", position: 2, name: title, item: pageUrl },
+        ],
+      },
+    ],
+  };
 
   return (
     <main className="public-community-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(communityJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <header className="public-community-header">
         <Link className="brand" href={`/${locale}`}>
           <span className="brand-mark">K</span>
           <span>KINAVELA</span>
         </Link>
-        <nav aria-label="Public navigation">
+        <nav aria-label={content.navigation}>
           <Link href={`/${locale}`}>{content.explore}</Link>
-          <Link href={`/${locale}/privacy`}>Privacy</Link>
+          <Link href={`/${locale}/privacy`}>{content.privacyLink}</Link>
         </nav>
       </header>
       <article className="public-community-content">
         <p className="eyebrow">{content.eyebrow}</p>
-        <h1>{localizedCommunityTitle(page, locale)}</h1>
+        <h1>{title}</h1>
         <p className="public-community-lead">{content.intro}</p>
         <p className="public-community-privacy">{content.privacy}</p>
         {stats.published ? (
@@ -152,7 +219,7 @@ export default async function CommunityPage({ params }: PageProps) {
           </section>
         ) : (
           <section className="public-community-forming">
-            <h2>Community is forming</h2>
+            <h2>{content.formingTitle}</h2>
             <p>{content.forming}</p>
           </section>
         )}
@@ -162,7 +229,7 @@ export default async function CommunityPage({ params }: PageProps) {
       </article>
       <footer className="public-community-footer">
         <span>© {new Date().getUTCFullYear()} Kinavela</span>
-        <span>Privacy by design · Aggregates only</span>
+        <span>{content.footer}</span>
       </footer>
     </main>
   );

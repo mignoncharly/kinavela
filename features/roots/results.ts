@@ -2,6 +2,8 @@ export {
   completedMissionSchema,
   parseCompletedMissions,
   parseRootsEntries,
+  parseRootsExports,
+  parseRootsOptions,
   parseRootsPassports,
   rootsEntrySchema,
   rootsPassportSchema,
@@ -9,5 +11,7 @@ export {
 export type {
   CompletedMission,
   RootsEntry,
+  RootsExport,
+  RootsOptions,
   RootsPassport,
 } from "@/lib/validation/roots";

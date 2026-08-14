@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Locale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 
 export type OfflineSnapshotKind = "passport" | "missions";
 type Snapshot = {
   kind: OfflineSnapshotKind;
+  locale: Locale;
   payload: unknown;
   savedAt: number;
 };
@@ -25,6 +28,7 @@ function openDatabase() {
 
 export async function saveOfflineSnapshot(
   kind: OfflineSnapshotKind,
+  locale: Locale,
   payload: unknown,
 ) {
   const database = await openDatabase();
@@ -32,7 +36,7 @@ export async function saveOfflineSnapshot(
     const request = database
       .transaction(storeName, "readwrite")
       .objectStore(storeName)
-      .put({ kind, payload, savedAt: Date.now() } satisfies Snapshot);
+      .put({ kind, locale, payload, savedAt: Date.now() } satisfies Snapshot);
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
   });
@@ -82,15 +86,18 @@ export function OfflineSnapshotButton({
   kind,
   payload,
   label,
+  locale,
 }: {
   kind: OfflineSnapshotKind;
   payload: unknown;
   label: string;
+  locale: Locale;
 }) {
+  const copy = getAppDictionary(locale).pwa;
   const [saved, setSaved] = useState(false);
   async function save() {
     try {
-      await saveOfflineSnapshot(kind, payload);
+      await saveOfflineSnapshot(kind, locale, payload);
       setSaved(true);
     } catch {
       setSaved(false);
@@ -98,12 +105,13 @@ export function OfflineSnapshotButton({
   }
   return (
     <button className="button button-secondary" type="button" onClick={save}>
-      {saved ? "Saved offline" : label}
+      {saved ? copy.saved : label}
     </button>
   );
 }
 
-export function OfflineDashboard() {
+export function OfflineDashboard({ locale }: { locale: Locale }) {
+  const copy = getAppDictionary(locale).pwa;
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -114,10 +122,13 @@ export function OfflineDashboard() {
       })
       .catch(() => setReady(true));
   }, []);
-  if (!ready)
-    return <p className="offline-muted">Loading offline snapshots…</p>;
-  const passport = snapshots.find((snapshot) => snapshot.kind === "passport");
-  const missions = snapshots.find((snapshot) => snapshot.kind === "missions");
+  if (!ready) return <p className="offline-muted">{copy.loading}</p>;
+  const passport = snapshots.find(
+    (snapshot) => snapshot.kind === "passport" && snapshot.locale === locale,
+  );
+  const missions = snapshots.find(
+    (snapshot) => snapshot.kind === "missions" && snapshot.locale === locale,
+  );
   const passportPayload = passport?.payload as
     | {
         passport?: { child_nickname?: string; entry_count?: number };
@@ -125,21 +136,27 @@ export function OfflineDashboard() {
       }
     | undefined;
   const missionPayload = Array.isArray(missions?.payload)
-    ? (missions.payload as Array<{ title?: string; summary?: string }>)
+    ? (
+        missions.payload as Array<{
+          title?: string;
+          summary?: string;
+          content_locale?: Locale;
+        }>
+      ).filter((mission) => mission.content_locale === locale)
     : [];
   return (
     <div className="offline-snapshot-grid">
       {passportPayload && (
         <section className="offline-card">
-          <p className="eyebrow">ROOTS PASSPORT</p>
+          <p className="eyebrow">{copy.passport}</p>
           <h2>
-            {passportPayload.passport?.child_nickname ?? "Saved Passport"}
+            {passportPayload.passport?.child_nickname ?? copy.savedPassport}
           </h2>
           <p>
             {passportPayload.passport?.entry_count ??
               passportPayload.entries?.length ??
               0}{" "}
-            saved entries.
+            {copy.entries}
           </p>
           <ul>
             {(passportPayload.entries ?? [])
@@ -155,8 +172,8 @@ export function OfflineDashboard() {
       )}
       {missions && (
         <section className="offline-card">
-          <p className="eyebrow">MISSIONS</p>
-          <h2>Saved cultural missions</h2>
+          <p className="eyebrow">{copy.missions}</p>
+          <h2>{copy.savedMissions}</h2>
           <ul>
             {missionPayload.slice(0, 20).map((mission, index) => (
               <li key={`${mission.title}-${index}`}>
@@ -167,12 +184,7 @@ export function OfflineDashboard() {
           </ul>
         </section>
       )}
-      {!passport && !missions && (
-        <p className="offline-muted">
-          No offline snapshots saved yet. Open your Passport or Missions page
-          while online and choose Save offline.
-        </p>
-      )}
+      {!passport && !missions && <p className="offline-muted">{copy.empty}</p>}
     </div>
   );
 }

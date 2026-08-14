@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  parseConnectionChildSummaries,
   parseConnectionResults,
   parseNotificationResults,
 } from "@/features/connections/results";
@@ -84,5 +85,27 @@ describe("family connection contracts", () => {
         },
       ]).success,
     ).toBe(true);
+  });
+
+  it("allows only the privacy-limited connected-child projection", () => {
+    expect(
+      parseConnectionChildSummaries([
+        {
+          connection_id: connectionId,
+          child_nickname: "Petit Lion",
+          age_range: "3-5",
+        },
+      ]).success,
+    ).toBe(true);
+    expect(
+      parseConnectionChildSummaries([
+        {
+          connection_id: connectionId,
+          child_nickname: "Petit Lion",
+          age_range: "3-5",
+          birth_year: 2022,
+        },
+      ]).success,
+    ).toBe(false);
   });
 });

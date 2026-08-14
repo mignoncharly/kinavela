@@ -45,8 +45,19 @@ export const notificationResultSchema = z
   })
   .strict();
 
+export const connectionChildSummarySchema = z
+  .object({
+    connection_id: z.string().uuid(),
+    child_nickname: z.string().min(1).max(40),
+    age_range: z.enum(["0-2", "3-5", "6-8", "9-12", "13-15", "16-17", "18+"]),
+  })
+  .strict();
+
 export type ConnectionResult = z.infer<typeof connectionResultSchema>;
 export type NotificationResult = z.infer<typeof notificationResultSchema>;
+export type ConnectionChildSummary = z.infer<
+  typeof connectionChildSummarySchema
+>;
 
 export function parseConnectionResults(value: unknown) {
   return connectionResultSchema.array().safeParse(value);
@@ -54,4 +65,8 @@ export function parseConnectionResults(value: unknown) {
 
 export function parseNotificationResults(value: unknown) {
   return notificationResultSchema.array().safeParse(value);
+}
+
+export function parseConnectionChildSummaries(value: unknown) {
+  return connectionChildSummarySchema.array().safeParse(value);
 }

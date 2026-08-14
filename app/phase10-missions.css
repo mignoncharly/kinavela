@@ -79,6 +79,77 @@
   font-size: 14px;
 }
 
+.mission-context {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-left: 3px solid var(--primary);
+  border-radius: 4px 12px 12px 4px;
+  background: var(--surface-elevated);
+}
+
+.mission-context > svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--primary);
+}
+
+.mission-context strong,
+.mission-context p {
+  display: block;
+  margin: 0;
+}
+
+.mission-context strong {
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.mission-context p,
+.mission-preparation p,
+.mission-preparation li,
+.mission-complete-note p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.mission-preparation {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.mission-preparation summary {
+  padding: 12px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.mission-preparation-grid {
+  display: grid;
+  gap: 14px;
+  padding: 0 14px 14px;
+}
+
+.mission-preparation h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 6px;
+  font-size: 12px;
+}
+
+.mission-preparation p,
+.mission-preparation ul {
+  margin: 0;
+}
+
+.mission-preparation ul {
+  padding-left: 19px;
+}
+
 .mission-meta {
   display: flex;
   flex-wrap: wrap;
@@ -169,6 +240,11 @@
 .mission-complete-note {
   color: var(--success);
   font-weight: 700;
+}
+
+.mission-complete-note p {
+  margin: 5px 0 0;
+  font-weight: 500;
 }
 
 .mission-assign-panel {

@@ -1,0 +1,151 @@
+.invitation-creator {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 92%, var(--accent));
+}
+
+.invitation-creator h3,
+.invitation-creator p {
+  margin: 6px 0 0;
+}
+
+.invitation-creator small,
+.invitation-created > p,
+.event-internal-share p,
+.invitation-privacy-note {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.invitation-created {
+  display: grid;
+  gap: 14px;
+}
+
+.invitation-share-actions,
+.invitation-auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.invitation-share-actions .button {
+  min-height: 42px;
+}
+
+.event-internal-share {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.event-internal-share p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.event-card > .invitation-creator {
+  margin-top: 20px;
+}
+
+.invitation-public-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 6vw, 72px);
+  background:
+    radial-gradient(circle at 20% 10%, #f1dfbe 0, transparent 35%),
+    var(--background);
+}
+
+.invitation-public-card {
+  width: min(680px, 100%);
+  display: grid;
+  gap: 22px;
+  padding: clamp(28px, 7vw, 64px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: 0 24px 80px rgb(37 50 42 / 10%);
+}
+
+.invitation-public-card .brand {
+  margin-bottom: 18px;
+}
+
+.invitation-public-card h1 {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: clamp(2.4rem, 7vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1.02;
+}
+
+.invitation-public-card > p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.invitation-public-facts {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.invitation-public-facts div {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--background);
+}
+
+.invitation-public-facts dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.invitation-public-facts dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.invitation-acceptance {
+  display: grid;
+  gap: 14px;
+}
+
+.invitation-acceptance p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 39.9375rem) {
+  .invitation-share-actions,
+  .invitation-auth-actions {
+    display: grid;
+  }
+
+  .invitation-share-actions .button,
+  .invitation-auth-actions .button,
+  .invitation-acceptance .button {
+    width: 100%;
+  }
+
+  .invitation-public-page {
+    padding: 12px;
+  }
+
+  .invitation-public-card {
+    border-radius: 18px;
+  }
+}

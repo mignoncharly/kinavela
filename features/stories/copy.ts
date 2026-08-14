@@ -12,6 +12,15 @@ export const storiesCopy = {
     stories: "Eure Stories",
     noRequests: "Noch keine Story-Anfragen.",
     noStories: "Noch keine aufgenommenen Stories.",
+    noChildren: "Erstelle zuerst ein Roots Passport für ein Kind.",
+    premiumRequiredTitle: "Roots Stories ist eine Premium-Erweiterung",
+    premiumRequiredBody:
+      "Entdecke Familien und Villages weiterhin kostenlos. Für private Aufnahmen und KI-Verarbeitung ist Roots Family erforderlich.",
+    managePlan: "Abo verwalten",
+    providerUnavailableTitle:
+      "Story-Verarbeitung vorübergehend nicht verfügbar",
+    providerUnavailableBody:
+      "Neue Aufnahme-Links sind pausiert, bis der sichere Verarbeitungsdienst wieder bereit ist.",
     create: "Story-Anfrage erstellen",
     question: "Frage oder Impuls",
     questionPlaceholder:
@@ -41,6 +50,27 @@ export const storiesCopy = {
     added: "Zum Passport hinzugefügt",
     audio: "Original-Audio anhören",
     processing: "Wird verarbeitet…",
+    failed: "Verarbeitung fehlgeschlagen",
+    failedBody:
+      "Die Verarbeitung wurde nicht abgeschlossen. Du kannst es erneut versuchen oder vorhandenen Text bearbeiten.",
+    retry: "Verarbeitung erneut versuchen",
+    saveEdits: "Änderungen speichern",
+    statuses: {
+      queued: "In Warteschlange",
+      transcribing: "Wird transkribiert…",
+      translating: "Wird übersetzt…",
+      adapting: "Kinderfassung wird erstellt…",
+    },
+    languageNames: {
+      de: "Deutsch",
+      en: "Englisch",
+      fr: "Französisch",
+      es: "Spanisch",
+      it: "Italienisch",
+      pt: "Portugiesisch",
+      wo: "Wolof",
+      sw: "Swahili",
+    },
     ready: "Bereit zur Prüfung",
     transcript: "Original-Transkript",
     translationText: "Übersetzung",
@@ -49,6 +79,8 @@ export const storiesCopy = {
     privacy:
       "Original-Audio und Texte bleiben privat. Nichts wird automatisch veröffentlicht.",
     recordTitle: "Eine Geschichte für eure Familie",
+    defaultStoryTitle: "Eine Familiengeschichte",
+    recording: "Aufnahme läuft",
     recordIntro:
       "Nimm dir Zeit. Du brauchst kein Konto; dieser Link ist nur für diese eine Aufnahme bestimmt.",
     record: "Aufnahme starten",
@@ -75,6 +107,15 @@ export const storiesCopy = {
     stories: "Vos récits",
     noRequests: "Aucune demande pour le moment.",
     noStories: "Aucun récit enregistré pour le moment.",
+    noChildren: "Créez d’abord un Roots Passport pour un enfant.",
+    premiumRequiredTitle: "Roots Stories est une option Premium",
+    premiumRequiredBody:
+      "La découverte des familles et Villages reste gratuite. Roots Family est requis pour les enregistrements privés et le traitement IA.",
+    managePlan: "Gérer l’abonnement",
+    providerUnavailableTitle:
+      "Traitement des récits temporairement indisponible",
+    providerUnavailableBody:
+      "Les nouveaux liens d’enregistrement sont suspendus jusqu’au retour du service sécurisé.",
     create: "Créer une demande",
     question: "Question ou invitation",
     questionPlaceholder:
@@ -104,6 +145,27 @@ export const storiesCopy = {
     added: "Ajouté au Passport",
     audio: "Écouter l’audio original",
     processing: "Traitement…",
+    failed: "Échec du traitement",
+    failedBody:
+      "Le traitement n’a pas abouti. Vous pouvez réessayer ou modifier le texte déjà disponible.",
+    retry: "Réessayer le traitement",
+    saveEdits: "Enregistrer les modifications",
+    statuses: {
+      queued: "En attente",
+      transcribing: "Transcription…",
+      translating: "Traduction…",
+      adapting: "Adaptation pour enfant…",
+    },
+    languageNames: {
+      de: "Allemand",
+      en: "Anglais",
+      fr: "Français",
+      es: "Espagnol",
+      it: "Italien",
+      pt: "Portugais",
+      wo: "Wolof",
+      sw: "Swahili",
+    },
     ready: "Prêt à réviser",
     transcript: "Transcription originale",
     translationText: "Traduction",
@@ -112,6 +174,8 @@ export const storiesCopy = {
     privacy:
       "Audio et textes restent privés. Rien n’est publié automatiquement.",
     recordTitle: "Une histoire pour votre famille",
+    defaultStoryTitle: "Une histoire de famille",
+    recording: "Enregistrement en cours",
     recordIntro:
       "Prenez votre temps. Aucun compte n’est nécessaire ; ce lien est réservé à cet enregistrement.",
     record: "Commencer l’enregistrement",
@@ -138,6 +202,14 @@ export const storiesCopy = {
     stories: "Your stories",
     noRequests: "No story requests yet.",
     noStories: "No recorded stories yet.",
+    noChildren: "Create a Roots Passport for a child first.",
+    premiumRequiredTitle: "Roots Stories is a premium enhancement",
+    premiumRequiredBody:
+      "Family and Village discovery remains free. Roots Family is required for private recordings and AI processing.",
+    managePlan: "Manage plan",
+    providerUnavailableTitle: "Story processing is temporarily unavailable",
+    providerUnavailableBody:
+      "New recording links are paused until the secure processing service is ready again.",
     create: "Create story request",
     question: "Question or prompt",
     questionPlaceholder:
@@ -167,6 +239,27 @@ export const storiesCopy = {
     added: "Added to Passport",
     audio: "Listen to original audio",
     processing: "Processing…",
+    failed: "Processing failed",
+    failedBody:
+      "Processing did not finish. You can retry it or edit any text already available.",
+    retry: "Retry processing",
+    saveEdits: "Save edits",
+    statuses: {
+      queued: "Queued",
+      transcribing: "Transcribing…",
+      translating: "Translating…",
+      adapting: "Creating child-friendly version…",
+    },
+    languageNames: {
+      de: "German",
+      en: "English",
+      fr: "French",
+      es: "Spanish",
+      it: "Italian",
+      pt: "Portuguese",
+      wo: "Wolof",
+      sw: "Swahili",
+    },
     ready: "Ready for review",
     transcript: "Original transcript",
     translationText: "Translation",
@@ -175,6 +268,8 @@ export const storiesCopy = {
     privacy:
       "Original audio and texts remain private. Nothing is published automatically.",
     recordTitle: "A story for your family",
+    defaultStoryTitle: "A family story",
+    recording: "Recording",
     recordIntro:
       "Take your time. No account is needed; this link is only for this recording.",
     record: "Start recording",

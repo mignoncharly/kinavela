@@ -7,6 +7,7 @@ import { notFound, redirect } from "next/navigation";
 import { NotificationCenter } from "@/components/notifications/notification-center";
 import { parseNotificationFeed } from "@/features/notifications/results";
 import { isLocale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Page({
@@ -16,6 +17,7 @@ export default async function Page({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const copy = getAppDictionary(locale).notifications;
   const supabase = await createClient();
   const {
     data: { user },
@@ -30,12 +32,12 @@ export default async function Page({
       <AppHeader active="notifications" locale={locale} />
       <section className="settings-panel">
         <Link className="back-link" href={`/${locale}/app`}>
-          <ArrowLeft size={17} /> Back
+          <ArrowLeft size={17} /> {copy.back}
         </Link>
         {error || !notifications.success ? (
-          <p className="form-error">Notifications are unavailable.</p>
+          <p className="form-error">{copy.unavailable}</p>
         ) : (
-          <NotificationCenter items={notifications.data} />
+          <NotificationCenter items={notifications.data} locale={locale} />
         )}
       </section>
     </main>

@@ -8,7 +8,7 @@ import {
   MapPin,
   Sprout,
 } from "lucide-react";
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -22,25 +22,33 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const dictionary = getDictionary(locale);
+  // openGraph is shallow-merged: defining it here drops the root segment's
+  // opengraph-image, so carry the parent's images through explicitly.
+  const parentImages = (await parent).openGraph?.images ?? [];
   return {
-    title: dictionary.meta.title,
+    // meta.title already carries the brand, so bypass the "%s · Kinavela"
+    // template instead of rendering "Kinavela — … · Kinavela".
+    title: { absolute: dictionary.meta.title },
     description: dictionary.meta.description,
     alternates: {
       canonical: `/${locale}`,
-      languages: { de: "/de", fr: "/fr", en: "/en" },
+      languages: { de: "/de", fr: "/fr", en: "/en", "x-default": "/de" },
     },
     openGraph: {
       type: "website",
       locale,
+      url: `/${locale}`,
       title: dictionary.meta.title,
       description: dictionary.meta.description,
       siteName: "Kinavela",
+      images: parentImages,
     },
   };
 }
@@ -54,15 +62,29 @@ export default async function LandingPage({ params }: PageProps) {
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Kinavela",
-    url: "https://www.kinavela.com",
-    email: "info@gestionatech.de",
-    description: dictionary.meta.description,
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.kinavela.com/#organization",
+        name: "Kinavela",
+        url: "https://www.kinavela.com",
+        email: "contact@kinavela.com",
+        logo: "https://www.kinavela.com/icon.svg",
+        description: dictionary.meta.description,
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.kinavela.com/#website",
+        url: "https://www.kinavela.com",
+        name: "Kinavela",
+        inLanguage: locale,
+        publisher: { "@id": "https://www.kinavela.com/#organization" },
+      },
+    ],
   };
 
   return (
-    <main>
+    <main className="landing-page">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -70,19 +92,26 @@ export default async function LandingPage({ params }: PageProps) {
         }}
       />
       <header className="site-header">
-        <Link className="brand" href={`/${locale}`} aria-label="Kinavela home">
+        <Link
+          className="brand"
+          href={`/${locale}`}
+          aria-label={dictionary.nav.homeLabel}
+        >
           <span className="brand-mark" aria-hidden="true">
             K
           </span>
           <span>KINAVELA</span>
         </Link>
-        <nav className="desktop-nav" aria-label="Primary navigation">
+        <nav className="desktop-nav" aria-label={dictionary.nav.primaryLabel}>
           <a href="#vision">{dictionary.nav.vision}</a>
           <a href="#safety">{dictionary.nav.principles}</a>
           <a href="#contact">{dictionary.nav.contact}</a>
-          <Link href={`/${locale}/auth/login`}>Sign in</Link>
+          <Link href={`/${locale}/auth/login`}>{dictionary.nav.signIn}</Link>
         </nav>
-        <nav className="locale-switcher" aria-label="Language selector">
+        <nav
+          className="locale-switcher"
+          aria-label={dictionary.nav.languageLabel}
+        >
           {locales.map((item) => (
             <Link
               key={item}
@@ -121,10 +150,28 @@ export default async function LandingPage({ params }: PageProps) {
         </div>
         <div
           className="hero-visual"
-          aria-label="Kinavela community journey illustration"
+          role="img"
+          aria-label={dictionary.hero.illustrationLabel}
         >
           <div className="orbit orbit-one" />
           <div className="orbit orbit-two" />
+          <div className="community-scene" aria-hidden="true">
+            <span className="scene-sun" />
+            <span className="scene-home scene-home-left" />
+            <span className="scene-home scene-home-right" />
+            <span className="scene-tree scene-tree-left" />
+            <span className="scene-tree scene-tree-right" />
+            <span className="scene-person scene-person-one" />
+            <span className="scene-person scene-person-two" />
+            <span className="scene-person scene-person-three" />
+            <span className="scene-person scene-person-four" />
+            <span className="scene-path" />
+            <HeartHandshake
+              className="scene-heart"
+              size={28}
+              strokeWidth={1.6}
+            />
+          </div>
           <div className="sun-disc">
             <span>ROOTS</span>
             <strong>×</strong>
@@ -135,8 +182,8 @@ export default async function LandingPage({ params }: PageProps) {
               <HeartHandshake size={20} />
             </span>
             <span>
-              <small>12 km</small>
-              <strong>Family nearby</strong>
+              <small>{dictionary.hero.nearbyDistance}</small>
+              <strong>{dictionary.hero.nearbyFamily}</strong>
             </span>
           </div>
           <div className="floating-card card-story">
@@ -144,13 +191,23 @@ export default async function LandingPage({ params }: PageProps) {
               <Sprout size={20} />
             </span>
             <span>
-              <small>ROOTS PASSPORT</small>
-              <strong>A story preserved</strong>
+              <small>{dictionary.hero.passportLabel}</small>
+              <strong>{dictionary.hero.preservedStory}</strong>
             </span>
           </div>
           <div className="dot dot-a" />
           <div className="dot dot-b" />
           <div className="dot dot-c" />
+          <div className="leaf-sprig leaf-sprig-one" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="leaf-sprig leaf-sprig-two" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
       </section>
 
@@ -180,11 +237,16 @@ export default async function LandingPage({ params }: PageProps) {
 
       <section className="trust" id="safety" aria-labelledby="trust-title">
         <div className="trust-emblem" aria-hidden="true">
+          <div className="trust-faces">
+            <span />
+            <span />
+            <span />
+          </div>
           <div className="emblem-ring">
             <LockKeyhole size={48} strokeWidth={1.4} />
           </div>
-          <span>PRIVACY</span>
-          <span>BY DESIGN</span>
+          <span>{dictionary.trust.emblem[0]}</span>
+          <span>{dictionary.trust.emblem[1]}</span>
         </div>
         <div className="trust-copy">
           <p className="eyebrow light">{dictionary.trust.eyebrow}</p>
@@ -204,7 +266,15 @@ export default async function LandingPage({ params }: PageProps) {
       </section>
 
       <section className="cta" id="contact" aria-labelledby="cta-title">
-        <p className="eyebrow">JOIN KINAVELA</p>
+        <div className="cta-community" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <HeartHandshake size={24} strokeWidth={1.7} />
+          <span />
+          <span />
+        </div>
+        <p className="eyebrow">{dictionary.cta.eyebrow}</p>
         <h2 id="cta-title">{dictionary.cta.title}</h2>
         <p>{dictionary.cta.body}</p>
         <a className="button button-primary" href={`/${locale}/auth/signup`}>
@@ -222,14 +292,22 @@ export default async function LandingPage({ params }: PageProps) {
           <span className="status-dot" />
           {dictionary.footer.status}
         </p>
-        <nav aria-label="Legal">
-          <Link href={`/${locale}/privacy`}>Privacy</Link>{" "}
-          <Link href={`/${locale}/terms`}>Terms</Link>{" "}
-          <Link href={"/" + locale + "/impressum"}>Impressum</Link>{" "}
-          <Link href={"/" + locale + "/cookies"}>Cookies</Link>{" "}
-          <Link href={"/" + locale + "/child-safety"}>Child safety</Link>{" "}
-          <Link href={"/" + locale + "/community-guidelines"}>Community</Link>{" "}
-          <a href="mailto:info@gestionatech.de">Contact</a>
+        <nav aria-label={dictionary.footer.legalLabel}>
+          <Link href={`/${locale}/privacy`}>{dictionary.footer.privacy}</Link>{" "}
+          <Link href={`/${locale}/terms`}>{dictionary.footer.terms}</Link>{" "}
+          <Link href={"/" + locale + "/impressum"}>
+            {dictionary.footer.impressum}
+          </Link>{" "}
+          <Link href={"/" + locale + "/cookies"}>
+            {dictionary.footer.cookies}
+          </Link>{" "}
+          <Link href={"/" + locale + "/child-safety"}>
+            {dictionary.footer.childSafety}
+          </Link>{" "}
+          <Link href={"/" + locale + "/community-guidelines"}>
+            {dictionary.footer.community}
+          </Link>{" "}
+          <a href="mailto:contact@kinavela.com">{dictionary.footer.contact}</a>
         </nav>
         <p>
           © {new Date().getUTCFullYear()} Kinavela. {dictionary.footer.rights}

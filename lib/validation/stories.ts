@@ -36,6 +36,16 @@ export const storyActionSchema = z.discriminatedUnion("action", [
     .strict(),
   z
     .object({
+      action: z.literal("edit"),
+      story_id: uuid,
+      transcript_original: z.string().trim().min(1).max(20000),
+      transcript_translation: z.string().trim().max(20000).nullable(),
+      adapted_story: z.string().trim().max(20000).nullable(),
+    })
+    .strict(),
+  z.object({ action: z.literal("retry"), story_id: uuid }).strict(),
+  z
+    .object({
       action: z.literal("add_to_roots"),
       story_id: uuid,
       visibility: z.enum(["private", "family", "village"]).default("private"),
@@ -76,6 +86,10 @@ export const familyStorySchema = z
     approval_status: z.enum(["pending_review", "approved", "rejected"]),
     audio_available: z.boolean(),
     roots_entry_id: uuid.nullable(),
+    requested_translation_language: z.enum(storyLanguages).nullable(),
+    request_adaptation: z.boolean(),
+    failure_code: z.string().max(80).nullable(),
+    retry_available: z.boolean(),
     created_at: z.string().datetime({ offset: true }),
     updated_at: z.string().datetime({ offset: true }),
   })

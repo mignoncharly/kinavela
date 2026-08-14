@@ -10,6 +10,7 @@ test.skip(
   !enabled || !supabaseUrl || !serviceRoleKey || !appOrigin,
   "Requires explicit authenticated visual audit credentials.",
 );
+test.setTimeout(120_000);
 
 test("authenticated application layouts are responsive", async ({ page }) => {
   const admin = createClient(supabaseUrl!, serviceRoleKey!, {
@@ -60,7 +61,8 @@ test("authenticated application layouts are responsive", async ({ page }) => {
     expect(login.status()).toBe(200);
 
     for (const viewport of [
-      { width: 390, height: 844, label: "mobile" },
+      { width: 390, height: 844, label: "ios-safari" },
+      { width: 412, height: 915, label: "android-chrome" },
       { width: 1440, height: 900, label: "desktop" },
     ]) {
       await page.setViewportSize(viewport);

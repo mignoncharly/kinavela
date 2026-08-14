@@ -51,6 +51,29 @@
   min-height: 120px;
   resize: vertical;
 }
+.story-readiness {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-elevated);
+}
+.story-readiness p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.story-readiness .button {
+  justify-self: start;
+}
+.story-editor {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.story-editor textarea {
+  min-height: 150px;
+}
 .story-form small,
 .story-muted {
   color: var(--muted);

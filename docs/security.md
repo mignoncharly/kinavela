@@ -25,6 +25,8 @@ Before later phases launch, perform the blueprint's RLS, IDOR, upload, CSRF, XSS
 - One partial unique index enforces a single active Village owner. Owners must transfer ownership before leaving. Activation locks the Village row, enforces its family limit, and rechecks bidirectional family blocks against every active member.
 - Village centers remain internal geography values. Discovery and member projections exclude coordinates, authentication IDs, contacts, guardians, and children. Active membership is rechecked for every Village page/message read and message insert.
 - Moderated messages use `deleted_at` tombstones. Message RLS excludes tombstones, while the referenced report and content remain available only to privileged moderation infrastructure for later review.
+- Structured Village support posts and replies are forced-RLS and RPC-only. Mutations derive the author from the session, enforce per-profile rate limits and active membership, require privacy confirmation, and reject obvious email/phone disclosure. Search and DTOs expose no profile IDs or contact fields.
+- Support reports use fixed reasons and the existing report-rate, triage, escalation and action-history controls. Tombstoned text is excluded from member projections; notifications and audit events never duplicate support bodies or titles.
 
 ## Phase 8 event security
 

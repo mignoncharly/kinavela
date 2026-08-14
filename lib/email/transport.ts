@@ -27,5 +27,13 @@ export async function sendTransactionalEmail(message: TransactionalEmail) {
     ...message,
     from: serverEnv.EMAIL_FROM,
     replyTo: serverEnv.EMAIL_REPLY_TO,
+    envelope: {
+      from: serverEnv.SMTP_USER,
+      to: message.to,
+    },
+    headers: {
+      "Auto-Submitted": "auto-generated",
+      "X-Auto-Response-Suppress": "All",
+    },
   });
 }

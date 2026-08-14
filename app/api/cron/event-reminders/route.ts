@@ -26,16 +26,20 @@ export async function POST(request: Request) {
   if (!authorized(request)) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
-  const { data, error } = await createAdminClient().rpc(
-    "dispatch_due_event_reminders",
-  );
+  const admin = createAdminClient();
+  const { data, error } = await admin.rpc("dispatch_due_event_reminders");
   if (error) {
     return NextResponse.json({ ok: false }, { status: 503 });
+  }
+  const playdateResult = await admin.rpc("dispatch_due_playdate_reminders");
+  if (playdateResult.error) {
+    return NextResponse.json({ ok: false, delivered: data }, { status: 503 });
   }
   try {
     return NextResponse.json({
       ok: true,
       delivered: data,
+      playdatesDelivered: playdateResult.data,
       notifications: await dispatchNotificationDeliveries(),
     });
   } catch {

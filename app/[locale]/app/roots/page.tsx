@@ -12,11 +12,13 @@ import {
 import { getRootsCopy } from "@/features/roots/copy";
 import { OfflineSnapshotButton } from "@/components/pwa/offline-data";
 import {
-  parseCompletedMissions,
   parseRootsEntries,
+  parseRootsExports,
+  parseRootsOptions,
   parseRootsPassports,
 } from "@/features/roots/results";
 import { isLocale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Page({
@@ -29,6 +31,7 @@ export default async function Page({
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
   const copy = getRootsCopy(locale);
+  const appCopy = getAppDictionary(locale);
   const supabase = await createClient();
   const {
     data: { user },
@@ -53,26 +56,29 @@ export default async function Page({
   const selected =
     passports.data.find((passport) => passport.child_id === query.child) ??
     passports.data[0];
-  const [entriesResult, missionsResult] = selected
+  const [entriesResult, optionsResult, exportsResult] = selected
     ? await Promise.all([
-        supabase.rpc("list_roots_passport_entries", {
+        supabase.rpc("list_roots_passport_entries_v2", {
           p_child_id: selected.child_id,
+          p_locale: locale,
         }),
-        supabase.rpc("list_cultural_missions"),
+        supabase.rpc("get_roots_passport_options_v2", {
+          p_child_id: selected.child_id,
+          p_locale: locale,
+        }),
+        supabase.rpc("list_roots_passport_exports", {
+          p_child_id: selected.child_id,
+          p_locale: locale,
+        }),
       ])
     : [
         { data: [], error: null },
+        { data: null, error: null },
         { data: [], error: null },
       ];
   const entries = parseRootsEntries(entriesResult.data);
-  const missions = parseCompletedMissions(
-    (Array.isArray(missionsResult.data) ? missionsResult.data : []).filter(
-      (mission): mission is Record<string, unknown> =>
-        typeof mission === "object" &&
-        mission !== null &&
-        mission.progress_status === "completed",
-    ),
-  );
+  const options = parseRootsOptions(optionsResult.data);
+  const exports = parseRootsExports(exportsResult.data);
   return (
     <main className="app-shell roots-page">
       <AppHeader active="roots" locale={locale} />
@@ -113,7 +119,11 @@ export default async function Page({
                     <ShieldCheck size={15} /> {copy.privacy}
                   </p>
                 </div>
-                <RootsPassportActions childId={selected.child_id} copy={copy} />
+                <RootsPassportActions
+                  childId={selected.child_id}
+                  copy={copy}
+                  exports={exports.success ? exports.data : []}
+                />
               </div>
               <OfflineSnapshotButton
                 kind="passport"
@@ -121,16 +131,43 @@ export default async function Page({
                   passport: selected,
                   entries: entries.success ? entries.data : [],
                 }}
-                label="Save Passport offline"
+                label={appCopy.pwa.savePassport}
+                locale={locale}
               />
               <RootsEntryForm
                 childId={selected.child_id}
-                missions={missions.success ? missions.data : []}
+                options={
+                  options.success
+                    ? options.data
+                    : {
+                        cultures: [],
+                        languages: [],
+                        missions: [],
+                        villages: [],
+                        events: [],
+                      }
+                }
                 passportId={selected.passport_id}
                 copy={copy}
               />
               {entries.success ? (
-                <RootsTimeline entries={entries.data} copy={copy} />
+                <RootsTimeline
+                  entries={entries.data}
+                  options={
+                    options.success
+                      ? options.data
+                      : {
+                          cultures: [],
+                          languages: [],
+                          missions: [],
+                          villages: [],
+                          events: [],
+                        }
+                  }
+                  passportId={selected.passport_id}
+                  copy={copy}
+                  locale={locale}
+                />
               ) : (
                 <p className="form-error">{copy.unavailable}</p>
               )}

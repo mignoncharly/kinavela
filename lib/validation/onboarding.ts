@@ -12,6 +12,28 @@ const child = z.object({
     .nullable(),
 });
 
+export const onboardingDraftSchema = z
+  .object({
+    version: z.literal(1),
+    step: z.number().int().min(0).max(6),
+    children: z.array(z.number().int().positive()).min(1).max(8),
+    languageRows: z.array(z.number().int().positive()).min(1).max(10),
+    availabilityRows: z.array(z.number().int().positive()).min(1).max(21),
+    values: z
+      .record(
+        z.string().min(1).max(80),
+        z.union([z.string().max(600), z.array(z.string().max(160)).max(21)]),
+      )
+      .refine(
+        (values) =>
+          Object.keys(values).length <= 100 &&
+          Object.keys(values).every(
+            (key) => !/(password|token|secret|email)/i.test(key),
+          ),
+      ),
+  })
+  .strict();
+
 export const onboardingSchema = z.object({
   display_name: z.string().trim().min(2).max(80),
   preferred_language: z.enum(locales),
@@ -41,7 +63,12 @@ export const onboardingSchema = z.object({
       }),
     )
     .min(1)
-    .max(10),
+    .max(10)
+    .refine(
+      (items) =>
+        new Set(items.map((item) => item.language_id)).size === items.length,
+      "duplicate_language",
+    ),
   preservation_goals: z
     .array(
       z.enum([
@@ -64,7 +91,13 @@ export const onboardingSchema = z.object({
       }),
     )
     .min(1)
-    .max(21),
+    .max(21)
+    .refine(
+      (items) =>
+        new Set(items.map((item) => `${item.weekday}:${item.period}`)).size ===
+        items.length,
+      "duplicate_availability",
+    ),
   preferences: z.object({
     open_to_other_african_families: z.boolean(),
     open_to_all_diaspora_families: z.boolean(),
@@ -74,4 +107,5 @@ export const onboardingSchema = z.object({
   accept_community_guidelines: z.literal(true),
 });
 
+export type OnboardingDraft = z.infer<typeof onboardingDraftSchema>;
 export type OnboardingInput = z.infer<typeof onboardingSchema>;

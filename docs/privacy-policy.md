@@ -9,7 +9,7 @@ Last updated: 12 August 2026
 Gestiona Tech – Nguenkam Charles, Einzelunternehmen  
 Nikolausstraße 6  
 55120 Mainz, Deutschland  
-Email: info@gestionatech.de
+Email: contact@kinavela.com
 
 Privacy contact: privacy@gestionatech.de. No formal Data Protection Officer has been appointed. The privacy contact is not a DPO.
 

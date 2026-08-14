@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { clearOfflineSnapshots } from "@/components/pwa/offline-data";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
+import { isLocale } from "@/lib/i18n/config";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -11,6 +14,10 @@ type InstallPromptEvent = Event & {
 };
 
 export function PwaRuntime() {
+  const pathname = usePathname();
+  const segment = pathname?.split("/")[1] ?? "de";
+  const locale = isLocale(segment) ? segment : "de";
+  const copy = getAppDictionary(locale).pwa;
   const [installEvent, setInstallEvent] = useState<InstallPromptEvent | null>(
     null,
   );
@@ -31,27 +38,31 @@ export function PwaRuntime() {
     setInstallEvent(null);
   }
   return (
-    <aside className="pwa-install-prompt" aria-label="Install Kinavela">
-      <strong>Install Kinavela</strong>
-      <span>Keep your family space close, even with a weak connection.</span>
+    <aside className="pwa-install-prompt" aria-label={copy.installLabel}>
+      <strong>{copy.installLabel}</strong>
+      <span>{copy.installBody}</span>
       <button className="button button-primary" type="button" onClick={install}>
-        Install
+        {copy.install}
       </button>
       <button
         className="pwa-dismiss"
         type="button"
         onClick={() => setInstallEvent(null)}
       >
-        Not now
+        {copy.notNow}
       </button>
     </aside>
   );
 }
 
-export function OfflineLink() {
+export function OfflineLink({ locale }: { locale: "de" | "fr" | "en" }) {
+  const copy = getAppDictionary(locale).pwa;
   return (
-    <Link className="button button-secondary" href="/offline">
-      Offline space
+    <Link
+      className="button button-secondary"
+      href={`/offline?locale=${locale}`}
+    >
+      {copy.offlineSpace}
     </Link>
   );
 }

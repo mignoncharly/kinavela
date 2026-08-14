@@ -49,7 +49,7 @@ export default async function Page({
     supabase.rpc("list_my_villages"),
     supabase.rpc("discover_villages"),
     supabase.rpc("list_village_invitations"),
-    supabase.from("countries").select("id,name").order("name"),
+    supabase.rpc("list_localized_countries", { p_locale: locale }),
     supabase.rpc("list_village_cluster_recommendations"),
   ]);
   const mine = parseMyVillages(mineResult.data);
@@ -72,11 +72,13 @@ export default async function Page({
         <p className="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.title}</h1>
         <p>{copy.intro}</p>
-        <CreateVillageForm
-          locale={locale}
-          countries={countriesResult.data ?? []}
-          copy={copy}
-        />
+        <div id="create-village">
+          <CreateVillageForm
+            locale={locale}
+            countries={countriesResult.data ?? []}
+            copy={copy}
+          />
+        </div>
       </section>
       {unavailable && (
         <p className="form-error" role="alert">

@@ -1,0 +1,109 @@
+.trust-center {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.trust-grid > article {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 92%, var(--secondary) 8%);
+}
+
+.trust-grid > article > svg,
+.meeting-safety-notice h4 svg {
+  flex: 0 0 auto;
+  color: var(--secondary);
+}
+
+.trust-grid h3,
+.meeting-safety-notice h4 {
+  margin: 0 0 0.35rem;
+}
+
+.trust-grid p {
+  margin: 0.35rem 0;
+}
+
+.trust-phone-form,
+.trust-grid form,
+.admin-report-controls {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.meeting-safety-notice {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 2px solid color-mix(in srgb, var(--secondary) 45%, var(--border));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--secondary) 8%, var(--surface));
+}
+
+.meeting-safety-notice h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.meeting-safety-notice ul {
+  padding-left: 1.25rem;
+}
+
+.meeting-safety-notice label {
+  display: block;
+  margin: 0.8rem 0;
+  font-weight: 650;
+}
+
+.event-report-panel {
+  margin: 0.75rem 0;
+}
+
+.moderation-severity {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-elevated);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.moderation-severity.high,
+.moderation-severity.critical {
+  color: #8b241a;
+  background: #f9dfda;
+}
+
+.admin-report-controls {
+  min-width: 14rem;
+}
+
+.admin-report-controls textarea {
+  min-width: 14rem;
+}
+
+@media (max-width: 760px) {
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-report-controls,
+  .admin-report-controls textarea {
+    min-width: 0;
+    width: 100%;
+  }
+}

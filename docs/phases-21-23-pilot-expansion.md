@@ -1,5 +1,7 @@
 # Phases 21–23 — Germany pilot, metrics and expansion
 
+> Historical design record. Admission controls in these phases were superseded by Phase 29. Germany-wide geocoded access is now unconditional with respect to city, density, family count, and retained pilot status. See [Phase 29](phase-29-production.md).
+
 ## Phase 21: pilot contract
 
 The first release is deliberately capped at 50 active German families. The database enforces Germany-only onboarding while pilot mode is enabled and serialises the cap check to avoid race-condition oversubscription. The initial region list is Berlin, Frankfurt, Ingolstadt, Kaiserslautern, Mainz, Munich, Saarbrücken and Stuttgart; waitlist entries retain only country, city and cultural focus.

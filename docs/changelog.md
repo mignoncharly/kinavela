@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.1.0 — 2026-08-13
+
+- Added a rollback-safe end-to-end qualification scenario for the complete Schrobenhausen-to-Ingolstadt family journey.
+- Added Android Chrome, iOS Safari and desktop Playwright projects to the repeatable release gate.
+- Mapped every Phase 15 functional and security requirement to automated evidence and made admission-control intervention an explicit release failure.
+
+## 2.0.0 — 2026-08-13
+
+- Archived legacy admission-waitlist rows behind private, bounded 180-day rollback storage without dropping historical tables.
+- Added consent-aware Germany-wide access notices and classified incomplete active accounts for onboarding.
+- Replaced active pilot and rollout terminology with product-health and regional-outreach analytics that cannot control admission.
+- Added automated legacy cleanup to the privacy cron and de-identified historical city-interest totals.
+
 ## 1.7.0 — 2026-08-11
 
 - Added a repeatable release qualification gate covering environment validation, security scanning, dependency audit, application checks, remote database migrations/assertions, and protected AI worker smoke checks.

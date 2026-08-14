@@ -703,6 +703,21 @@ label small,
 .connection-card .block-family {
   margin-top: 0;
 }
+.connection-children ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.connection-children li {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #edf4ed;
+  color: var(--muted);
+  font-size: 13px;
+}
 .privacy-note {
   padding: 12px;
   border-radius: 10px;

@@ -24,7 +24,6 @@ type ActionCopy = CitySearchCopy & {
 
 export function LocationSetup({
   locale,
-  initialCountry,
   initialRadius,
   countries,
   copy,
@@ -36,7 +35,7 @@ export function LocationSetup({
   copy: ActionCopy;
 }) {
   const router = useRouter();
-  const [country, setCountry] = useState(initialCountry);
+  const country = "DE";
   const [radius, setRadius] = useState(initialRadius);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -70,21 +69,29 @@ export function LocationSetup({
               router.refresh();
               return;
             }
-            setError(copy.noCities);
+            const body = (await response.json()) as { error?: string };
+            setError(
+              body.error === "invalid_location"
+                ? copy.invalidLocation
+                : body.error === "germany_location_required"
+                  ? copy.germanyOnly
+                  : body.error === "not_authenticated"
+                    ? copy.authenticationRequired
+                    : copy.validationFailed,
+            );
             setBusy(false);
           }}
         >
           <label>
             Country
-            <select
-              value={country}
-              onChange={(event) => setCountry(event.target.value)}
-            >
-              {countries.map((item) => (
-                <option value={item.iso2} key={item.iso2}>
-                  {item.emoji} {item.name}
-                </option>
-              ))}
+            <select value={country} disabled>
+              {countries
+                .filter((item) => item.iso2 === "DE")
+                .map((item) => (
+                  <option value={item.iso2} key={item.iso2}>
+                    {item.emoji} {item.name}
+                  </option>
+                ))}
             </select>
           </label>
           <CitySearch

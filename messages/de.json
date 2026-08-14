@@ -1,62 +1,73 @@
 {
   "meta": {
     "title": "Kinavela — Wurzeln bewahren. Nähe schaffen.",
-    "description": "Eine private, vertrauensvolle Plattform für Diaspora-Familien, die Kultur, Gemeinschaft und Erinnerungen verbindet."
+    "description": "Ein privater, vertrauensvoller Ort, an dem Diaspora-Familien durch Kultur, Gemeinschaft und Erinnerungen zusammenfinden."
   },
   "nav": {
     "vision": "Vision",
     "principles": "Sicherheit",
-    "contact": "Kontakt"
+    "contact": "Kontakt",
+    "signIn": "Anmelden",
+    "primaryLabel": "Hauptnavigation",
+    "languageLabel": "Sprachauswahl",
+    "homeLabel": "Kinavela-Startseite"
   },
   "hero": {
     "eyebrow": "Für kamerunische Familien in Deutschland",
     "title": "Wurzeln bewahren. Nähe schaffen.",
-    "body": "Kinavela bringt Familien in der Nähe zusammen, stärkt kleine vertrauensvolle Gemeinschaften und hilft Eltern, Sprache, Kultur und Familiengeschichten für ihre Kinder lebendig zu halten.",
+    "body": "Kinavela bringt Familien aus der Umgebung zusammen, lässt kleine Gemeinschaften des Vertrauens wachsen und hilft Eltern dabei, Sprache, Kultur und Familiengeschichten für ihre Kinder lebendig zu halten.",
     "primary": "Konto erstellen",
     "secondary": "So funktioniert es",
-    "privacy": "Privat von Anfang an · Keine öffentlichen Kinderprofile · Keine exakten Wohnorte"
+    "privacy": "Privat von Anfang an · Keine öffentlichen Kinderprofile · Keine exakten Wohnorte",
+    "illustrationLabel": "Illustration von Familien und Nachbarschaft in der Kinavela-Gemeinschaft",
+    "nearbyDistance": "12 km",
+    "nearbyFamily": "Familie ganz in der Nähe",
+    "passportLabel": "ROOTS PASSPORT",
+    "preservedStory": "Eine Geschichte bleibt lebendig"
   },
   "journey": {
     "eyebrow": "Eine Reise, kein Feed",
-    "title": "Vom ersten Kontakt zur bleibenden Erinnerung",
+    "title": "Vom ersten Kennenlernen zur bleibenden Erinnerung",
     "steps": [
       {
         "number": "01",
         "title": "Entdecken",
-        "body": "Passende Familien in Ihrer Region finden — mit bewusst ungenauer Standortanzeige."
+        "body": "Passende Familien in Ihrer Umgebung finden — ohne genaue Standorte preiszugeben."
       },
       {
         "number": "02",
-        "title": "Verbinden",
-        "body": "Erst nach gegenseitiger Zustimmung werden private Gespräche möglich."
+        "title": "In Verbindung treten",
+        "body": "Ein privates Gespräch beginnt erst, wenn beide Familien zugestimmt haben."
       },
       {
         "number": "03",
-        "title": "Village aufbauen",
-        "body": "In kleinen, lokalen Gemeinschaften Erlebnisse organisieren und Kultur teilen."
+        "title": "Village gestalten",
+        "body": "In kleinen, vertrauensvollen Gemeinschaften vor Ort Kultur gemeinsam erleben und teilen."
       },
       {
         "number": "04",
         "title": "Erinnerungen bewahren",
-        "body": "Sprachen, Geschichten und besondere Momente im privaten Roots Passport sammeln."
+        "body": "Sprache, Geschichten und besondere Momente in einem privaten Roots Passport bewahren."
       }
     ]
   },
   "trust": {
-    "eyebrow": "Privacy by design",
-    "title": "Familien brauchen Vertrauen, nicht Reichweite.",
-    "body": "Kinder sind niemals eigenständige Nutzer. Profile, Medien und Erinnerungen bleiben unter der Kontrolle autorisierter Eltern und Erziehungsberechtigter.",
+    "eyebrow": "Datenschutz von Anfang an",
+    "title": "Familien brauchen Vertrauen, keine Reichweite.",
+    "body": "Kinder sind niemals eigenständige Nutzerinnen oder Nutzer. Profile, Medien und Erinnerungen bleiben unter der Kontrolle autorisierter Eltern und Sorgeberechtigter.",
+    "emblem": ["DATENSCHUTZ", "VON ANFANG AN"],
     "items": [
       "Keine öffentlichen Kinderprofile",
-      "Entfernungen statt genauer Koordinaten",
-      "Explizite Freigaben und konservative Sichtbarkeit",
-      "EU-orientierte Daten- und Sicherheitsarchitektur"
+      "Ungefähre Entfernungen statt genauer Koordinaten",
+      "Bewusste Freigaben und zurückhaltende Sichtbarkeit",
+      "Auf EU-Anforderungen ausgerichtete Daten- und Sicherheitsarchitektur"
     ]
   },
   "cta": {
-    "title": "Eine ruhigere Art, Gemeinschaft zu bauen.",
-    "body": "Erstellen Sie jetzt Ihren geschützten Familienbereich und bewahren Sie gemeinsam Kultur, Sprache und Erinnerungen.",
-    "button": "Sicher registrieren"
+    "eyebrow": "KINAVELA BEITRETEN",
+    "title": "Eine ruhigere Art, Gemeinschaft entstehen zu lassen.",
+    "body": "Schaffen Sie jetzt einen geschützten Raum für Ihre Familie und halten Sie gemeinsam Kultur, Sprache und Erinnerungen lebendig.",
+    "button": "Geschütztes Konto erstellen"
   },
   "discovery": {
     "eyebrow": "ENTDECKEN",
@@ -106,6 +117,11 @@
     "searching": "Suche…",
     "select": "Diesen Bereich verwenden",
     "noCities": "Keine Orte gefunden. Prüfen Sie die Schreibweise.",
+    "searchUnavailable": "Die Ortssuche ist vorübergehend nicht verfügbar. Bitte versuchen Sie es erneut.",
+    "invalidLocation": "Dieser Ort ist nicht mehr gültig. Bitte suchen und wählen Sie ihn erneut aus.",
+    "germanyOnly": "Kinavela akzeptiert derzeit Standorte in Deutschland. Bitte wählen Sie eine deutsche Stadt oder Postleitzahl.",
+    "authenticationRequired": "Bitte melden Sie sich erneut an, um fortzufahren.",
+    "validationFailed": "Bitte prüfen Sie Ihre Angaben und versuchen Sie es erneut.",
     "save": "Bereich speichern",
     "saving": "Speichern…",
     "attribution": "Geokodierung © OpenStreetMap-Mitwirkende",
@@ -147,8 +163,10 @@
     "noConnections": "Sie haben noch keine bestätigten Familienverbindungen.",
     "findFamilies": "Familien entdecken",
     "pendingPrivacy": "Bis zur Annahme sind nur für die Entdeckung sichere Familiendaten sichtbar.",
-    "acceptedPrivacy": "Nach gegenseitiger Zustimmung geteilt: Familienbeschreibung und Anzeigenamen der Sorgeberechtigten.",
+    "acceptedPrivacy": "Nach gegenseitiger Zustimmung geteilt: Familienbeschreibung, Anzeigenamen der Sorgeberechtigten und nur freigegebene Spitznamen von Kindern mit groben Altersgruppen.",
     "guardians": "Sorgeberechtigte",
+    "children": "Von dieser Familie freigegebene Kinder",
+    "ageRange": "Alter {range}",
     "connect": "Verbinden",
     "connecting": "Wird gesendet…",
     "requested": "Anfrage gesendet",
@@ -307,6 +325,7 @@
     "villageTarget": "Village-Meldung",
     "dismiss": "Verwerfen",
     "deleteMessage": "Nachricht entfernen",
+    "deleteSupportContent": "Hilfebeitrag entfernen",
     "back": "Alle Villages",
     "privateCommunity": "PRIVATES VILLAGE",
     "sections": "Village-Bereiche",
@@ -314,6 +333,7 @@
       "overview": "Übersicht",
       "families": "Familien",
       "events": "Veranstaltungen",
+      "support": "Hilfe",
       "chat": "Chat",
       "culture": "Kultur"
     },
@@ -322,6 +342,13 @@
     "joinRequests": "Beitrittsanfragen",
     "noRequests": "Keine offenen Beitrittsanfragen.",
     "moderation": "Moderation",
+    "verificationRequests": "Anfragen zur Community-Verifizierung",
+    "noVerificationRequests": "Keine Community-Prüfung ist offen.",
+    "urgentChildSafety": "DRINGENDER KINDERSCHUTZ",
+    "responseDue": "Operatives Reaktionsziel:",
+    "cancelReportedEvent": "Veranstaltung absagen",
+    "restrictReportedEvent": "Veranstaltung beschränken",
+    "escalateReport": "An Kinavela-Sicherheit eskalieren",
     "noEvents": "Noch wurden keine Village-Veranstaltungen organisiert.",
     "chatSafety": "Nur aktive Village-Familien können hier lesen und schreiben. Nachrichten können gemeldet und moderiert werden.",
     "cultureFocus": "Der aktuelle kulturelle Fokus dieses Villages ist {country}.",
@@ -380,6 +407,21 @@
     "noRsvps": "Noch keine Familienanmeldungen.",
     "noEvents": "Noch keine Village-Veranstaltung organisiert.",
     "actionError": "Diese Aktion konnte nicht ausgeführt werden.",
+    "reportEvent": "Veranstaltung melden",
+    "reportReason": "Grund",
+    "reportDetails": "Details für das Sicherheitsteam",
+    "reportPrivacy": "Keine privaten Nachrichten, genauen Adressen, Kontaktdaten von Kindern oder illegalen Inhalte hier einfügen.",
+    "submitReport": "Meldung senden",
+    "reportSent": "Die Veranstaltung wurde zur Prüfung gemeldet.",
+    "reportReasons": {
+      "unsafe_location": "Unsicherer Ort",
+      "inappropriate_conduct": "Unangemessenes Verhalten",
+      "misleading_event": "Irreführende Veranstaltung",
+      "child_safety_concern": "Kinderschutzbedenken",
+      "discrimination": "Diskriminierung",
+      "fraud": "Betrug",
+      "other": "Sonstiges"
+    },
     "categories": {
       "playdate": "Spieltreffen",
       "park": "Park",
@@ -396,6 +438,14 @@
   },
   "footer": {
     "status": "Sicher verfügbar",
-    "rights": "Alle Rechte vorbehalten."
+    "rights": "Alle Rechte vorbehalten.",
+    "legalLabel": "Rechtliches",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen",
+    "impressum": "Impressum",
+    "cookies": "Cookies",
+    "childSafety": "Kinderschutz",
+    "community": "Community-Regeln",
+    "contact": "Kontakt"
   }
 }

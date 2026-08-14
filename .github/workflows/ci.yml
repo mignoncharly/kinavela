@@ -21,10 +21,10 @@ jobs:
       SMTP_HOST: smtp.zoho.eu
       SMTP_PORT: 465
       SMTP_SECURE: true
-      SMTP_USER: info@gestionatech.de
+      SMTP_USER: contact@kinavela.com
       SMTP_PASSWORD: ci-password-placeholder
-      EMAIL_FROM: Kinavela <info@gestionatech.de>
-      EMAIL_REPLY_TO: info@gestionatech.de
+      EMAIL_FROM: Kinavela <contact@kinavela.com>
+      EMAIL_REPLY_TO: contact@kinavela.com
       EVENT_REMINDER_CRON_SECRET: ci-event-reminder-secret-32-characters-long
     steps:
       - uses: actions/checkout@v4

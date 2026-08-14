@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { publicEnv } from "@/lib/env.public";
 import type { NotificationPreferences } from "@/lib/validation/notifications";
+import type { Locale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 
 function applicationServerKey(value: string) {
   const padding = "=".repeat((4 - (value.length % 4)) % 4);
@@ -26,11 +28,21 @@ function subscriptionInput(subscription: PushSubscription) {
 
 export function NotificationPreferencesForm({
   initial,
+  locale,
 }: {
   initial: NotificationPreferences;
+  locale: Locale;
 }) {
+  const copy = getAppDictionary(locale).notifications;
   const [email, setEmail] = useState(initial.email_enabled);
   const [push, setPush] = useState(initial.push_enabled);
+  const [categories, setCategories] = useState({
+    community_enabled: initial.community_enabled,
+    events_enabled: initial.events_enabled,
+    direct_enabled: initial.direct_enabled,
+    heritage_enabled: initial.heritage_enabled,
+    safety_enabled: initial.safety_enabled,
+  });
   const [subscriptionCount, setSubscriptionCount] = useState(
     initial.push_subscription_count,
   );
@@ -48,20 +60,21 @@ export function NotificationPreferencesForm({
       .catch(() => undefined);
   }, []);
 
-  async function save(nextEmail = email, nextPush = push) {
+  async function save(
+    nextEmail = email,
+    nextPush = push,
+    nextCategories = categories,
+  ) {
     const response = await fetch("/api/notifications/preferences", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         email_enabled: nextEmail,
         push_enabled: nextPush,
+        ...nextCategories,
       }),
     });
-    setMessage(
-      response.ok
-        ? "Notification preferences saved."
-        : "Could not save preferences.",
-    );
+    setMessage(response.ok ? copy.saved : copy.saveFailed);
   }
 
   async function enablePush() {
@@ -71,7 +84,7 @@ export function NotificationPreferencesForm({
       !("serviceWorker" in navigator) ||
       !("PushManager" in window)
     ) {
-      setMessage("Web push is not configured on this device yet.");
+      setMessage(copy.pushUnavailable);
       return;
     }
 
@@ -80,7 +93,7 @@ export function NotificationPreferencesForm({
     try {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        setMessage("Push permission was not granted.");
+        setMessage(copy.permissionDenied);
         return;
       }
 
@@ -104,9 +117,9 @@ export function NotificationPreferencesForm({
       setSubscription(nextSubscription);
       setSubscriptionCount((count) => Math.max(1, count));
       setPush(true);
-      setMessage("Push notifications enabled on this device.");
+      setMessage(copy.enabled);
     } catch {
-      setMessage("Could not enable push notifications.");
+      setMessage(copy.enableFailed);
     } finally {
       setBusy(false);
     }
@@ -133,9 +146,9 @@ export function NotificationPreferencesForm({
       setSubscription(null);
       setSubscriptionCount(nextCount);
       setPush(nextCount > 0);
-      setMessage("Push notifications disabled on this device.");
+      setMessage(copy.disabled);
     } catch {
-      setMessage("Could not disable push notifications.");
+      setMessage(copy.disableFailed);
     } finally {
       setBusy(false);
     }
@@ -143,7 +156,7 @@ export function NotificationPreferencesForm({
 
   return (
     <section className="notification-preferences">
-      <h2>Notifications</h2>
+      <h2>{copy.title}</h2>
       <label>
         <input
           type="checkbox"
@@ -153,8 +166,33 @@ export function NotificationPreferencesForm({
             void save(event.target.checked, push);
           }}
         />{" "}
-        Receive typed email updates
+        {copy.email}
       </label>
+      <fieldset className="notification-category-preferences">
+        <legend>{copy.categories}</legend>
+        {(
+          [
+            ["community_enabled", copy.community],
+            ["events_enabled", copy.events],
+            ["direct_enabled", copy.direct],
+            ["heritage_enabled", copy.heritage],
+            ["safety_enabled", copy.safety],
+          ] as const
+        ).map(([key, label]) => (
+          <label key={key}>
+            <input
+              type="checkbox"
+              checked={categories[key]}
+              onChange={(event) => {
+                const next = { ...categories, [key]: event.target.checked };
+                setCategories(next);
+                void save(email, push, next);
+              }}
+            />{" "}
+            {label}
+          </label>
+        ))}
+      </fieldset>
       <div className="push-preference">
         <button
           className="button button-secondary"
@@ -162,16 +200,12 @@ export function NotificationPreferencesForm({
           onClick={subscription ? disablePush : enablePush}
           disabled={busy}
         >
-          {busy
-            ? "Updating web push…"
-            : subscription
-              ? "Disable web push on this device"
-              : "Enable web push on this device"}
+          {busy ? copy.updating : subscription ? copy.disable : copy.enable}
         </button>
         <small>
           {push
-            ? `Push is enabled on ${subscriptionCount} device${subscriptionCount === 1 ? "" : "s"}.`
-            : "Push requires explicit browser permission."}
+            ? copy.deviceCount.replace("{count}", String(subscriptionCount))
+            : copy.permission}
         </small>
       </div>
       {message && <p role="status">{message}</p>}

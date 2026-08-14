@@ -78,8 +78,29 @@ describe("Phase 8 event contracts", () => {
         can_manage: false,
         reminder_unread: false,
         latest_reminder_kind: null,
+        recurrence_frequency: null,
+        recurrence_ends_on: null,
+        recurrence_series_id: null,
+        recurrence_index: 0,
       },
     ]);
     expect(parsed.success).toBe(false);
+  });
+
+  it("accepts only paired and bounded recurrence controls", () => {
+    expect(
+      eventCreateSchema.safeParse({
+        ...input,
+        recurrence_frequency: "weekly",
+        recurrence_ends_on: "2026-11-20",
+      }).success,
+    ).toBe(true);
+    expect(
+      eventCreateSchema.safeParse({
+        ...input,
+        recurrence_frequency: "weekly",
+        recurrence_ends_on: null,
+      }).success,
+    ).toBe(false);
   });
 });

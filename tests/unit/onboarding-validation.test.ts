@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { onboardingSchema } from "@/lib/validation/onboarding";
+import {
+  onboardingDraftSchema,
+  onboardingSchema,
+} from "@/lib/validation/onboarding";
 
 const validPayload = {
   display_name: "Nkom Family",
@@ -56,6 +59,53 @@ describe("family onboarding validation", () => {
       onboardingSchema.safeParse({
         ...validPayload,
         accept_community_guidelines: false,
+      }).success,
+    ).toBe(false);
+  });
+});
+
+describe("mobile onboarding drafts", () => {
+  it("accepts a bounded resumable draft", () => {
+    expect(
+      onboardingDraftSchema.safeParse({
+        version: 1,
+        step: 4,
+        children: [1, 2],
+        languageRows: [1, 2],
+        availabilityRows: [1],
+        values: {
+          displayName: "Mireille",
+          cultures: ["20000000-0000-4000-8000-000000000001"],
+        },
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects oversized or unknown draft data and duplicate matching entries", () => {
+    expect(
+      onboardingDraftSchema.safeParse({
+        version: 1,
+        step: 0,
+        children: [1],
+        languageRows: [1],
+        availabilityRows: [1],
+        values: {},
+        inviteToken: "private",
+      }).success,
+    ).toBe(false);
+    expect(
+      onboardingSchema.safeParse({
+        ...validPayload,
+        languages: [...validPayload.languages, ...validPayload.languages],
+      }).success,
+    ).toBe(false);
+    expect(
+      onboardingSchema.safeParse({
+        ...validPayload,
+        availability: [
+          ...validPayload.availability,
+          ...validPayload.availability,
+        ],
       }).success,
     ).toBe(false);
   });

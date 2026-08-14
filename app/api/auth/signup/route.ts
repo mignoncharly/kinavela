@@ -63,7 +63,12 @@ export async function POST(request: Request) {
         input.email,
         input.locale,
         "signup",
-        confirmationUrl(data.properties.hashed_token, "signup", input.locale),
+        confirmationUrl(
+          data.properties.hashed_token,
+          "signup",
+          input.locale,
+          input.invite_token,
+        ),
       );
     } catch (error) {
       await admin.auth.admin.deleteUser(data.user.id);

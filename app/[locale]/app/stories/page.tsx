@@ -15,7 +15,9 @@ import {
   parseStoryRequests,
 } from "@/features/stories/results";
 import { parseRootsPassports } from "@/features/roots/results";
+import { isAiProviderReady } from "@/lib/ai/provider";
 import { isLocale } from "@/lib/i18n/config";
+import { billingEntitlementsSchema } from "@/lib/validation/billing";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Page({
@@ -37,14 +39,31 @@ export default async function Page({
     .eq("auth_user_id", user.id)
     .single();
   if (!profile?.onboarding_completed) redirect(`/${locale}/onboarding`);
-  const [childrenResult, requestsResult, storiesResult] = await Promise.all([
+  const [
+    childrenResult,
+    requestsResult,
+    storiesResult,
+    entitlementsResult,
+    adaptationResult,
+  ] = await Promise.all([
     supabase.rpc("list_my_roots_passports"),
     supabase.rpc("list_my_story_requests"),
     supabase.rpc("list_my_family_stories"),
+    supabase.rpc("get_my_entitlements"),
+    supabase.rpc("is_feature_enabled", { p_flag_key: "ai_story_adaptation" }),
   ]);
   const children = parseRootsPassports(childrenResult.data);
   const requests = parseStoryRequests(requestsResult.data);
   const stories = parseFamilyStories(storiesResult.data);
+  const entitlements = billingEntitlementsSchema.safeParse(
+    Array.isArray(entitlementsResult.data)
+      ? entitlementsResult.data[0]
+      : entitlementsResult.data,
+  );
+  const hasStoryAccess =
+    entitlements.success && entitlements.data.roots_stories_ai;
+  const providerReady = isAiProviderReady();
+  const adaptationEnabled = adaptationResult.data === true;
   return (
     <main className="app-shell stories-page">
       <AppHeader active="stories" locale={locale} />
@@ -62,14 +81,31 @@ export default async function Page({
           <p className="story-muted">
             <ShieldCheck size={15} /> {copy.privacy}
           </p>
-          {children.success && children.data.length > 0 ? (
+          {!hasStoryAccess ? (
+            <div className="story-readiness" role="status">
+              <strong>{copy.premiumRequiredTitle}</strong>
+              <p>{copy.premiumRequiredBody}</p>
+              <Link
+                className="button button-secondary"
+                href={`/${locale}/app/settings`}
+              >
+                {copy.managePlan}
+              </Link>
+            </div>
+          ) : !providerReady ? (
+            <div className="story-readiness" role="status">
+              <strong>{copy.providerUnavailableTitle}</strong>
+              <p>{copy.providerUnavailableBody}</p>
+            </div>
+          ) : children.success && children.data.length > 0 ? (
             <StoryRequestForm
               passports={children.data}
               copy={copy}
               locale={locale}
+              adaptationEnabled={adaptationEnabled}
             />
           ) : (
-            <p className="story-muted">{copy.noRequests}</p>
+            <p className="story-muted">{copy.noChildren}</p>
           )}
         </article>
         <article className="story-panel">
@@ -77,7 +113,11 @@ export default async function Page({
           {requestsResult.error || !requests.success ? (
             <p className="form-error">{copy.actionError}</p>
           ) : (
-            <StoryRequestList copy={copy} requests={requests.data} />
+            <StoryRequestList
+              copy={copy}
+              locale={locale}
+              requests={requests.data}
+            />
           )}
         </article>
       </section>

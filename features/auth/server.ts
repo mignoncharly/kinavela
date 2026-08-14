@@ -38,10 +38,12 @@ export function confirmationUrl(
   tokenHash: string,
   type: GenerateLinkType,
   locale: Locale,
+  inviteToken?: string,
 ) {
   const url = new URL("/auth/confirm", publicEnv.NEXT_PUBLIC_APP_URL);
   url.searchParams.set("token_hash", tokenHash);
   url.searchParams.set("type", type);
   url.searchParams.set("locale", locale);
+  if (inviteToken) url.searchParams.set("invite", inviteToken);
   return url.toString();
 }

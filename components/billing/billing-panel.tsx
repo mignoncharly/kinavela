@@ -10,25 +10,26 @@ import type {
   BillingEntitlements,
   BillingPlan,
 } from "@/lib/validation/billing";
+import type { Locale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
 
-function formatPrice(amountCents: number) {
-  return new Intl.NumberFormat("de-DE", {
+function formatPrice(amountCents: number, locale: Locale) {
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "EUR",
   }).format(amountCents / 100);
 }
 
-function planLabel(plan: BillingPlan | "free") {
-  return plan === "annual" ? "Annual" : "Monthly";
-}
-
 export function BillingPanel({
   initial,
   notice,
+  locale,
 }: {
   initial: BillingEntitlements;
   notice?: "success" | "cancelled";
+  locale: Locale;
 }) {
+  const copy = getAppDictionary(locale).billing;
   const [busy, setBusy] = useState<BillingPlan | "portal" | null>(null);
   const [error, setError] = useState("");
   const hasAccess = initial.roots_stories_ai;
@@ -57,7 +58,7 @@ export function BillingPanel({
       }
       window.location.assign(data.url);
     } catch {
-      setError("Billing is temporarily unavailable. Please try again.");
+      setError(copy.unavailable);
       setBusy(null);
     }
   }
@@ -74,51 +75,43 @@ export function BillingPanel({
       if (!response.ok || !data.url) throw new Error("portal_unavailable");
       window.location.assign(data.url);
     } catch {
-      setError("The customer portal is temporarily unavailable.");
+      setError(copy.portalUnavailable);
       setBusy(null);
     }
   }
 
   return (
     <section className="billing-panel" aria-labelledby="billing-title">
-      <p className="eyebrow">ROOTS FAMILY</p>
-      <h2 id="billing-title">
-        {hasAccess ? "Roots Family is active" : "Preserve more of what matters"}
-      </h2>
+      <p className="eyebrow">{copy.eyebrow}</p>
+      <h2 id="billing-title">{hasAccess ? copy.active : copy.preserve}</h2>
       {notice === "success" && !hasAccess && (
         <p className="billing-notice" role="status">
-          Your subscription is being confirmed. This can take a moment.
+          {copy.confirming}
         </p>
       )}
       {notice === "cancelled" && (
         <p className="billing-notice" role="status">
-          No payment was made. Your current Kinavela access remains unchanged.
+          {copy.cancelled}
         </p>
       )}
-      <p>
-        Community access stays free: family discovery, connections, messaging,
-        Villages, events and basic Roots Passport remain available to everyone.
-      </p>
+      <p>{copy.free}</p>
       {hasAccess ? (
         <>
-          <p>
-            Roots Family includes the existing Roots Stories AI workflow:
-            transcription, translation and child-friendly story adaptation, with
-            configurable monthly usage limits.
-          </p>
+          <p>{copy.includes}</p>
           <p className="billing-status">
-            Plan: {planLabel(initial.plan)} · Status: {initial.status}
+            {copy.plan}:{" "}
+            {initial.plan === "annual" ? copy.annual : copy.monthly} ·{" "}
+            {copy.status}: {initial.status}
           </p>
           {isPaymentIssue && (
             <p className="billing-notice" role="status">
-              Payment issue: please update your payment method in the billing
-              portal.
+              {copy.paymentIssue}
             </p>
           )}
           {initial.current_period_end && (
             <p>
-              {isEnding ? "Access remains active until " : "Next renewal: "}
-              {new Date(initial.current_period_end).toLocaleDateString("de-DE")}
+              {isEnding ? copy.until : copy.renewal}
+              {new Date(initial.current_period_end).toLocaleDateString(locale)}
               {isEnding ? "." : ""}
             </p>
           )}
@@ -127,47 +120,49 @@ export function BillingPanel({
             disabled={busy !== null}
             onClick={openPortal}
           >
-            {busy === "portal" ? "Opening…" : "Manage subscription"}
+            {busy === "portal" ? copy.opening : copy.manage}
           </button>
         </>
       ) : (
         <>
-          <div className="billing-plans" aria-label="Roots Family plans">
+          <div className="billing-plans" aria-label={copy.plans}>
             <div className="billing-plan">
-              <h3>Monthly</h3>
+              <h3>{copy.monthly}</h3>
               <p className="billing-price">
-                {formatPrice(ROOTS_FAMILY_PRICING.monthly.amountCents)}
-                <span>/month</span>
+                {formatPrice(ROOTS_FAMILY_PRICING.monthly.amountCents, locale)}
+                <span>{copy.perMonth}</span>
               </p>
               <button
                 className="billing-button"
                 disabled={busy !== null}
                 onClick={() => startCheckout("monthly")}
               >
-                {busy === "monthly" ? "Opening…" : "Choose monthly"}
+                {busy === "monthly" ? copy.opening : copy.chooseMonthly}
               </button>
             </div>
             <div className="billing-plan recommended">
-              <p className="billing-recommended">Recommended</p>
-              <h3>Annual</h3>
+              <p className="billing-recommended">{copy.recommended}</p>
+              <h3>{copy.annual}</h3>
               <p className="billing-price">
-                {formatPrice(ROOTS_FAMILY_PRICING.annual.amountCents)}
-                <span>/year</span>
+                {formatPrice(ROOTS_FAMILY_PRICING.annual.amountCents, locale)}
+                <span>{copy.perYear}</span>
               </p>
-              <p>Save {ROOTS_FAMILY_ANNUAL_SAVING_PERCENT}%</p>
+              <p>
+                {copy.save.replace(
+                  "{percent}",
+                  String(ROOTS_FAMILY_ANNUAL_SAVING_PERCENT),
+                )}
+              </p>
               <button
                 className="billing-button"
                 disabled={busy !== null}
                 onClick={() => startCheckout("annual")}
               >
-                {busy === "annual" ? "Opening…" : "Choose annual"}
+                {busy === "annual" ? copy.opening : copy.chooseAnnual}
               </button>
             </div>
           </div>
-          <p className="billing-cancellation">
-            Subscriptions renew automatically. You can cancel at any time in the
-            Stripe customer portal and keep access through the paid period.
-          </p>
+          <p className="billing-cancellation">{copy.cancellation}</p>
         </>
       )}
       {error && (

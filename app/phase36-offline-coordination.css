@@ -1,0 +1,115 @@
+.playdate-board {
+  display: grid;
+  gap: 20px;
+  margin: 34px 0;
+}
+.playdate-board > header p,
+.playdate-card header p,
+.event-coordination > p {
+  color: var(--muted);
+}
+.playdate-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.playdate-card,
+.playdate-proposal,
+.event-coordination {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.playdate-card {
+  display: grid;
+  gap: 14px;
+}
+.playdate-card > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.playdate-card header span {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+.playdate-card h3,
+.playdate-board h2 {
+  margin: 6px 0;
+}
+.playdate-proposal summary,
+.event-coordination summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 750;
+}
+.playdate-proposal form,
+.playdate-response,
+.event-coordination form {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+.playdate-proposal fieldset {
+  display: grid;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+}
+.playdate-party {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.playdate-reminder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: #f7e9c8;
+  border-radius: 10px;
+}
+.playdate-reminder button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  text-decoration: underline;
+}
+.event-coordination {
+  margin: 18px 0;
+}
+.event-message-list {
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  overflow: auto;
+}
+.event-message-list article {
+  max-width: 85%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-elevated);
+}
+.event-message-list article.own {
+  margin-left: auto;
+  background: #e4ece4;
+}
+.event-message-list p {
+  margin: 5px 0 0;
+}
+.event-recurrence {
+  color: var(--muted);
+  font-size: 14px;
+}
+@media (max-width: 720px) {
+  .playdate-list,
+  .playdate-party {
+    grid-template-columns: 1fr;
+  }
+}

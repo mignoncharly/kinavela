@@ -5,11 +5,12 @@ import { locales } from "@/lib/i18n/config";
 import { assertSameOrigin } from "@/lib/security/request";
 import { createClient } from "@/lib/supabase/server";
 
-const schema = z.object({
-  display_name: z.string().trim().min(2).max(80),
-  preferred_language: z.enum(locales),
-  city: z.string().trim().min(2).max(120).nullable(),
-});
+const schema = z
+  .object({
+    display_name: z.string().trim().min(2).max(80),
+    preferred_language: z.enum(locales),
+  })
+  .strict();
 
 export async function PATCH(request: Request) {
   try {

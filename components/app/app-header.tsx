@@ -28,6 +28,7 @@ const labels = {
     notifications: "Mitteilungen",
     settings: "Einstellungen",
     menu: "Mehr",
+    application: "Anwendung",
   },
   fr: {
     home: "Accueil",
@@ -41,6 +42,7 @@ const labels = {
     notifications: "Notifications",
     settings: "Réglages",
     menu: "Plus",
+    application: "Application",
   },
   en: {
     home: "Home",
@@ -54,8 +56,9 @@ const labels = {
     notifications: "Notifications",
     settings: "Settings",
     menu: "More",
+    application: "Application",
   },
-} satisfies Record<Locale, Record<AppRoute | "menu", string>>;
+} satisfies Record<Locale, Record<AppRoute | "menu" | "application", string>>;
 
 const primaryRoutes: Array<{ id: AppRoute; path: string }> = [
   { id: "home", path: "" },
@@ -93,7 +96,7 @@ export function AppHeader({
         <span>KINAVELA</span>
       </Link>
 
-      <nav className="app-primary-nav" aria-label="Application">
+      <nav className="app-primary-nav" aria-label={copy.application}>
         {primaryRoutes.map((route) => (
           <Link
             aria-current={active === route.id ? "page" : undefined}

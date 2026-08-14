@@ -11,14 +11,14 @@ describe("location and discovery validation", () => {
   it("accepts city names, postcodes and bounded discovery filters", () => {
     expect(
       citySearchSchema.safeParse({
-        query: "München",
+        query: "Schrobenhausen",
         country: "DE",
         locale: "de",
       }).success,
     ).toBe(true);
     expect(
       citySearchSchema.safeParse({
-        query: "85049",
+        query: "85123",
         country: "DE",
         locale: "en",
       }).success,

@@ -15,10 +15,18 @@ export async function POST(request: Request) {
     if (!user) return NextResponse.json({ ok: false }, { status: 401 });
 
     let error;
-    if (input.action === "set_report_status") {
-      ({ error } = await supabase.rpc("admin_set_report_status", {
+    if (input.action === "manage_report") {
+      ({ error } = await supabase.rpc("admin_manage_report", {
         p_report_id: input.report_id,
-        p_status: input.status,
+        p_action: input.operation,
+        p_severity: input.severity ?? null,
+        p_note: input.note ?? null,
+      }));
+    } else if (input.action === "review_verification") {
+      ({ error } = await supabase.rpc("admin_review_verification_request", {
+        p_request_id: input.request_id,
+        p_approve: input.approve,
+        p_note: input.note,
       }));
     } else if (input.action === "suspend_profile") {
       ({ error } = await supabase.rpc("admin_suspend_profile", {

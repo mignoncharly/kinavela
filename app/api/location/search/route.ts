@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { ZodError } from "zod";
 
+import { errorMessage } from "@/lib/api/error-message";
 import { searchCities } from "@/lib/geo/geocoder";
 import { clientAddressFingerprint } from "@/lib/security/request";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -12,7 +14,13 @@ export async function GET(request: Request) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ ok: false }, { status: 401 });
+    if (!user) {
+      return NextResponse.json(
+        { ok: false, error: "not_authenticated" },
+        { status: 401 },
+      );
+    }
+
     const url = new URL(request.url);
     const input = citySearchSchema.parse({
       query: url.searchParams.get("query"),
@@ -29,19 +37,36 @@ export async function GET(request: Request) {
       },
     );
     if (error) throw error;
-    if (!allowed)
+    if (!allowed) {
       return NextResponse.json(
-        { ok: false, error: "rate_limited" },
+        { ok: false, error: "geocoding_unavailable" },
         { status: 429 },
       );
+    }
+
     const results = await searchCities(input);
     return NextResponse.json({ ok: true, results });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "unknown";
-    const status = message === "provider_rate_limited" ? 429 : 400;
+    const message = errorMessage(error);
+    if (error instanceof ZodError || error instanceof SyntaxError) {
+      return NextResponse.json(
+        { ok: false, error: "validation_failed" },
+        { status: 400 },
+      );
+    }
+    if (
+      message === "provider_rate_limited" ||
+      message === "geocoding_unavailable"
+    ) {
+      return NextResponse.json(
+        { ok: false, error: "geocoding_unavailable" },
+        { status: message === "provider_rate_limited" ? 429 : 503 },
+      );
+    }
+    console.error("Location search failed", { message });
     return NextResponse.json(
-      { ok: false, error: status === 429 ? "try_again" : "invalid_request" },
-      { status },
+      { ok: false, error: "geocoding_unavailable" },
+      { status: 503 },
     );
   }
 }

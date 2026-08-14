@@ -12,6 +12,11 @@ export type CitySearchCopy = {
   searching: string;
   select: string;
   noCities: string;
+  searchUnavailable: string;
+  invalidLocation: string;
+  germanyOnly: string;
+  authenticationRequired: string;
+  validationFailed: string;
   attribution: string;
   located: string;
 };
@@ -27,21 +32,29 @@ export function CitySearch({
   country,
   locale,
   copy,
+  initialSelection,
 }: {
   country: string;
   locale: Locale;
   copy: CitySearchCopy;
+  initialSelection?: { placeId: string; city: string };
 }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialSelection?.city ?? "");
   const [results, setResults] = useState<CityResult[]>([]);
-  const [selected, setSelected] = useState<CityResult | null>(null);
+  const [selected, setSelected] = useState<CityResult | null>(
+    initialSelection
+      ? { ...initialSelection, area: null, countryCode: country }
+      : null,
+  );
   const [busy, setBusy] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [failure, setFailure] = useState(false);
 
   async function search() {
     if (query.trim().length < 2) return;
     setBusy(true);
     setSearched(false);
+    setFailure(false);
     setSelected(null);
     try {
       const parameters = new URLSearchParams({
@@ -53,9 +66,15 @@ export function CitySearch({
       const body = (await response.json()) as {
         results?: CityResult[];
       };
-      setResults(response.ok ? (body.results ?? []) : []);
+      if (!response.ok) {
+        setResults([]);
+        setFailure(true);
+        return;
+      }
+      setResults(body.results ?? []);
     } catch {
       setResults([]);
+      setFailure(true);
     } finally {
       setBusy(false);
       setSearched(true);
@@ -69,12 +88,16 @@ export function CitySearch({
         <span className="city-search-row">
           <input
             value={query}
+            type="search"
+            autoComplete="address-level2"
+            enterKeyHint="search"
             placeholder={copy.cityPlaceholder}
             minLength={2}
             maxLength={80}
             onChange={(event) => {
               setQuery(event.target.value);
               setSelected(null);
+              setFailure(false);
             }}
             onKeyDown={(event) => {
               if (event.key === "Enter") {
@@ -120,7 +143,9 @@ export function CitySearch({
         </ul>
       )}
       {searched && results.length === 0 && (
-        <p className="field-help">{copy.noCities}</p>
+        <p className={failure ? "form-error" : "field-help"} role="status">
+          {failure ? copy.searchUnavailable : copy.noCities}
+        </p>
       )}
       {selected && (
         <p className="form-success" role="status">

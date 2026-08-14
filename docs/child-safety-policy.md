@@ -12,7 +12,7 @@ Do not groom, sexually solicit, exploit, threaten, traffic or otherwise endanger
 
 ## Reporting
 
-Use the in-product report flow or email info@gestionatech.de with “Urgent child safety” or “Security report”. There is no separate safety address at this time. Do not attach illegal child sexual-abuse material or redistribute it; provide only the minimum identifying information needed.
+Use the in-product report flow or email contact@kinavela.com with “Urgent child safety” or “Security report”. There is no separate safety address at this time. Do not attach illegal child sexual-abuse material or redistribute it; provide only the minimum identifying information needed.
 
 Reports are triaged as soon as reasonably practicable. No guaranteed response-time SLA is promised. Urgent reports are prioritised, content may be restricted while reviewed and minimal evidence may be preserved for safety or legal reasons.
 

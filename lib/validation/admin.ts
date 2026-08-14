@@ -5,16 +5,57 @@ const isoDate = z.string().datetime({ offset: true });
 export const adminReportSchema = z
   .object({
     report_id: z.string().uuid(),
-    target_type: z.enum(["family", "message", "village"]),
+    target_type: z.enum([
+      "family",
+      "message",
+      "village",
+      "event",
+      "support_post",
+      "support_reply",
+    ]),
     target_family_id: z.string().uuid().nullable(),
     target_message_id: z.string().uuid().nullable(),
     target_village_id: z.string().uuid().nullable(),
+    target_event_id: z.string().uuid().nullable(),
+    target_event_title: z.string().min(3).max(120).nullable(),
+    target_support_post_id: z.string().uuid().nullable(),
+    target_support_post_title: z.string().min(5).max(120).nullable(),
+    target_support_reply_id: z.string().uuid().nullable(),
     reason: z.string().min(2).max(80),
     details: z.string().max(1000).nullable(),
     status: z.enum(["open", "reviewing", "resolved", "dismissed"]),
+    severity: z.enum(["low", "medium", "high", "critical"]),
+    urgent_child_safety: z.boolean(),
+    assigned_to_profile_id: z.string().uuid().nullable(),
+    response_due_at: isoDate,
+    resolution_notes: z.string().max(1000).nullable(),
     reporter_profile_id: z.string().uuid(),
+    action_count: z.number().int().nonnegative(),
     created_at: isoDate,
     updated_at: isoDate,
+  })
+  .strict();
+
+export const adminReportActionSchema = z
+  .object({
+    action_id: z.string().uuid(),
+    action_type: z.enum([
+      "submitted",
+      "assigned",
+      "note_added",
+      "severity_changed",
+      "escalated",
+      "event_cancelled",
+      "event_restricted",
+      "support_content_removed",
+      "resolved",
+      "dismissed",
+    ]),
+    previous_status: z.string().nullable(),
+    new_status: z.string().nullable(),
+    severity: z.enum(["low", "medium", "high", "critical"]).nullable(),
+    note: z.string().max(1000).nullable(),
+    created_at: isoDate,
   })
   .strict();
 
@@ -84,7 +125,7 @@ export const adminAiJobSchema = z
   })
   .strict();
 
-export const adminPilotMetricSchema = z
+export const adminProductMetricSchema = z
   .object({
     metric_key: z.string().min(2).max(80),
     metric_value: z.number(),
@@ -93,14 +134,12 @@ export const adminPilotMetricSchema = z
   })
   .strict();
 
-export const adminRegionalDensitySchema = z
+export const adminRegionalOutreachSchema = z
   .object({
     country_code: z.literal("DE"),
     city: z.string().min(2).max(120),
-    waiting_count: z.number().int().nonnegative(),
+    historical_interest_count: z.number().int().nonnegative(),
     family_count: z.number().int().nonnegative(),
-    threshold: z.number().int().positive(),
-    rollout_status: z.enum(["waitlist", "open", "paused"]),
   })
   .strict();
 
@@ -129,9 +168,52 @@ export const adminFeatureFlagSchema = z
 export const adminActionSchema = z.discriminatedUnion("action", [
   z
     .object({
-      action: z.literal("set_report_status"),
+      action: z.literal("manage_report"),
       report_id: z.string().uuid(),
-      status: z.enum(["reviewing", "resolved", "dismissed"]),
+      operation: z.enum([
+        "assign_to_me",
+        "add_note",
+        "set_severity",
+        "resolve",
+        "dismiss",
+        "cancel_event",
+        "restrict_event",
+        "delete_support_content",
+      ]),
+      severity: z.enum(["low", "medium", "high", "critical"]).optional(),
+      note: z.string().trim().min(2).max(1000).optional(),
+    })
+    .strict()
+    .superRefine((value, context) => {
+      if (value.operation === "set_severity" && !value.severity)
+        context.addIssue({
+          code: "custom",
+          path: ["severity"],
+          message: "severity_required",
+        });
+      if (
+        [
+          "add_note",
+          "resolve",
+          "dismiss",
+          "cancel_event",
+          "restrict_event",
+          "delete_support_content",
+        ].includes(value.operation) &&
+        !value.note
+      )
+        context.addIssue({
+          code: "custom",
+          path: ["note"],
+          message: "note_required",
+        });
+    }),
+  z
+    .object({
+      action: z.literal("review_verification"),
+      request_id: z.string().uuid(),
+      approve: z.boolean(),
+      note: z.string().trim().min(2).max(500),
     })
     .strict(),
   z

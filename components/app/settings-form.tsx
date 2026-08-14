@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import type { Locale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
+import { useRouter } from "next/navigation";
 
 export function SettingsForm({
   name,
-  city,
   locale,
 }: {
   name: string;
-  city: string;
   locale: Locale;
 }) {
   const [message, setMessage] = useState("");
+  const router = useRouter();
+  const copy = getAppDictionary(locale).settings;
   return (
     <form
       className="settings-form"
@@ -24,15 +26,19 @@ export function SettingsForm({
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             display_name: form.get("name"),
-            city: form.get("city") || null,
             preferred_language: form.get("language"),
           }),
         });
-        setMessage(response.ok ? "Changes saved." : "Could not save changes.");
+        setMessage(response.ok ? copy.saved : copy.saveFailed);
+        const nextLocale = String(form.get("language"));
+        if (response.ok && nextLocale !== locale) {
+          router.push(`/${nextLocale}/app/settings`);
+          router.refresh();
+        }
       }}
     >
       <label>
-        Display name
+        {copy.displayName}
         <input
           name="name"
           defaultValue={name}
@@ -42,18 +48,14 @@ export function SettingsForm({
         />
       </label>
       <label>
-        City
-        <input name="city" defaultValue={city} minLength={2} maxLength={120} />
-      </label>
-      <label>
-        Language
+        {copy.interfaceLanguage}
         <select name="language" defaultValue={locale}>
-          <option value="de">Deutsch</option>
-          <option value="fr">Français</option>
-          <option value="en">English</option>
+          <option value="de">{copy.languageOptions.de}</option>
+          <option value="fr">{copy.languageOptions.fr}</option>
+          <option value="en">{copy.languageOptions.en}</option>
         </select>
       </label>
-      <button className="button button-primary">Save changes</button>
+      <button className="button button-primary">{copy.saveChanges}</button>
       {message && <p role="status">{message}</p>}
     </form>
   );

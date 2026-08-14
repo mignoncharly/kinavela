@@ -1,25 +1,24 @@
 "use client";
 
 import { Bell, Check } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import type { NotificationFeedItem } from "@/lib/validation/notifications";
-
-const labels: Record<NotificationFeedItem["notification_kind"], string> = {
-  connection_request: "New connection request",
-  connection_accepted: "Connection accepted",
-  message_received: "New message",
-  event_reminder: "Event reminder",
-  village_activity: "Village activity",
-  story_ready: "A family story is ready to review",
-};
+import type { Locale } from "@/lib/i18n/config";
+import { getAppDictionary } from "@/lib/i18n/app-copy";
+import { notificationPath } from "@/lib/notifications/links";
+import { formatDateTime } from "@/lib/i18n/format";
 
 export function NotificationCenter({
   items,
+  locale,
 }: {
   items: NotificationFeedItem[];
+  locale: Locale;
 }) {
+  const copy = getAppDictionary(locale).notifications;
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   async function markRead(notificationId: string) {
@@ -36,10 +35,10 @@ export function NotificationCenter({
     <section className="notification-center">
       <div className="notification-center-heading">
         <Bell size={20} />
-        <h2>Notifications</h2>
+        <h2>{copy.title}</h2>
       </div>
       {items.length === 0 ? (
-        <p className="notification-muted">You are all caught up.</p>
+        <p className="notification-muted">{copy.empty}</p>
       ) : (
         <ul>
           {items.map((item) => (
@@ -48,8 +47,18 @@ export function NotificationCenter({
               key={item.notification_id}
             >
               <div>
-                <strong>{labels[item.notification_kind]}</strong>
-                <small>{new Date(item.created_at).toLocaleString()}</small>
+                <strong>{copy.labels[item.notification_kind]}</strong>
+                <small>{formatDateTime(locale, item.created_at)}</small>
+                <Link
+                  className="notification-action-link"
+                  href={notificationPath(
+                    locale,
+                    item.notification_kind,
+                    item.payload,
+                  )}
+                >
+                  {copy.open}
+                </Link>
               </div>
               {!item.read_at && (
                 <button
@@ -58,7 +67,7 @@ export function NotificationCenter({
                   type="button"
                   onClick={() => markRead(item.notification_id)}
                 >
-                  <Check size={15} /> Mark read
+                  <Check size={15} /> {copy.markRead}
                 </button>
               )}
             </li>

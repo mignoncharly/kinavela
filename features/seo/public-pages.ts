@@ -3,7 +3,7 @@ import type { Locale } from "@/lib/i18n/config";
 export const publicCommunityPages = [
   {
     slug: "cameroonian-families-in-germany",
-    cityLabel: "Germany",
+    cityLabel: { de: "Deutschland", fr: "Allemagne", en: "Germany" },
     title: {
       de: "Kamerunische Familien in Deutschland",
       fr: "Familles camerounaises en Allemagne",
@@ -12,7 +12,7 @@ export const publicCommunityPages = [
   },
   {
     slug: "cameroonian-families-in-munich",
-    cityLabel: "Munich",
+    cityLabel: { de: "München", fr: "Munich", en: "Munich" },
     title: {
       de: "Kamerunische Familien in München",
       fr: "Familles camerounaises à Munich",
@@ -21,7 +21,7 @@ export const publicCommunityPages = [
   },
   {
     slug: "cameroonian-families-in-berlin",
-    cityLabel: "Berlin",
+    cityLabel: { de: "Berlin", fr: "Berlin", en: "Berlin" },
     title: {
       de: "Kamerunische Familien in Berlin",
       fr: "Familles camerounaises à Berlin",
@@ -30,7 +30,7 @@ export const publicCommunityPages = [
   },
   {
     slug: "cameroonian-families-in-frankfurt",
-    cityLabel: "Frankfurt",
+    cityLabel: { de: "Frankfurt", fr: "Francfort", en: "Frankfurt" },
     title: {
       de: "Kamerunische Familien in Frankfurt",
       fr: "Familles camerounaises à Francfort",
@@ -39,7 +39,7 @@ export const publicCommunityPages = [
   },
   {
     slug: "cameroonian-families-near-ingolstadt",
-    cityLabel: "Ingolstadt",
+    cityLabel: { de: "Ingolstadt", fr: "Ingolstadt", en: "Ingolstadt" },
     title: {
       de: "Kamerunische Familien nahe Ingolstadt",
       fr: "Familles camerounaises près d’Ingolstadt",
@@ -59,4 +59,11 @@ export function localizedCommunityTitle(
   locale: Locale,
 ) {
   return page.title[locale];
+}
+
+export function localizedCommunityCity(
+  page: PublicCommunityPage,
+  locale: Locale,
+) {
+  return page.cityLabel[locale];
 }

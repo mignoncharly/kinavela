@@ -39,6 +39,10 @@ export const eventResultSchema = z
         "waitlist_promoted",
       ])
       .nullable(),
+    recurrence_frequency: z.enum(["weekly", "biweekly", "monthly"]).nullable(),
+    recurrence_ends_on: z.string().date().nullable(),
+    recurrence_series_id: z.string().uuid().nullable(),
+    recurrence_index: z.number().int().min(0).max(51),
   })
   .strict()
   .superRefine((value, context) => {
