@@ -1,7 +1,10 @@
 .pwa-install-prompt {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  /* Deliberately below .metrics-consent-banner (z-index 40). Both live in this
+     corner; when both are up the consent decision wins, and it is one click
+     away, after which the bar unmounts and this prompt is fully visible. */
   z-index: 30;
   display: grid;
   max-width: 340px;

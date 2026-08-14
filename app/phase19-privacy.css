@@ -1,31 +1,94 @@
+/* Docked to the bottom edge rather than floated as a 440px card over the
+   content. As a floating card it landed squarely on the hero illustration on
+   desktop and buried the third journey card on mobile — the two most visual
+   parts of the landing page, and the first thing a new visitor sees.
+   z-index sits above .pwa-install-prompt, which shares this corner: a consent
+   decision is one click and should not queue behind an install nudge. */
 .metrics-consent-banner {
   position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 30;
-  width: min(440px, calc(100% - 40px));
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-areas:
+    "title actions"
+    "body  actions";
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 32px;
+  padding: 16px max(20px, calc((100vw - 1180px) / 2));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
   background: var(--surface, #fffdf8);
-  box-shadow: 0 18px 60px rgba(38, 53, 46, 0.18);
+  box-shadow: 0 -14px 44px rgb(38 53 46 / 12%);
 }
 
 .metrics-consent-banner strong {
   display: block;
-  margin-bottom: 8px;
+  grid-area: title;
+  margin-bottom: 2px;
   color: var(--ink);
 }
 
 .metrics-consent-banner p {
-  margin: 0 0 14px;
+  grid-area: body;
+  max-width: 68ch;
+  margin: 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.5;
 }
 
+.metrics-consent-banner > div {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: actions;
+  gap: 8px;
+}
+
 .metrics-consent-banner .button {
-  margin-right: 8px;
+  margin-right: 0;
+}
+
+@media (max-width: 720px) {
+  .metrics-consent-banner {
+    grid-template-areas:
+      "title"
+      "body"
+      "actions";
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .metrics-consent-banner p {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .metrics-consent-banner > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .metrics-consent-banner {
+    animation: consent-dock 320ms ease-out both;
+  }
+}
+
+@keyframes consent-dock {
+  from {
+    opacity: 0;
+    translate: 0 100%;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
 }
 
 .metrics-consent-settings {
