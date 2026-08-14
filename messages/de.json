@@ -117,6 +117,7 @@
     "searching": "Suche…",
     "select": "Diesen Bereich verwenden",
     "noCities": "Keine Orte gefunden. Prüfen Sie die Schreibweise.",
+    "selectionPending": "Suchen und den Ort danach aus der Liste auswählen.",
     "searchUnavailable": "Die Ortssuche ist vorübergehend nicht verfügbar. Bitte versuchen Sie es erneut.",
     "invalidLocation": "Dieser Ort ist nicht mehr gültig. Bitte suchen und wählen Sie ihn erneut aus.",
     "germanyOnly": "Kinavela akzeptiert derzeit Standorte in Deutschland. Bitte wählen Sie eine deutsche Stadt oder Postleitzahl.",

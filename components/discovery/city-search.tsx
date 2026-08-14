@@ -12,6 +12,7 @@ export type CitySearchCopy = {
   searching: string;
   select: string;
   noCities: string;
+  selectionPending: string;
   searchUnavailable: string;
   invalidLocation: string;
   germanyOnly: string;
@@ -147,6 +148,17 @@ export function CitySearch({
           {failure ? copy.searchUnavailable : copy.noCities}
         </p>
       )}
+      {/* Typed text alone leaves the field looking complete while
+          locationPlaceId is still empty, and the failure only surfaced on the
+          final submit at the end of the wizard. Say so at the field instead. */}
+      {!selected &&
+        !busy &&
+        query.trim().length >= 2 &&
+        !(searched && results.length === 0) && (
+          <p className="field-help" role="status">
+            {copy.selectionPending}
+          </p>
+        )}
       {selected && (
         <p className="form-success" role="status">
           {copy.located}: {selected.city}

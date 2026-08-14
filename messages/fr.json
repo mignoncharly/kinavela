@@ -117,6 +117,7 @@
     "searching": "Recherche…",
     "select": "Utiliser cette zone",
     "noCities": "Aucune ville trouvée. Vérifiez l’orthographe.",
+    "selectionPending": "Recherchez, puis sélectionnez la ville dans la liste.",
     "searchUnavailable": "La recherche de lieu est temporairement indisponible. Veuillez réessayer.",
     "invalidLocation": "Ce lieu n’est plus valide. Veuillez le rechercher et le sélectionner à nouveau.",
     "germanyOnly": "Kinavela accepte actuellement les lieux situés en Allemagne. Choisissez une ville ou un code postal allemand.",

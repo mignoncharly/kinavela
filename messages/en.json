@@ -117,6 +117,7 @@
     "searching": "Searching…",
     "select": "Use this area",
     "noCities": "No cities found. Check the spelling and try again.",
+    "selectionPending": "Search, then choose your city from the list.",
     "searchUnavailable": "Location search is temporarily unavailable. Please try again.",
     "invalidLocation": "That location is no longer valid. Please search and select it again.",
     "germanyOnly": "Kinavela currently accepts locations in Germany. Please select a German city or postcode.",
