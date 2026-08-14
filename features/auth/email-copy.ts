@@ -1,6 +1,6 @@
 import type { Locale } from "@/lib/i18n/config";
 
-export type AuthEmailKind = "signup" | "magiclink" | "recovery";
+export type AuthEmailKind = "signup" | "magiclink" | "recovery" | "existing";
 type Copy = { subject: string; title: string; action: string; note: string };
 type Chrome = { fallback: string; footer: string };
 
@@ -33,6 +33,12 @@ export const authEmailCopy = {
       action: "E-Mail bestätigen",
       note: "Dieser Link ist nur für dich bestimmt.",
     },
+    existing: {
+      subject: "Du hast bereits ein Kinavela-Konto",
+      title: "Willkommen zurück",
+      action: "Jetzt anmelden",
+      note: "Es wurde kein neues Konto angelegt. Über den Link meldest du dich direkt an; dein Passwort kannst du danach in den Einstellungen ändern.",
+    },
     magiclink: {
       subject: "Dein Kinavela-Anmeldelink",
       title: "Sicher bei Kinavela anmelden",
@@ -53,6 +59,12 @@ export const authEmailCopy = {
       action: "Confirmer mon e-mail",
       note: "Ce lien est strictement personnel.",
     },
+    existing: {
+      subject: "Vous avez déjà un compte Kinavela",
+      title: "Bon retour",
+      action: "Se connecter",
+      note: "Aucun nouveau compte n’a été créé. Ce lien vous connecte directement ; vous pourrez changer votre mot de passe ensuite dans les réglages.",
+    },
     magiclink: {
       subject: "Votre lien de connexion Kinavela",
       title: "Connexion sécurisée à Kinavela",
@@ -72,6 +84,12 @@ export const authEmailCopy = {
       title: "Welcome to Kinavela",
       action: "Confirm email",
       note: "This private link is for you only.",
+    },
+    existing: {
+      subject: "You already have a Kinavela account",
+      title: "Welcome back",
+      action: "Sign in",
+      note: "No new account was created. This link signs you in directly; you can change your password afterwards in settings.",
     },
     magiclink: {
       subject: "Your Kinavela sign-in link",
