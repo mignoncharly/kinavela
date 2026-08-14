@@ -11,7 +11,7 @@ Nikolausstraße 6
 55120 Mainz, Deutschland  
 Email: contact@kinavela.com
 
-Privacy contact: privacy@gestionatech.de. No formal Data Protection Officer has been appointed. The privacy contact is not a DPO.
+Privacy contact: privacy@kinavela.com. No formal Data Protection Officer has been appointed. The privacy contact is not a DPO.
 
 ## 2. Scope and data
 
@@ -65,7 +65,7 @@ The privacy cron automates export expiry, account deletion, story-media cleanup 
 
 ## 6. Rights
 
-Subject to the GDPR conditions, data subjects may request access, correction, deletion, restriction, portability or object to processing. Consent can be withdrawn at any time. Requests may be made in Settings or by email to privacy@gestionatech.de.
+Subject to the GDPR conditions, data subjects may request access, correction, deletion, restriction, portability or object to processing. Consent can be withdrawn at any time. Requests may be made in Settings or by email to privacy@kinavela.com.
 
 ## 7. Supervisory authority
 

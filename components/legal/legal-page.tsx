@@ -24,7 +24,7 @@ export function legalMetadata(locale: Locale, kind: LegalKind): Metadata {
 
 const contact = {
   info: "contact@kinavela.com",
-  privacy: "privacy@gestionatech.de",
+  privacy: "privacy@kinavela.com",
   authority: "poststelle@datenschutz.rlp.de",
 } as const;
 

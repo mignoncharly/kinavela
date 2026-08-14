@@ -18,4 +18,4 @@ Reports are triaged as soon as reasonably practicable. No guaranteed response-ti
 
 For immediate danger, contact emergency services and the child-protection or law-enforcement authority in the country where the danger occurs. Cross-border escalation may involve competent authorities in Germany and the relevant country of the child or incident. Kinavela is not an emergency service.
 
-Guardians can request access, correction or deletion through Settings or privacy@gestionatech.de. Child content and private media are deleted or restricted during account deletion, subject to safety and legal holds.
+Guardians can request access, correction or deletion through Settings or privacy@kinavela.com. Child content and private media are deleted or restricted during account deletion, subject to safety and legal holds.

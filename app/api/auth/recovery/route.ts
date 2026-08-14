@@ -19,6 +19,13 @@ export async function POST(request: Request) {
       const { data, error } = await createAdminClient().auth.admin.generateLink(
         { type: "recovery", email: input.email },
       );
+      // A failure here sends nothing while the caller still sees 202. That
+      // silence is what hid the signup bug for weeks, so make it visible.
+      if (error || !data.properties.hashed_token) {
+        console.error("recovery link generation failed", {
+          message: error?.message ?? "missing_token",
+        });
+      }
       if (!error && data.properties.hashed_token) {
         await sendAuthEmail(
           input.email,
