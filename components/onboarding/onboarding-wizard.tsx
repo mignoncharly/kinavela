@@ -75,10 +75,23 @@ export function OnboardingWizard({
   const [country, setCountry] = useState(
     String(initialDraft?.values.country ?? "DE"),
   );
+  // Seeded from the draft rather than a bare 40, because the restore effect
+  // below writes saved values straight onto the DOM controls without firing
+  // React events — a resumed draft would otherwise show 40 next to a slider
+  // sitting somewhere else entirely.
+  const [radius, setRadius] = useState(() => {
+    const saved = Number(initialDraft?.values.radius);
+    return Number.isInteger(saved) && saved >= 5 && saved <= 100 ? saved : 40;
+  });
 
   useEffect(() => {
     if (!initialDraft || !formRef.current) return;
     for (const [name, value] of Object.entries(initialDraft.values)) {
+      // radius is React-controlled and seeded from the draft above. Writing to
+      // it here would fight that: the browser clamps an out-of-range draft to
+      // max, React does not re-render to correct it, and the readout ends up
+      // disagreeing with both the thumb and the value that gets submitted.
+      if (name === "radius") continue;
       const controls = formRef.current.querySelectorAll<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
       >(`[name="${CSS.escape(name)}"]`);
@@ -607,7 +620,7 @@ export function OnboardingWizard({
           <label>
             {t.radius}:{" "}
             <output>
-              {formatNumber(locale, 40)} {t.distanceUnit}
+              {formatNumber(locale, radius)} {t.distanceUnit}
             </output>
             <input
               name="radius"
@@ -615,7 +628,8 @@ export function OnboardingWizard({
               min="5"
               max="100"
               step="5"
-              defaultValue="40"
+              value={radius}
+              onChange={(event) => setRadius(Number(event.target.value))}
             />
           </label>
           <label>
