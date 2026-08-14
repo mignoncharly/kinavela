@@ -12,6 +12,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { JourneyScene } from "@/components/landing/journey-scene";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { isLocale, locales } from "@/lib/i18n/config";
 
@@ -227,6 +228,7 @@ export default async function LandingPage({ params }: PageProps) {
                   </span>
                   <span className="step-number">{step.number}</span>
                 </div>
+                <JourneyScene index={index} />
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
               </article>

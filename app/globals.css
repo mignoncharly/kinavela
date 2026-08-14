@@ -1940,3 +1940,323 @@ footer p:last-child {
   background: color-mix(in srgb, var(--success) 24%, var(--surface));
   box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--success) 9%, var(--surface));
 }
+
+/* ---------------------------------------------------------------------------
+   Journey vignettes
+
+   The humans on this page appeared exactly once, inside the hero circle, and
+   the four journey cards described human moments with abstract line icons.
+   These vignettes carry the same figures, rooftops and foliage into the cards,
+   using the hero scene's own palette so it reads as one illustrated world.
+
+   They occupy the gap the cards already reserved between the topline and the
+   heading, so they add no height on desktop. Fixed height keeps the four
+   headings on a shared baseline.
+   --------------------------------------------------------------------------- */
+
+.landing-page .vig {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 5.5rem;
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+/* The vignette now fills the space the fixed margin used to hold open. */
+.landing-page .journey-card h3 {
+  margin-top: 1.35rem;
+}
+
+.landing-page .vig-ground {
+  position: absolute;
+  right: 8%;
+  bottom: 0;
+  left: 8%;
+  height: 34%;
+  border-radius: 46% 54% 0 0 / 70% 66% 0 0;
+  background: color-mix(in srgb, #8aa585 42%, transparent);
+}
+
+.landing-page .journey-card:nth-child(even) .vig-ground {
+  background: color-mix(in srgb, #8aa585 34%, transparent);
+}
+
+/* Figures: body, ::before head, ::after arm — the hero's silhouette, smaller. */
+.landing-page .vig-person {
+  --vig-skin: #8f5b3e;
+  --vig-hair: #302821;
+  --vig-clothes: #bd5948;
+  position: absolute;
+  bottom: 20%;
+  z-index: 3;
+  width: 1.15rem;
+  height: 1.85rem;
+  border-radius: 48% 48% 22% 22% / 35% 35% 14% 14%;
+  background: var(--vig-clothes);
+}
+
+.landing-page .vig-person::before {
+  content: "";
+  position: absolute;
+  top: -36%;
+  left: 50%;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 48% 48% 46% 46%;
+  background: var(--vig-skin);
+  box-shadow: inset 0 0.16rem 0 var(--vig-hair);
+  transform: translateX(-50%);
+}
+
+.landing-page .vig-skin-1 {
+  --vig-skin: #8f5b3e;
+  --vig-clothes: #bd5948;
+}
+
+.landing-page .vig-skin-2 {
+  --vig-skin: #71422e;
+  --vig-clothes: #315f54;
+}
+
+.landing-page .vig-skin-3 {
+  --vig-skin: #d49a6a;
+  --vig-hair: #6b4534;
+  --vig-clothes: #e5ad55;
+}
+
+.landing-page .vig-skin-4 {
+  --vig-skin: #a86f50;
+  --vig-hair: #4a332a;
+  --vig-clothes: #748d9a;
+}
+
+/* 01 — Discover: distance is the point, so the two families sit far apart. */
+.landing-page .vig-far-left {
+  left: 16%;
+}
+
+.landing-page .vig-far-right {
+  right: 17%;
+  height: 1.6rem;
+}
+
+.landing-page .vig-home-far {
+  right: 12%;
+  bottom: 30%;
+  width: 1.5rem;
+  opacity: 0.55;
+}
+
+.landing-page .vig-span {
+  position: absolute;
+  bottom: 44%;
+  left: 27%;
+  z-index: 2;
+  width: 46%;
+  border-top: 2px dashed color-mix(in srgb, var(--primary) 34%, transparent);
+}
+
+/* 02 — Connect: turned toward each other, arms out. */
+.landing-page .vig-reach::after {
+  content: "";
+  position: absolute;
+  top: 34%;
+  width: 62%;
+  height: 0.2rem;
+  border-radius: 999px;
+  background: var(--vig-skin);
+}
+
+.landing-page .vig-face-left {
+  left: 31%;
+}
+
+.landing-page .vig-face-left::after {
+  right: -46%;
+  transform: rotate(10deg);
+  transform-origin: left center;
+}
+
+.landing-page .vig-face-right {
+  right: 31%;
+  height: 1.7rem;
+}
+
+.landing-page .vig-face-right::after {
+  left: -46%;
+  transform: rotate(-10deg);
+  transform-origin: right center;
+}
+
+/* 03 — Village: a cluster rather than a single home. */
+.landing-page .vig-home {
+  position: absolute;
+  bottom: 22%;
+  z-index: 3;
+  width: 1.75rem;
+  aspect-ratio: 1.05;
+  border-radius: 0.2rem 0.2rem 0.3rem 0.3rem;
+  background: #fff8e9;
+  box-shadow: inset 0 -3px rgb(214 184 142 / 26%);
+}
+
+.landing-page .vig-home::before {
+  content: "";
+  position: absolute;
+  top: -34%;
+  left: 0;
+  width: 71%;
+  aspect-ratio: 1;
+  border-radius: 0.16rem;
+  background: var(--vig-roof, #ae4d3d);
+  transform: translateX(21%) rotate(45deg);
+}
+
+.landing-page .vig-home::after {
+  content: "";
+  position: absolute;
+  right: 36%;
+  bottom: 0;
+  width: 27%;
+  height: 45%;
+  border-radius: 999px 999px 0 0;
+  background: #c88d60;
+}
+
+.landing-page .vig-home-a {
+  left: 17%;
+  width: 1.5rem;
+}
+
+.landing-page .vig-home-b {
+  --vig-roof: #315f54;
+  left: 39%;
+  bottom: 24%;
+}
+
+.landing-page .vig-home-c {
+  --vig-roof: #c98a4b;
+  right: 16%;
+  width: 1.35rem;
+}
+
+.landing-page .vig-tree {
+  position: absolute;
+  bottom: 22%;
+  left: 31%;
+  z-index: 2;
+  width: 0.16rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: #7a513a;
+}
+
+.landing-page .vig-tree::before {
+  content: "";
+  position: absolute;
+  top: -26%;
+  left: 50%;
+  width: 480%;
+  aspect-ratio: 1.2;
+  border-radius: 68% 32% 62% 38% / 58% 66% 34% 42%;
+  background: #668768;
+  transform: translateX(-50%) rotate(-10deg);
+}
+
+/* 04 — Memories: an adult and a child, something passing between them. */
+.landing-page .vig-adult {
+  left: 33%;
+  height: 2rem;
+}
+
+.landing-page .vig-child {
+  left: 49%;
+  width: 0.85rem;
+  height: 1.15rem;
+}
+
+.landing-page .vig-spark {
+  position: absolute;
+  z-index: 4;
+  width: 0.4rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #efb763;
+}
+
+.landing-page .vig-spark-high {
+  top: 16%;
+  left: 61%;
+}
+
+.landing-page .vig-spark-low {
+  top: 32%;
+  left: 68%;
+  width: 0.26rem;
+  opacity: 0.7;
+}
+
+.landing-page .vig-spark-mid {
+  top: 22%;
+  left: 50%;
+  width: 0.34rem;
+  translate: -50% 0;
+}
+
+/* Cards no longer need reserved height — the vignette fills the space. */
+@media (min-width: 901px) {
+  .landing-page .journey-card {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .landing-page .vig {
+    height: 5rem;
+    margin-top: 1.1rem;
+  }
+
+  .landing-page .journey-card h3 {
+    margin-top: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing-page .journey-card:hover .vig-person,
+  .landing-page .journey-card:focus-within .vig-person {
+    transition: translate 320ms ease;
+    translate: 0 -0.15rem;
+  }
+
+  .landing-page .journey-card:hover .vig-face-right,
+  .landing-page .journey-card:focus-within .vig-face-right {
+    translate: -0.12rem -0.15rem;
+  }
+
+  .landing-page .journey-card:hover .vig-face-left,
+  .landing-page .journey-card:focus-within .vig-face-left {
+    translate: 0.12rem -0.15rem;
+  }
+}
+
+/* The lone home in the discover vignette lost its body against the tinted card
+   and left its roof reading as a stray diamond behind the figure; the two
+   figures and the marked gap already say "families near you". */
+.landing-page .vig-home-far {
+  display: none;
+}
+
+/* One blob on a stick reads as a lollipop. The hero tree overlaps two, which
+   is what gives it a canopy. */
+.landing-page .vig-tree::after {
+  content: "";
+  position: absolute;
+  top: 4%;
+  left: 86%;
+  width: 330%;
+  aspect-ratio: 1.2;
+  border-radius: 68% 32% 62% 38% / 58% 66% 34% 42%;
+  background: #7f9b75;
+  transform: translateX(-50%) rotate(16deg);
+}
