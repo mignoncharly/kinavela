@@ -1794,3 +1794,149 @@ footer p:last-child {
     translate: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Landing warmth layer, second pass
+
+   The first pass was too conservative to read as a change. This one goes after
+   the journey section — the part that still looked like a product spec sheet —
+   and softens the hard horizontal seams between the cream, white and green
+   bands. Structure, copy and section order are untouched.
+   --------------------------------------------------------------------------- */
+
+/* A dashed rule threading four numbered boxes is process-diagram furniture.
+   The step numbers still carry the sequence. */
+.landing-page .journey-grid::before {
+  content: none;
+}
+
+.landing-page .journey-grid {
+  gap: 1.25rem;
+}
+
+/* Alternating washes instead of four identical white boxes. Terracotta and
+   sage are already the two accent families on this page, so the cards pick up
+   the palette rather than introducing a new one. */
+.landing-page .journey-card {
+  border-radius: 1.9rem;
+  border-color: color-mix(in srgb, var(--primary) 14%, transparent);
+  background: color-mix(in srgb, var(--primary) 7%, var(--surface));
+}
+
+.landing-page .journey-card:nth-child(even) {
+  border-color: color-mix(in srgb, var(--secondary) 16%, transparent);
+  background: color-mix(in srgb, var(--secondary) 8%, var(--surface));
+}
+
+.landing-page .journey-card:hover {
+  border-color: color-mix(in srgb, var(--primary) 34%, transparent);
+}
+
+.landing-page .journey-card:nth-child(even):hover {
+  border-color: color-mix(in srgb, var(--secondary) 34%, transparent);
+}
+
+/* Bigger, friendlier icon discs — they were small enough to read as bullet
+   points rather than as illustration. */
+.landing-page .journey-icon {
+  width: 3.9rem;
+  height: 3.9rem;
+  border-color: transparent;
+  background: color-mix(in srgb, var(--primary) 16%, var(--surface));
+  box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--primary) 5%, var(--surface));
+}
+
+.landing-page .journey-card:nth-child(2) .journey-icon,
+.landing-page .journey-card:nth-child(4) .journey-icon {
+  background: color-mix(in srgb, var(--secondary) 15%, var(--surface));
+  box-shadow: 0 0 0 0.5rem
+    color-mix(in srgb, var(--secondary) 6%, var(--surface));
+}
+
+.landing-page .journey-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+/* Soften the seams. The page was three flat colour bands meeting on dead
+   straight lines; an elliptical top edge lets each section rise into the one
+   above it. */
+.landing-page .journey {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(-3.5rem, -4vw, -2rem);
+  border-radius: 100% 100% 0 0 / clamp(2rem, 4vw, 4.5rem)
+    clamp(2rem, 4vw, 4.5rem) 0 0;
+}
+
+.landing-page .cta {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(-3rem, -3.5vw, -1.75rem);
+  border-radius: 100% 100% 0 0 / clamp(1.75rem, 3.5vw, 4rem)
+    clamp(1.75rem, 3.5vw, 4rem) 0 0;
+  background:
+    radial-gradient(
+      ellipse 60% 50% at 50% 0%,
+      rgb(230 184 125 / 16%),
+      transparent 70%
+    ),
+    var(--background);
+}
+
+/* The closing section was the emptiest part of the page. Give the face cluster
+   the presence it should have had — it is the last thing a visitor sees. */
+.landing-page .cta-community span,
+.landing-page .cta-community svg {
+  width: 3rem;
+  height: 3rem;
+}
+
+@media (max-width: 900px) {
+  .landing-page .journey-icon {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .landing-page .cta-community span,
+  .landing-page .cta-community svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+/* The old notch at the top of the journey section marked a straight seam that
+   no longer exists; against the new curve it reads as a stray artifact. */
+.landing-page .journey::before {
+  content: none;
+}
+
+/* Trim the reserved space below the copy. It was invisible while the cards
+   were white on white; with a tint behind them the empty third shows.
+   Scoped to the multi-column grid: unscoped it would sit later in the file
+   than the earlier max-width:900px reset and win at equal specificity,
+   putting the dead space back on mobile. */
+@media (min-width: 901px) {
+  .landing-page .journey-card {
+    min-height: 17rem;
+  }
+}
+
+/* --secondary is a deep forest tone that greys out at low mix ratios. Sage
+   (--success) holds its colour and sits warmer against the terracotta. */
+.landing-page .journey-card:nth-child(even) {
+  border-color: color-mix(in srgb, var(--success) 26%, transparent);
+  background: color-mix(in srgb, var(--success) 13%, var(--surface));
+}
+
+.landing-page .journey-card:nth-child(even):hover {
+  border-color: color-mix(in srgb, var(--success) 46%, transparent);
+}
+
+.landing-page .journey-card:nth-child(2) .journey-icon,
+.landing-page .journey-card:nth-child(4) .journey-icon {
+  background: color-mix(in srgb, var(--success) 24%, var(--surface));
+  box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--success) 9%, var(--surface));
+}
