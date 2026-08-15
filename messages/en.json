@@ -437,6 +437,26 @@
       "other": "Other"
     }
   },
+  "blog": {
+    "metaTitle": "Blog",
+    "metaDescription": "Stories, experience and practical help from Cameroonian families in Germany — written by the people living it.",
+    "eyebrow": "EVERYDAY LIFE",
+    "title": "What we are learning here",
+    "intro": "Stories from families at home between Cameroon and Germany. Written by the people living it.",
+    "empty": "The first post is being written. Come back soon.",
+    "allPosts": "All posts",
+    "postsLabel": "Posts",
+    "navigationLabel": "Blog navigation",
+    "readingTime": "{minutes} min read",
+    "publishedOn": "Published on",
+    "updatedOn": "Updated on",
+    "by": "By",
+    "onlyIn": "Only in {language}",
+    "translatedBy": "Translated by {translator}",
+    "readOriginal": "Read the original",
+    "aboutAuthor": "About the author",
+    "backHome": "Explore Kinavela"
+  },
   "footer": {
     "status": "Securely available",
     "rights": "All rights reserved.",

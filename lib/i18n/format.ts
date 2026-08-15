@@ -79,6 +79,14 @@ export function formatRegion(locale: Locale, region: string) {
   );
 }
 
+export function formatLanguage(locale: Locale, language: string) {
+  return (
+    new Intl.DisplayNames([intlLocale(locale)], { type: "language" }).of(
+      language,
+    ) ?? language
+  );
+}
+
 export function formatRelativeTime(
   locale: Locale,
   value: number,

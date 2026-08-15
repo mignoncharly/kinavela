@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+import { blogEntries } from "@/features/blog/registry";
+import { blogSitemapEntries } from "@/features/blog/sitemap";
 import { publicCommunityPages } from "@/features/seo/public-pages";
 import { locales } from "@/lib/i18n/config";
 
@@ -47,6 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         alternates: alternatesFor(`/community/${page.slug}`),
       })),
     ),
+    ...blogSitemapEntries(blogEntries(), lastModified),
     ...locales.flatMap((locale) =>
       legalRoutes.map((route) => ({
         url: `${baseUrl}/${locale}/${route}`,

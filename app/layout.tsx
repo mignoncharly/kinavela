@@ -21,6 +21,7 @@ import "./phase33-discovery-activation.css";
 import "./phase34-trust-safety.css";
 import "./phase35-support.css";
 import "./phase36-offline-coordination.css";
+import "./phase37-blog.css";
 import "./pwa.css";
 import "./responsive.css";
 

@@ -437,6 +437,26 @@
       "other": "Autre"
     }
   },
+  "blog": {
+    "metaTitle": "Blog",
+    "metaDescription": "Récits, expériences et conseils pratiques de familles camerounaises en Allemagne — écrits par celles et ceux qui les vivent.",
+    "eyebrow": "AU QUOTIDIEN",
+    "title": "Ce que nous apprenons ici",
+    "intro": "Des récits de familles qui sont chez elles entre le Cameroun et l'Allemagne. Écrits par celles et ceux qui le vivent.",
+    "empty": "Le premier article est en cours d'écriture. Reviens bientôt.",
+    "allPosts": "Tous les articles",
+    "postsLabel": "Articles",
+    "navigationLabel": "Navigation du blog",
+    "readingTime": "{minutes} min de lecture",
+    "publishedOn": "Publié le",
+    "updatedOn": "Mis à jour le",
+    "by": "Par",
+    "onlyIn": "Uniquement en {language}",
+    "translatedBy": "Traduit par {translator}",
+    "readOriginal": "Lire l'original",
+    "aboutAuthor": "À propos de l'auteur ou de l'autrice",
+    "backHome": "Découvrir Kinavela"
+  },
   "footer": {
     "status": "Disponible en toute sécurité",
     "rights": "Tous droits réservés.",

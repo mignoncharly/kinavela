@@ -437,6 +437,26 @@
       "other": "Sonstiges"
     }
   },
+  "blog": {
+    "metaTitle": "Blog",
+    "metaDescription": "Geschichten, Erfahrungen und Praktisches von kamerunischen Familien in Deutschland — geschrieben von Menschen, die hier leben.",
+    "eyebrow": "AUS DEM ALLTAG",
+    "title": "Was wir hier lernen",
+    "intro": "Geschichten von Familien, die zwischen Kamerun und Deutschland zu Hause sind. Geschrieben von Menschen, die es selbst erleben.",
+    "empty": "Der erste Beitrag entsteht gerade. Schau bald wieder vorbei.",
+    "allPosts": "Alle Beiträge",
+    "postsLabel": "Beiträge",
+    "navigationLabel": "Blog-Navigation",
+    "readingTime": "{minutes} Min. Lesezeit",
+    "publishedOn": "Veröffentlicht am",
+    "updatedOn": "Aktualisiert am",
+    "by": "Von",
+    "onlyIn": "Nur auf {language}",
+    "translatedBy": "Übersetzt von {translator}",
+    "readOriginal": "Original lesen",
+    "aboutAuthor": "Über die schreibende Person",
+    "backHome": "Kinavela kennenlernen"
+  },
   "footer": {
     "status": "Sicher verfügbar",
     "rights": "Alle Rechte vorbehalten.",
