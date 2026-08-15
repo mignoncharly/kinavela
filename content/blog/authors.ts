@@ -22,18 +22,13 @@ export const blogAuthors = {
       fr: "Fondateur de Kinavela",
       en: "Founder of Kinavela",
     },
-    // Replace with your own words before the first post ships. These sentences
-    // are factual but they are not yours, and the whole point of a byline is
-    // that it is. Delete `placeholderBio` once you have rewritten them — the
-    // voice check reports it until you do.
     bio: {
-      de: "Ich baue Kinavela von Mainz aus. Ich bin Vater und kamerunischer Einwanderer in Deutschland.",
-      fr: "Je construis Kinavela depuis Mayence. Je suis père et immigré camerounais en Allemagne.",
-      en: "I build Kinavela from Mainz. I am a father and a Cameroonian immigrant in Germany.",
+      de: "Ich bin Charles, Vater, in Kamerun geboren und heute in Mainz zu Hause. Ich baue Kinavela, damit Familien in der Diaspora einander in ihrer Nähe finden und ihre kulturellen Wurzeln mit ihren Kindern lebendig halten.",
+      fr: "Je suis Charles, père, né au Cameroun et aujourd’hui chez moi à Mayence. Je construis Kinavela pour que les familles de la diaspora puissent se rencontrer près de chez elles et faire vivre leurs racines culturelles avec leurs enfants.",
+      en: "I’m Charles, a father, born in Cameroon and now at home in Mainz. I’m building Kinavela so diaspora families can find each other nearby and keep their cultural roots alive with their children.",
     },
     image: null,
     sameAs: [],
-    placeholderBio: true,
   },
 } as const satisfies Record<string, BlogAuthor>;
 
