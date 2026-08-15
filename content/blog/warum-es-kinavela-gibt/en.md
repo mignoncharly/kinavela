@@ -29,4 +29,13 @@ This is why Kinavela has Villages and cultural missions. A Village is a small co
 
 We are not building Kinavela so families spend more time on a platform. It has done its job when an approximate distance becomes a familiar conversation, that conversation becomes a meeting, and separate families grow into a community that supports them away from the screen too.
 
+## Kinavela in four steps
+
+1. A family creates its profile and chooses which details are visible during discovery.
+2. It selects a radius and sees compatible families at approximate distances, without exact addresses.
+3. A connection request opens a private conversation only after both families agree.
+4. Connected families can build a Village and bring culture into everyday life through shared activities or missions.
+
+This order separates discovery, consent, and private conversation. A family does not reveal everything at once; it makes a new choice at each step.
+
 Kinavela begins with Cameroonian families in Germany. The wider idea is open: people should not have to trade their roots for their new home. Both can belong to the same everyday life.

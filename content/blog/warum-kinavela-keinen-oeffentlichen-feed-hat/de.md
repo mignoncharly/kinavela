@@ -29,6 +29,17 @@ Innerhalb eines Villages können Familien schreiben, Kultur teilen und Aktivitä
 
 Privat bedeutet dabei nicht unbeobachtet. Nachrichten und Villages können gemeldet werden, Familien können Verbindungen beenden oder blockieren, und bei Kinderschutzbedenken gibt es einen klaren Weg zur Prüfung. Vertrauen braucht Grenzen und Werkzeuge, wenn etwas schiefläuft.
 
+## Vier Fragen vor der Anmeldung
+
+Wer ein Familiennetzwerk prüft, sollte vor der Anmeldung klare Antworten auf vier Fragen finden:
+
+- Sind genaue Adressen oder Kinderprofile öffentlich sichtbar?
+- Können unbekannte Personen ohne Zustimmung eine Nachricht senden?
+- Wer darf die genaue Adresse einer Familienaktivität sehen?
+- Wie lassen sich Kontakte blockieren und Sicherheitsprobleme melden?
+
+Diese Antworten gehören in die Plattform selbst, nicht nur in eine lange Datenschutzerklärung. Familien sollten verstehen können, welche Information in welchem Moment für wen sichtbar wird.
+
 ## Weniger Anzeige, mehr Begegnung
 
 Ein Feed belohnt, was oft angesehen wird. Kinavela soll etwas anderes belohnen: dass zwei Familien sich sicher genug fühlen, ein Gespräch zu beginnen, und dass daraus irgendwann ein gemeinsamer Nachmittag wird.

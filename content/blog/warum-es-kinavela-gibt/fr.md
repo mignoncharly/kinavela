@@ -29,4 +29,13 @@ C’est pour cela que Kinavela propose des Villages et des missions culturelles.
 
 Nous ne construisons pas Kinavela pour que les familles passent encore plus de temps sur une plateforme. Elle a rempli sa mission lorsqu’une distance approximative devient une conversation familière, puis une rencontre, et que des familles jusque-là séparées forment une communauté qui existe aussi loin des écrans.
 
+## Kinavela en quatre étapes
+
+1. Une famille crée son profil et choisit les informations visibles pendant la recherche.
+2. Elle définit un rayon et découvre des familles compatibles avec des distances approximatives, sans adresse exacte.
+3. Une demande de connexion n’ouvre une conversation privée qu’après l’accord des deux familles.
+4. Les familles connectées peuvent construire un Village et faire vivre leur culture grâce à des activités ou des missions communes.
+
+Cet ordre sépare la découverte, l’accord et l’échange privé. Une famille ne révèle pas tout d’un coup : elle décide à nouveau à chaque étape.
+
 Kinavela commence avec les familles camerounaises en Allemagne. L’idée qui va plus loin est ouverte : personne ne devrait devoir échanger ses racines contre son nouveau pays. Les deux peuvent appartenir au même quotidien.

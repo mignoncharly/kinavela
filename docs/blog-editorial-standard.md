@@ -1,11 +1,11 @@
 # Blog editorial standard
 
-The blog exists so that kinavela.com is something search engines and
-assistants have seen **a person** write about. That only works if a person
-actually wrote it. This document is the standard; `scripts/check-blog-voice.mjs`
-catches the part of it a script can catch.
+The blog exists so families, search engines and assistants can find useful,
+first-hand information from Kinavela. That only works when the content owner
+approves the facts, judgment and voice. This document is the standard;
+`scripts/check-blog-voice.mjs` catches the part a script can catch.
 
-Run `npm run blog:check` before opening a pull request.
+Run `npm run blog:check:strict` before opening a pull request.
 
 ---
 
@@ -23,6 +23,30 @@ is downstream of this.
 
 The linter cannot check this — it only checks that the post names _something_
 concrete. A reviewer checks the rest.
+
+## The reader outcome
+
+Every post must leave a family with something they can understand, decide, or
+do. Search visibility is a result of being genuinely useful, not a reason to
+pad an article with keywords.
+
+A finished post does at least one of these things:
+
+- answers a concrete question a family might search for;
+- teaches a practice a family can use in everyday life;
+- explains a Kinavela decision and its practical effect; or
+- documents a first-hand lesson with enough context to apply elsewhere.
+
+State the main answer plainly. Use descriptive headings and self-contained
+paragraphs that remain understandable when quoted outside the page. If a claim
+comes from law, health guidance, research or another external authority, link
+to the primary source and record when it was checked. Distinguish verified fact
+from Kinavela’s judgment.
+
+Do not create near-duplicate posts for keyword variations. Do not add FAQ
+sections merely for search markup. A useful guide, written for one real family
+question, is also the easiest kind of page for a search engine or assistant to
+understand and cite.
 
 ---
 
@@ -127,12 +151,12 @@ that person as the translator.
 
 ## Author bios
 
-In `content/blog/authors.ts`. First person, written by the author about
-themselves. A bio written _about_ someone in the third person reads as brand
-copy, which is the register the blog exists to avoid.
+The public identity lives in `content/blog/authors.ts`. Its label and short
+first-person bio must be approved by the content owner. Do not publish personal
+details merely to strengthen an author signal.
 
-Bios ship with `placeholderBio: true` until their subject rewrites them. The
-voice check reports it until the flag is gone.
+Bios can ship with `placeholderBio: true` until the wording is approved. The
+voice check reports the flag until it is removed.
 
 ---
 
@@ -151,10 +175,12 @@ outside git.
 Before merging a post:
 
 - [ ] `npm run blog:check` reports nothing, or every finding is argued in the PR
+- [ ] A family can say what it learned, decided or can now do after reading
+- [ ] The main answer is stated plainly under a descriptive title or heading
+- [ ] External factual claims link to a current primary source
 - [ ] The post contains something only a human here could know — name it in the PR description
 - [ ] The opening is a scene or a claim, not a definition
 - [ ] `originalLocale` is right; a different translator is credited when one exists
-- [ ] `originalLocale` is right; `translator` set if this is a translation
 - [ ] No unedited machine translation
 - [ ] If a real family appears: consent recorded, no identifiable children, no precise locations
 - [ ] Read it out loud once. If you would not say it, do not publish it.

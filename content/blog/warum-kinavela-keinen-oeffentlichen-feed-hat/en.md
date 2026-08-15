@@ -29,6 +29,17 @@ Inside a Village, families can talk, share culture, and plan activities. The pre
 
 Private does not mean unaccountable. Messages and Villages can be reported, families can end or block connections, and child-safety concerns have a clear route for review. Trust needs boundaries and tools for the moments when something goes wrong.
 
+## Four questions before signing up
+
+Before joining a family network, people should be able to get clear answers to four questions:
+
+- Are exact addresses or child profiles publicly visible?
+- Can a stranger send a message without prior consent?
+- Who can see the precise address of a family activity?
+- How can a family block contact and report a safety problem?
+
+Those answers belong in the platform itself, not only in a long privacy policy. Families should be able to understand which information becomes visible, at what point, and to whom.
+
 ## Less display, more meeting
 
 A feed rewards whatever gets viewed often. Kinavela should reward a different outcome: two families feeling safe enough to start talking, and that conversation eventually becoming an afternoon spent together.

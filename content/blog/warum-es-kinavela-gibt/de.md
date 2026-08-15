@@ -29,4 +29,13 @@ Deshalb gibt es bei Kinavela Villages und kulturelle Missionen. Ein Village ist 
 
 Wir bauen Kinavela nicht, weil Familien noch mehr Zeit auf einer Plattform verbringen sollen. Sie hat ihren Zweck erfüllt, wenn aus einer ungefähren Entfernung ein vertrautes Gespräch wird, daraus eine Begegnung und aus einzelnen Familien eine Gemeinschaft, die auch außerhalb des Bildschirms trägt.
 
+## Kinavela in vier Schritten
+
+1. Eine Familie legt ihr Profil an und entscheidet, welche Angaben für die Suche sichtbar sind.
+2. Sie wählt einen Umkreis und sieht passende Familien mit ungefähren Entfernungen, nicht mit exakten Adressen.
+3. Eine Verbindungsanfrage öffnet erst dann ein privates Gespräch, wenn beide Seiten zugestimmt haben.
+4. Verbundene Familien können ein Village aufbauen und Kultur durch gemeinsame Aktivitäten oder Missionen in den Alltag holen.
+
+Diese Reihenfolge trennt Entdecken, Zustimmen und privates Austauschen. Eine Familie gibt nicht alles auf einmal preis, sondern entscheidet bei jedem Schritt neu.
+
 Kinavela startet mit kamerunischen Familien in Deutschland. Die größere Idee dahinter ist offen: Menschen sollen ihre Wurzeln nicht gegen ihre neue Heimat eintauschen müssen. Beides darf zum selben Alltag gehören.

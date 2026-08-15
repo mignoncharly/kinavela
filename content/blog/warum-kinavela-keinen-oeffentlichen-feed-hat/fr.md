@@ -29,6 +29,17 @@ Dans un Village, les familles peuvent discuter, partager leur culture et prépar
 
 Privé ne veut pas dire sans contrôle. Les messages et les Villages peuvent être signalés, les familles peuvent mettre fin à une relation ou la bloquer, et les préoccupations liées à la sécurité des enfants suivent une procédure claire. La confiance a besoin de limites et d’outils lorsqu’un problème survient.
 
+## Quatre questions avant l’inscription
+
+Avant de rejoindre un réseau familial, il faut pouvoir obtenir une réponse claire à quatre questions :
+
+- Les adresses exactes ou les profils d’enfants sont-ils visibles publiquement ?
+- Une personne inconnue peut-elle envoyer un message sans accord préalable ?
+- Qui peut voir l’adresse précise d’une activité familiale ?
+- Comment bloquer un contact et signaler un problème de sécurité ?
+
+Ces réponses doivent apparaître dans la plateforme elle-même, pas uniquement dans une longue politique de confidentialité. Les familles doivent pouvoir comprendre quelle information devient visible, à quel moment et pour qui.
+
 ## Moins d’affichage, plus de rencontres
 
 Un fil met en avant ce qui attire beaucoup de regards. Kinavela cherche un autre résultat : que deux familles se sentent assez en sécurité pour commencer une conversation et que cet échange mène un jour à un après-midi partagé.

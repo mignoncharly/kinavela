@@ -18,26 +18,30 @@ npm run blog:new -- warum-wir-kinavela-bauen
 That creates `content/blog/<slug>/de.md`, dated **2099-01-01** so it stays out
 of the build while you work. Publishing is one date edit.
 
-Three to five German posts before launch is enough. Candidates that all pass
-the "only a human here could know this" test in
-`docs/blog-editorial-standard.md`:
+Choose one real family question per post. The title should name the question or
+topic plainly, and the article should give enough context that a reader does
+not have to search again for the basic answer. Good content pillars are:
 
-1. Why you are building Kinavela — the actual moment it started.
-2. What you got wrong in the first onboarding design, and what families told you.
-3. Securing a Kita place as a Cameroonian family in Germany — real forms, real deadlines.
-4. An interview with one family in Munich or Berlin. Phase 5 consent applies:
-   read `docs/blog-consent-and-withdrawal.md` **before** the conversation, not
-   after.
-5. Ndolé, and what it costs to keep cooking it here.
+1. **Family life in Germany:** Kita, Schule, Anmeldung and local services, with
+   current links to the responsible public authority.
+2. **Language and belonging:** practical family routines, specific words and
+   first-hand experience rather than generic bilingual-parenting advice.
+3. **Safe local connections:** how to evaluate a family network, arrange a first
+   meeting and protect children’s information.
+4. **Culture in everyday life:** recipes, names, stories, celebrations and what
+   it actually takes to keep them present in Germany.
+5. **Kinavela decisions:** what changed, why it changed and what the decision
+   means for a family using the platform.
 
-Also rewrite your bio in `content/blog/authors.ts` and delete
-`placeholderBio: true`. Until you do, `npm run blog:check` will keep saying so,
-and it is right to.
+If a post quotes or photographs a family, read
+`docs/blog-consent-and-withdrawal.md` before the conversation. Legal, health
+and administrative guidance must cite a current primary source and state the
+date it was checked.
 
 Before each pull request:
 
 ```bash
-npm run blog:check          # privacy findings block, style findings advise
+npm run blog:check:strict
 ```
 
 ---
@@ -75,8 +79,15 @@ _Request Indexing_ on:
 - `https://www.kinavela.com/de/blog`
 - each post URL
 
-**Bing Webmaster Tools** — same property, same sitemap. Bing feeds ChatGPT
-search, so this is a separate distribution channel rather than a duplicate.
+**Bing Webmaster Tools** — verify the same property and submit the same
+sitemap. Use its AI Performance report to monitor citations across Bing and
+Microsoft Copilot surfaces.
+
+**Assistant search crawlers** — no separate submission is available. The live
+`robots.txt` allows `OAI-SearchBot`, `Claude-SearchBot`, `Claude-User` and the
+other retrieval crawlers while keeping member routes private. Recheck that a
+public post returns HTTP 200 for those user agents after firewall or CDN
+changes.
 
 **IndexNow** — already wired, nothing to build:
 
@@ -117,13 +128,25 @@ If a fortnight passes and there is nothing true to say, say nothing.
 
 Check at 30, 60 and 90 days:
 
-| Signal                                             | Where                        |
-| -------------------------------------------------- | ---------------------------- |
-| Pages indexed                                      | Search Console → Pages       |
-| Impressions on the brand query "kinavela"          | Search Console → Performance |
-| Referring domains                                  | any backlink tool            |
-| Whether an assistant can now answer "kinavela.com" | ask one                      |
+| Signal                                              | Where                                       |
+| --------------------------------------------------- | ------------------------------------------- |
+| Pages indexed                                       | Search Console → Pages                      |
+| Impressions on the brand query “kinavela”           | Search Console → Performance                |
+| Citations in Bing and Microsoft Copilot             | Bing Webmaster → AI Performance             |
+| Visits from ChatGPT search                          | Analytics referral `utm_source=chatgpt.com` |
+| Referring domains                                   | A backlink tool                             |
+| Whether assistants answer accurately about Kinavela | Manual checks with cited sources            |
 
 If Search Console reports posts as **Crawled — currently not indexed** at 60
 days, the problem is content quality or authority, not plumbing. If it reports
 **Discovered — currently not indexed**, it is queue time; wait.
+
+---
+
+## Current primary guidance
+
+- [Google: helpful, reliable, people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
+- [Google: generative AI features in Search](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
+- [Bing Webmaster Guidelines](https://www.bing.com/webmasters/help/webmaster-guidelines-30fba23a)
+- [OpenAI publisher FAQ](https://help.openai.com/en/articles/12627856-publishers-and-developers-faq)
+- [Anthropic crawler controls](https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler)
