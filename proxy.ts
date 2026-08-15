@@ -19,6 +19,15 @@ export async function proxy(request: NextRequest) {
   const supabaseSocketOrigin = supabaseOrigin
     .replace(/^https:/, "wss:")
     .replace(/^http:/, "ws:");
+  const sentryOrigin = publicEnv.NEXT_PUBLIC_SENTRY_DSN
+    ? new URL(publicEnv.NEXT_PUBLIC_SENTRY_DSN).origin
+    : null;
+  const connectSources = [
+    q + "self" + q,
+    supabaseOrigin,
+    supabaseSocketOrigin,
+    ...(sentryOrigin ? [sentryOrigin] : []),
+  ];
   const csp = [
     "default-src " + q + "self" + q,
     "script-src " +
@@ -38,14 +47,7 @@ export async function proxy(request: NextRequest) {
     "img-src " + q + "self" + q + " data: blob: " + supabaseOrigin,
     "media-src " + q + "self" + q + " blob: " + supabaseOrigin,
     "font-src " + q + "self" + q,
-    "connect-src " +
-      q +
-      "self" +
-      q +
-      " " +
-      supabaseOrigin +
-      " " +
-      supabaseSocketOrigin,
+    "connect-src " + connectSources.join(" "),
     "worker-src " + q + "self" + q + " blob:",
     "object-src " + q + "none" + q,
     "base-uri " + q + "self" + q,

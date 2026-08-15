@@ -1,8 +1,8 @@
 # Privacy Policy
 
-Version 1.1
+Version 1.2
 Effective date: 11 August 2026  
-Last updated: 12 August 2026
+Last updated: 15 August 2026
 
 ## 1. Controller
 
@@ -22,7 +22,7 @@ City/postcode searches are sent server-side to Nominatim/OpenStreetMap. Exact de
 ## 3. Purposes and legal bases
 
 - Service delivery, onboarding, family tools, Roots, messaging and community features: Art. 6(1)(b) GDPR.
-- Security, abuse prevention, moderation and incident handling: Art. 6(1)(f) GDPR and, where applicable, Art. 6(1)(c) GDPR.
+- Security, abuse prevention, technical error and performance monitoring, moderation and incident handling: Art. 6(1)(f) GDPR and, where applicable, Art. 6(1)(c) GDPR.
 - Optional product email: Art. 6(1)(a) GDPR; consent can be withdrawn in Settings.
 - Optional Web Push: Art. 6(1)(a) GDPR; it requires an explicit Settings action and browser permission and can be withdrawn per device.
 - Optional first-party product metrics and the related browser storage: opt-in consent. The service remains usable after refusal.
@@ -37,11 +37,12 @@ The production deployment uses:
 - Supabase for Auth, PostgreSQL, private Storage and Realtime.
 - Zoho Europe SMTP at smtp.zoho.eu for account and opted-in notification email.
 - Nominatim/OpenStreetMap for explicit server-side city or postcode searches.
+- Sentry in its Germany region for minimized technical error and performance monitoring.
 - The push service selected by the user's browser or operating system when Web Push is explicitly enabled.
 
 The exact Supabase project region and the processor transfer mechanism are controlled in provider administration and are not asserted from application source alone. The SMTP endpoint is European; its hostname alone is not an EU-only storage guarantee. Applicable transfer safeguards are maintained in the controller's processor records.
 
-Stripe is used for hosted subscription Checkout, customer billing Portal sessions and payment webhooks. It receives the billing identifiers and payment information needed to process Roots Family subscriptions; Kinavela does not receive full card data. OpenAI processing, Sentry, third-party analytics, advertising and CAPTCHA remain disabled.
+Stripe is used for hosted subscription Checkout, customer billing Portal sessions and payment webhooks. It receives the billing identifiers and payment information needed to process Roots Family subscriptions; Kinavela does not receive full card data. Sentry receives minimized errors and stack traces, route patterns, runtime, browser or device information and sampled performance data. A technical IP address may be processed in network transit. Default personal data, Session Replay, forms, request bodies, messages, stories, transcripts and child data are disabled or filtered before sending. OpenAI processing, third-party analytics, advertising and CAPTCHA remain disabled.
 
 When Web Push is enabled, Kinavela sends an encrypted notification through the endpoint assigned by the browser's or operating system's push service. The exact recipient service depends on the device and browser. Push payloads use generic typed copy and exclude message bodies, exact addresses, story transcripts and child details.
 
@@ -57,6 +58,7 @@ When Web Push is enabled, Kinavela sends an encrypted notification through the e
 | Web Push device subscription                | Until revoked, expired, account deletion or provider rejection |
 | Event reminder deliveries                   | 90 days                                                        |
 | In-app and connection notifications         | 365 days                                                       |
+| Technical Sentry error and performance data | 30 days                                                        |
 | First-party product metrics                 | 180 days                                                       |
 | Security, moderation and audit events       | 730 days unless a safety, legal or incident hold applies       |
 | Provider-controlled backups                 | Per the configured backup cycle; deletion may propagate later  |

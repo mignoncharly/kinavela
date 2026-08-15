@@ -32,6 +32,10 @@ const nextConfig: NextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
+  org: "kinavela",
+  project: "kinavela",
+  sentryUrl: "https://de.sentry.io/",
+  telemetry: false,
   silent: true,
   webpack: { treeshake: { removeDebugLogging: true } },
   sourcemaps: {

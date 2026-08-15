@@ -1,6 +1,6 @@
 # Production privacy inventory
 
-Audit date: 13 August 2026
+Audit date: 15 August 2026
 Application: Kinavela at https://www.kinavela.com
 
 ## Processing inventory
@@ -17,7 +17,7 @@ Application: Kinavela at https://www.kinavela.com
 | Operations            | audit events, request rate limits, product events, geocoding cache, legacy migration archive | Security metadata, hashed identifiers, opt-in metrics, city-search cache, bounded historical waitlist state | Security, operations and reversible access migration |
 | Billing               | Stripe Customer and subscription identifiers, minimized webhook audit metadata               | Stripe, Supabase Database                                                                                   | Roots Family subscriptions; family owner only        |
 | AI                    | Code exists, but AI provider is disabled in production                                       | None sent to OpenAI by current deployment                                                                   | Not active                                           |
-| Monitoring            | Sentry package exists, DSN is empty                                                          | No Sentry events by current deployment                                                                      | Not active                                           |
+| Monitoring            | Sentry EU/Germany DSN with application-side privacy filtering                                | Minimized technical errors, stack traces, route patterns, runtime/device data and sampled performance data  | Security, incident response and service integrity    |
 
 ## Processors actually used
 
@@ -25,7 +25,8 @@ Application: Kinavela at https://www.kinavela.com
 2. Zoho Europe SMTP: transactional and opted-in notification email. Configured endpoint: `smtp.zoho.eu`.
 3. Nominatim/OpenStreetMap: explicit server-side city/postcode geocoding. Configured default: `https://nominatim.openstreetmap.org`.
 4. Stripe: hosted Roots Family Checkout, Customer Portal and payment webhooks. Kinavela stores only billing identifiers and minimized webhook audit metadata; Stripe handles payment method and invoice records.
-5. Browser/operating-system push service: only after explicit Web Push permission and device registration; the exact service is determined by the subscription endpoint.
+5. Sentry, Germany region: minimized technical error and performance monitoring. Default personal data and Session Replay are disabled; request bodies, authentication data, query values, messages, stories, transcripts and child data are filtered. Retention is 30 days.
+6. Browser/operating-system push service: only after explicit Web Push permission and device registration; the exact service is determined by the subscription endpoint.
 
 The application server/Nginx is self-managed for the controller, but its commercial hosting operator is not identified in the repository and is not given a fictional name in the public policy.
 

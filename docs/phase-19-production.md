@@ -23,7 +23,7 @@ The privacy cron claims one export and one account deletion per run. It removes 
 
 ## Processor and transfer review
 
-The production processor inventory is Supabase, Zoho Europe SMTP, Nominatim/OpenStreetMap and Stripe for Roots Family billing. Optional Web Push uses the browser-selected push service only after permission and remains rollout-gated. OpenAI, Sentry, analytics, advertising and CAPTCHA remain disabled. Supabase project region, hosting operator and contractual transfer mechanisms still require provider-console or contract confirmation; they are not invented from source code.
+The production processor inventory is Supabase, Zoho Europe SMTP, Nominatim/OpenStreetMap and Stripe for Roots Family billing. Optional Web Push uses the browser-selected push service only after permission and remains rollout-gated. OpenAI, analytics, advertising and CAPTCHA remain disabled; Sentry is now limited to privacy-filtered technical monitoring in the Germany region. Supabase project region, hosting operator and contractual transfer mechanisms still require provider-console or contract confirmation; they are not invented from source code.
 
 ## Cookie and consent audit
 

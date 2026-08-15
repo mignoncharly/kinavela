@@ -44,6 +44,7 @@ const retentionRows = {
     ],
     ["In-App- und Verbindungsbenachrichtigungen", "365 Tage."],
     ["Eigene Produktmetriken", "180 Tage; niemals für Werbung oder Profiling."],
+    ["Technische Sentry-Fehler- und Leistungsereignisse", "30 Tage."],
     [
       "Sicherheits-, Moderations- und Audit-Ereignisse",
       "730 Tage, sofern keine Sicherheits-, Rechts- oder Incident-Aufbewahrung mehr verlangt.",
@@ -79,6 +80,7 @@ const retentionRows = {
       "Métriques produit internes",
       "180 jours ; jamais utilisées pour la publicité ni le profilage.",
     ],
+    ["Événements techniques d’erreur et de performance Sentry", "30 jours."],
     [
       "Événements de sécurité, de modération et d’audit",
       "730 jours, sauf obligation de conservation liée à la sécurité, au droit ou à un incident.",
@@ -111,6 +113,7 @@ const retentionRows = {
       "First-party product metrics",
       "180 days; never used for advertising or profiling.",
     ],
+    ["Technical Sentry error and performance events", "30 days."],
     [
       "Security, moderation and audit events",
       "730 days unless a safety, legal or incident hold requires more.",
@@ -134,7 +137,7 @@ export const legalCopy: Record<Locale, LegalCopy> = {
     },
     navigationLabel: "Rechtliche Dokumente",
     eyebrow: "RECHTLICHES · KINAVELA",
-    meta: "Version 1.1 · Gültig ab 11. August 2026 · Zuletzt aktualisiert am 13. August 2026",
+    meta: "Version 1.2 · Gültig ab 11. August 2026 · Zuletzt aktualisiert am 15. August 2026",
     generalContact: "Allgemeiner Kontakt:",
     controller: { email: "E-Mail", legalForm: "Einzelunternehmen" },
     documents: {
@@ -185,9 +188,10 @@ export const legalCopy: Record<Locale, LegalCopy> = {
               "Zoho Europe SMTP unter smtp.zoho.eu für Konto- und ausdrücklich erlaubte Benachrichtigungs-E-Mails. Es erhält Empfängeradresse und den für die Zustellung erforderlichen Mindestinhalt.",
               "Nominatim / OpenStreetMap für ausdrücklich serverseitig ausgeführte Stadt- oder Postleitzahlensuchen bei Onboarding und Entdeckung. Die Suchanfrage kann Land, Stadt/Postleitzahl und UI-Sprache enthalten; exaktes Geräte-GPS wird nicht verwendet.",
               "Stripe für gehostetes Roots-Family-Abonnement-Checkout, Kundenportal-Sitzungen und signierte Zahlungs-Webhooks. Stripe erhält die für das Abonnement nötigen Zahlungsinformationen und Abrechnungskennungen; Kinavela erhält keine vollständigen Kartendaten.",
+              "Sentry (deutsche Region) für technische Fehler- und Leistungsüberwachung. Übermittelt werden minimierte Fehler- und Stacktrace-Daten, Routenmuster, Laufzeit-, Browser- und Geräteangaben sowie eine Stichprobe von Leistungsdaten. Während der Netzwerkzustellung kann die technische IP-Adresse verarbeitet werden. Standardmäßige personenbezogene Daten, Session Replay, Formulare, Anfrageinhalte, Nachrichten, Stories, Transkripte und Kinderdaten sind deaktiviert oder werden vor der Übermittlung gefiltert.",
             ],
             paragraphs: [
-              "OpenAI-Verarbeitung, Sentry, Drittanbieter-Analytics, Werbung, CAPTCHA und Web-Push-Zustellung sind in der Produktion nicht aktiviert. Stripe ist nur für die oben beschriebene Roots-Family-Abrechnung aktiv. Vor Aktivierung weiterer Auftragsverarbeiter werden diese Erklärung und der Einwilligungsablauf aktualisiert.",
+              "OpenAI-Verarbeitung, Drittanbieter-Analytics, Werbung, CAPTCHA und Web-Push-Zustellung sind in der Produktion nicht aktiviert. Stripe ist nur für die oben beschriebene Roots-Family-Abrechnung aktiv. Vor Aktivierung weiterer Auftragsverarbeiter werden diese Erklärung und der Einwilligungsablauf aktualisiert.",
             ],
           },
           {
@@ -462,7 +466,7 @@ export const legalCopy: Record<Locale, LegalCopy> = {
     },
     navigationLabel: "Documents juridiques",
     eyebrow: "MENTIONS LÉGALES · KINAVELA",
-    meta: "Version 1.1 · En vigueur le 11 août 2026 · Dernière mise à jour le 13 août 2026",
+    meta: "Version 1.2 · En vigueur le 11 août 2026 · Dernière mise à jour le 15 août 2026",
     generalContact: "Contact général :",
     controller: { email: "E-mail", legalForm: "Entreprise individuelle" },
     documents: {
@@ -512,9 +516,10 @@ export const legalCopy: Record<Locale, LegalCopy> = {
               "Zoho Europe SMTP à smtp.zoho.eu pour les e-mails de compte et de notification expressément acceptés. Il reçoit l’adresse du destinataire et le minimum nécessaire à la livraison.",
               "Nominatim / OpenStreetMap pour les recherches explicites de ville ou code postal côté serveur lors de l’inscription et de la découverte. La requête peut inclure pays, ville/code postal et langue de l’interface ; le GPS précis de l’appareil n’est pas utilisé.",
               "Stripe pour le Checkout hébergé de l’abonnement Roots Family, les sessions du portail client et les webhooks de paiement signés. Stripe reçoit les informations de paiement et identifiants de facturation nécessaires ; Kinavela ne reçoit pas les données complètes de carte.",
+              "Sentry (région allemande) pour la surveillance technique des erreurs et performances. Les données sont limitées aux erreurs et traces techniques, modèles de route, environnement d’exécution, navigateur ou appareil et à un échantillon de performances. L’adresse IP technique peut être traitée pendant le transport réseau. Les données personnelles par défaut, Session Replay, formulaires, corps de requête, messages, récits, transcriptions et données d’enfant sont désactivés ou filtrés avant l’envoi.",
             ],
             paragraphs: [
-              "Le traitement OpenAI, Sentry, les analyses tierces, la publicité, CAPTCHA et la livraison Web Push ne sont pas activés en production. Stripe n’est actif que pour la facturation Roots Family décrite ci-dessus. Si un autre sous-traitant est activé, cette politique et le parcours de consentement seront mis à jour avant le traitement.",
+              "Le traitement OpenAI, les analyses tierces, la publicité, CAPTCHA et la livraison Web Push ne sont pas activés en production. Stripe n’est actif que pour la facturation Roots Family décrite ci-dessus. Si un autre sous-traitant est activé, cette politique et le parcours de consentement seront mis à jour avant le traitement.",
             ],
           },
           {
@@ -793,7 +798,7 @@ export const legalCopy: Record<Locale, LegalCopy> = {
     },
     navigationLabel: "Legal documents",
     eyebrow: "LEGAL · KINAVELA",
-    meta: "Version 1.1 · Effective 11 August 2026 · Last updated 13 August 2026",
+    meta: "Version 1.2 · Effective 11 August 2026 · Last updated 15 August 2026",
     generalContact: "General contact:",
     controller: { email: "Email", legalForm: "Einzelunternehmen" },
     documents: {
@@ -828,7 +833,7 @@ export const legalCopy: Record<Locale, LegalCopy> = {
           {
             title: "5. Recipients and processors",
             paragraphs: [
-              "Production uses Supabase for authentication, PostgreSQL, private Storage and Realtime; Zoho Europe SMTP for account and opted-in notification email; Nominatim / OpenStreetMap for explicit city or postcode searches; and Stripe for hosted Roots Family billing. Each receives only data necessary for its service. OpenAI, Sentry, third-party analytics, advertising, CAPTCHA and Web Push delivery are not enabled in production.",
+              "Production uses Supabase for authentication, PostgreSQL, private Storage and Realtime; Zoho Europe SMTP for account and opted-in notification email; Nominatim / OpenStreetMap for explicit city or postcode searches; Stripe for hosted Roots Family billing; and Sentry in its Germany region for technical error and performance monitoring. Sentry receives minimized error and stack-trace data, route patterns, runtime, browser or device information and sampled performance data; a technical IP address may be processed in network transit. Default personal data, Session Replay, forms, request bodies, messages, stories, transcripts and child data are disabled or filtered before sending. OpenAI, third-party analytics, advertising, CAPTCHA and Web Push delivery are not enabled in production.",
             ],
           },
           {

@@ -6,7 +6,7 @@
 - Port 3020 binds to `127.0.0.1`; only Nginx is Internet-facing.
 - TLS, HSTS, frame denial, content-type protection, referrer policy, permissions policy, and a restrictive CSP are applied at Nginx.
 - Health responses contain no credentials or exception details.
-- Sentry PII transmission is disabled and remains inactive until a DSN is explicitly configured.
+- Sentry error and sampled performance monitoring uses the Germany region. Default PII and Session Replay are disabled; application filters remove identity, authentication, request-body, family-content and sensitive route data before transmission.
 
 Before later phases launch, perform the blueprint's RLS, IDOR, upload, CSRF, XSS, rate-limit, signed-URL, admin-authorization, and secret-scanning gates.
 
