@@ -14,9 +14,16 @@ import { publicCommunityAggregateSchema } from "@/lib/validation/seo";
 
 type PageProps = { params: Promise<{ locale: string; slug: string }> };
 
-export const dynamicParams = false;
-export const revalidate = 3600;
-
+// This route cannot be prerendered, so it carries no `revalidate` or
+// `dynamicParams`: both were declared here once and neither ever took effect.
+// The root layout is `dynamic = "force-dynamic"` because proxy.ts issues a
+// per-request CSP nonce, and Next can only stamp that nonce during a
+// server-side render — a prerendered page would ship a nonce that never
+// matches the response header, and `strict-dynamic` would then block every
+// script on the page. Unknown slugs are already rejected by the notFound()
+// below, so nothing depended on `dynamicParams = false` for correctness.
+// generateStaticParams is kept for the day the public routes move off the
+// nonce CSP; it is inert until then.
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
     publicCommunityPages.map((page) => ({ locale, slug: page.slug })),
@@ -78,6 +85,7 @@ function copy(locale: Locale, city: string) {
       villages: "aktive Villages",
       events: "geplante öffentliche Aktivitäten",
       explore: "Kinavela kennenlernen",
+      blogLink: "Blog",
       navigation: "Öffentliche Navigation",
       privacyLink: "Datenschutz",
       formingTitle: "Die Community entsteht",
@@ -97,6 +105,7 @@ function copy(locale: Locale, city: string) {
       villages: "Villages actifs",
       events: "activités publiques planifiées",
       explore: "Découvrir Kinavela",
+      blogLink: "Blog",
       navigation: "Navigation publique",
       privacyLink: "Confidentialité",
       formingTitle: "La communauté se construit",
@@ -115,6 +124,7 @@ function copy(locale: Locale, city: string) {
     villages: "active Villages",
     events: "planned public activities",
     explore: "Explore Kinavela",
+    blogLink: "Blog",
     navigation: "Public navigation",
     privacyLink: "Privacy",
     formingTitle: "Community is forming",
@@ -184,6 +194,7 @@ export default async function CommunityPage({ params }: PageProps) {
         </Link>
         <nav aria-label={content.navigation}>
           <Link href={`/${locale}`}>{content.explore}</Link>
+          <Link href={`/${locale}/blog`}>{content.blogLink}</Link>
           <Link href={`/${locale}/privacy`}>{content.privacyLink}</Link>
         </nav>
       </header>
