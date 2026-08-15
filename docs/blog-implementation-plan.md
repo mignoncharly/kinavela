@@ -297,7 +297,7 @@ Verified against a real render:
 | ------------------------------ | ------------------------------------------------------------------ |
 | Post JSON-LD                   | `WebPage` + `BlogPosting` + `BreadcrumbList` + `Person`            |
 | `publisher` / `isPartOf`       | reference `#organization` / `#website` — no duplicate Organization |
-| `author`                       | `Person` with stable `@id` `…/#person-charles`                     |
+| `author`                       | `Person` with stable `@id` `…/#person-admin`                       |
 | Sitemap: `nur-deutsch`         | `de` + `x-default` only — no `fr`/`en` 404s announced              |
 | Sitemap: per-post `lastmod`    | each post's own date, not the hardcoded one                        |
 | Sitemap: index `lastmod`       | newest post's date                                                 |
@@ -379,9 +379,9 @@ Rules: `banned-phrase`, `conclusion-heading`, `question-heading`,
   and both the script and the standard say so plainly. The reviewer does the
   rest.
 
-Author bios ship with `placeholderBio: true`, which the check reports until it
-is deleted. Charles's bio is currently flagged: it is factually correct but it
-was not written by him, and a byline in someone else's words defeats the point.
+Author bios can ship with `placeholderBio: true`, which the check reports until
+the content owner approves the wording. The current public label and bio were
+approved by the site owner, so the placeholder flag is absent.
 
 `vitest.config.ts` now includes `tests/unit/**/*.test.mjs` so the CLI script is
 covered by real tests rather than a hand-rolled `--self-test` flag. `tsconfig`
@@ -422,10 +422,9 @@ behaves.
 
 ### `content/blog/authors.ts`
 
-Real people: name, role, a first-person bio paragraph, photo, optional `sameAs`
-links. Charles gets a real byline. A named author with a genuine bio is the
-single strongest human signal available, and it is also exactly what search
-quality raters reward.
+The public identity uses the owner-selected label `Admin`, a short first-person
+bio, an optional photo and optional `sameAs` links. The same stable identity is
+used in every language and in the post JSON-LD.
 
 ### Translation honesty
 
@@ -585,13 +584,11 @@ shipped: `scripts/new-blog-post.mjs` with `npm run blog:new`, six tests in
 `tests/unit/blog-scaffold.test.mjs`, and `docs/blog-launch.md` — the full
 checklist with exact commands.
 
-### What was not done, and will not be
+### Editorial ownership
 
-**The posts.** Writing them is the phase. A post generated here would fail the
-standard built in Phase 4 on its first line — it could not contain something
-only a human at Kinavela knows, and it would carry Charles's byline while not
-being his. The scaffolding removes the friction; the writing is not
-transferable.
+**The posts.** Writing remains a content-owner decision. Drafting can remove
+friction, but the owner must approve the claims, voice and public byline before
+publication.
 
 **The submissions.** Search Console and Bing verification need accounts that
 are not mine, and IndexNow is an outward-facing submission to a live index.

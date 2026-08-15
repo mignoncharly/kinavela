@@ -19,7 +19,7 @@ const NOW = new Date("2026-03-01T00:00:00Z");
 const entries = loadBlogEntries(FIXTURES, NOW);
 
 const post = getBlogPost("erster-beitrag", "de", entries) as BlogPost;
-const author = blogAuthors.charles as BlogAuthor;
+const author = blogAuthors.admin as BlogAuthor;
 
 function nodesOf(graph: { "@graph": Record<string, unknown>[] }) {
   return Object.fromEntries(
@@ -65,9 +65,9 @@ describe("blog post structured data", () => {
 
   it("attributes the post to a Person node with a stable id", () => {
     expect(nodes.BlogPosting?.author).toEqual({
-      "@id": blogAuthorId("charles"),
+      "@id": blogAuthorId("admin"),
     });
-    expect(nodes.Person?.["@id"]).toBe(blogAuthorId("charles"));
+    expect(nodes.Person?.["@id"]).toBe(blogAuthorId("admin"));
     expect(nodes.Person?.name).toBe(author.name);
   });
 

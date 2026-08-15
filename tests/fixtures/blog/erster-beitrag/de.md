@@ -1,7 +1,7 @@
 ---
 title: Ein erster Beitrag
 excerpt: Ein Fixture-Beitrag, der lang genug ist, um die Validierung zu bestehen.
-author: charles
+author: admin
 published: 2026-01-10
 originalLocale: de
 tags: [familie, sprache]

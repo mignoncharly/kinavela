@@ -21,7 +21,7 @@ post that has not been translated yet.
 ---
 title: Warum wir Kinavela bauen
 excerpt: Meine Tochter hat mich letzten Herbst gefragt, warum Oma anders spricht.
-author: charles
+author: admin
 published: 2026-08-20
 originalLocale: de
 tags: [familie, sprache]

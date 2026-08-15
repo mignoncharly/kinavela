@@ -8,7 +8,7 @@ import {
 const valid = `---
 title: Warum wir Kinavela bauen
 excerpt: Meine Tochter hat mich letzten Herbst gefragt, warum Oma anders spricht.
-author: charles
+author: admin
 published: 2026-08-20
 originalLocale: de
 tags: [familie, sprache]
@@ -28,7 +28,7 @@ describe("blog frontmatter", () => {
     const source = `---
 title: Warum wir bauen: eine Geschichte
 excerpt: L'école, la langue et tout ce qui reste quand on part de chez soi.
-author: charles
+author: admin
 published: 2026-08-20
 originalLocale: fr
 ---
@@ -73,7 +73,7 @@ Texte.`;
   });
 
   it("rejects unknown keys rather than ignoring them", () => {
-    const source = valid.replace("tags: [familie, sprache]", "autor: charles");
+    const source = valid.replace("tags: [familie, sprache]", "autor: admin");
     expect(() => parseFrontmatter(source, "t.md")).toThrow(
       /invalid frontmatter/,
     );

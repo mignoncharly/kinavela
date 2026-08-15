@@ -130,7 +130,9 @@ export default async function BlogPostPage({ params }: PageProps) {
             <span className="blog-byline-name">
               {dictionary.blog.by} {author.name}
             </span>
-            <span className="blog-byline-role">{author.role[locale]}</span>
+            {author.role[locale] !== author.name && (
+              <span className="blog-byline-role">{author.role[locale]}</span>
+            )}
           </p>
         )}
 

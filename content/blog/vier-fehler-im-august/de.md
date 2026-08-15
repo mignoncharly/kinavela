@@ -1,7 +1,7 @@
 ---
 title: Vier Fehler, die Familien nicht hätten treffen dürfen
 excerpt: Am 14. August haben wir vier Fehler behoben. Was sie für Familien bedeuteten und warum wir bei Kinavela offen darüber sprechen.
-author: charles
+author: admin
 published: 2026-08-15
 originalLocale: de
 tags: [familie, vertrauen, hinter-den-kulissen]

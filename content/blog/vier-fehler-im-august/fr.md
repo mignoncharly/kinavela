@@ -1,7 +1,7 @@
 ---
 title: Quatre erreurs qui n’auraient jamais dû toucher les familles
 excerpt: Le 14 août, nous avons corrigé quatre erreurs. Ce qu’elles signifiaient pour les familles et pourquoi Kinavela en parle ouvertement.
-author: charles
+author: admin
 published: 2026-08-15
 originalLocale: de
 tags: [famille, confiance, coulisses]

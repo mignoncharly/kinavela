@@ -35,7 +35,7 @@ export function humaniseSlug(slug) {
 export function scaffoldPost({
   slug,
   locale = "de",
-  author = "charles",
+  author = "admin",
   originalLocale = locale,
   translator = null,
 }) {

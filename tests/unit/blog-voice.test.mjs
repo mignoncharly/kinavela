@@ -156,7 +156,7 @@ describe("specificity proxy", () => {
 describe("author bios", () => {
   it("reports a bio still carrying the placeholder flag", () => {
     const findings = placeholderAuthorFindings(
-      "export const blogAuthors = {\n  charles: {\n    placeholderBio: true,\n  },\n};",
+      "export const blogAuthors = {\n  admin: {\n    placeholderBio: true,\n  },\n};",
       "content/blog/authors.ts",
     );
     expect(findings).toHaveLength(1);

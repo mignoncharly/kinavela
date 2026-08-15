@@ -18,7 +18,7 @@ describe("scaffoldPost", () => {
   it("produces frontmatter the real parser accepts", () => {
     const { frontmatter, body } = parseFrontmatter(source, "scaffold.md");
     expect(frontmatter.title).toBe("Warum wir bauen");
-    expect(frontmatter.author).toBe("charles");
+    expect(frontmatter.author).toBe("admin");
     expect(frontmatter.originalLocale).toBe("de");
     expect(frontmatter.excerpt.length).toBeGreaterThanOrEqual(20);
     // An empty page is the point: anything pre-written would be the first

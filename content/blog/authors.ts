@@ -14,18 +14,18 @@ import type { BlogAuthor } from "@/features/blog/types";
  * empty until there is something true to put in it.
  */
 export const blogAuthors = {
-  charles: {
-    key: "charles",
-    name: "Nguenkam Charles",
+  admin: {
+    key: "admin",
+    name: "Admin",
     role: {
-      de: "Gründer von Kinavela",
-      fr: "Fondateur de Kinavela",
-      en: "Founder of Kinavela",
+      de: "Admin",
+      fr: "Admin",
+      en: "Admin",
     },
     bio: {
-      de: "Ich bin Charles, Vater, in Kamerun geboren und heute in Mainz zu Hause. Ich baue Kinavela, damit Familien in der Diaspora einander in ihrer Nähe finden und ihre kulturellen Wurzeln mit ihren Kindern lebendig halten.",
-      fr: "Je suis Charles, père, né au Cameroun et aujourd’hui chez moi à Mayence. Je construis Kinavela pour que les familles de la diaspora puissent se rencontrer près de chez elles et faire vivre leurs racines culturelles avec leurs enfants.",
-      en: "I’m Charles, a father, born in Cameroon and now at home in Mainz. I’m building Kinavela so diaspora families can find each other nearby and keep their cultural roots alive with their children.",
+      de: "Ich betreue Kinavela und schreibe aus Mainz über die Entscheidungen hinter der Plattform. Hier geht es um Familien in der Diaspora, sichere Begegnungen und kulturelle Wurzeln, die im Alltag lebendig bleiben.",
+      fr: "Je m’occupe de Kinavela et j’écris depuis Mayence sur les choix qui façonnent la plateforme. Je parle ici des familles de la diaspora, de rencontres sûres et des racines culturelles qui restent vivantes au quotidien.",
+      en: "I look after Kinavela and write from Mainz about the decisions shaping the platform. This blog is about diaspora families, safe connections, and cultural roots that stay alive in everyday life.",
     },
     image: null,
     sameAs: [],

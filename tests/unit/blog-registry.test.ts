@@ -64,9 +64,9 @@ describe("blog registry", () => {
   });
 
   it("rejects a post whose author key does not resolve", () => {
-    expect(() => assertAuthorsResolve(entries, ["charles"])).not.toThrow();
+    expect(() => assertAuthorsResolve(entries, ["admin"])).not.toThrow();
     expect(() => assertAuthorsResolve(entries, ["someone-else"])).toThrow(
-      /unknown author "charles"/,
+      /unknown author "admin"/,
     );
   });
 

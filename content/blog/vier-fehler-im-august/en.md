@@ -1,7 +1,7 @@
 ---
 title: Four mistakes families should never have encountered
 excerpt: On 14 August, we fixed four mistakes. What they meant for families and why we speak openly about them at Kinavela.
-author: charles
+author: admin
 published: 2026-08-15
 originalLocale: de
 tags: [family, trust, behind-the-scenes]
