@@ -70,8 +70,61 @@ async function checkPublicApplicationRouting() {
   );
 }
 
+async function checkBlogSurface() {
+  const index = await fetch(new URL("/de/blog", baseUrl));
+  assert(index.status === 200, "/de/blog returned " + index.status);
+  const indexHtml = await index.text();
+  assert(
+    indexHtml.includes('rel="canonical"'),
+    "/de/blog is missing its canonical link",
+  );
+  assert(
+    indexHtml.includes("application/rss+xml"),
+    "/de/blog is missing RSS autodiscovery",
+  );
+
+  const feed = await fetch(new URL("/de/feed.xml", baseUrl));
+  assert(feed.status === 200, "/de/feed.xml returned " + feed.status);
+  assert(
+    feed.headers.get("content-type")?.includes("application/rss+xml"),
+    "/de/feed.xml is not served as RSS",
+  );
+  const feedBody = await feed.text();
+  assert(feedBody.startsWith("<?xml"), "/de/feed.xml is not XML");
+  assert(
+    !/<link>\/(?!\/)/.test(feedBody),
+    "/de/feed.xml contains a relative link, which resolves against the reader",
+  );
+
+  // Every post the sitemap advertises must actually resolve. A 404 in the
+  // sitemap is worse than an absent entry: it spends crawl budget to learn
+  // nothing.
+  const sitemap = await fetch(new URL("/sitemap.xml", baseUrl));
+  assert(sitemap.status === 200, "/sitemap.xml returned " + sitemap.status);
+  const postUrls = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map((match) => match[1])
+    .filter((url) => /\/blog\/[^/]+$/.test(url));
+  for (const url of postUrls.slice(0, 10)) {
+    const post = await fetch(new URL(new URL(url).pathname, baseUrl));
+    assert(
+      post.status === 200,
+      `${url} in the sitemap returned ${post.status}`,
+    );
+  }
+
+  const missing = await fetch(
+    new URL("/de/blog/dieser-beitrag-existiert-nicht", baseUrl),
+  );
+  assert(
+    missing.status === 404,
+    "an unknown blog slug returned " + missing.status,
+  );
+}
+
 for (const path of ["/api/cron/ai", "/api/cron/story-ai"])
   await checkProtectedWorker(path);
+
+await checkBlogSurface();
 
 const health = await check("/api/health", 200, "ok");
 const readiness = await check("/api/readiness", 200, "ready");
