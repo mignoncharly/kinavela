@@ -41,7 +41,7 @@ Der Text beginnt hier.
 | `heroImage`      | no         | path under `/public`                                          |
 | `heroAlt`        | with image | required whenever `heroImage` is set                          |
 | `originalLocale` | yes        | `de`, `fr` or `en` — the language it was actually written in  |
-| `translator`     | no         | set on translated files only; never on the original           |
+| `translator`     | no         | set only when someone other than the author translated it     |
 | `consentRef`     | no         | `c_…` pointer to a consent record, for posts quoting a family |
 
 Values are single-line. Wrap in quotes if the value would otherwise confuse the

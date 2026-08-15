@@ -106,6 +106,9 @@ export default async function LandingPage({ params }: PageProps) {
         <nav className="desktop-nav" aria-label={dictionary.nav.primaryLabel}>
           <a href="#vision">{dictionary.nav.vision}</a>
           <a href="#safety">{dictionary.nav.principles}</a>
+          <Link className="nav-blog" href={`/${locale}/blog`}>
+            {dictionary.nav.blog}
+          </Link>
           <a href="#contact">{dictionary.nav.contact}</a>
           <Link href={`/${locale}/auth/login`}>{dictionary.nav.signIn}</Link>
         </nav>
@@ -285,33 +288,43 @@ export default async function LandingPage({ params }: PageProps) {
         </a>
       </section>
 
-      <footer>
-        <div className="brand footer-brand">
-          <span className="brand-mark">K</span>
-          <span>KINAVELA</span>
+      <footer className="site-footer">
+        <div className="site-footer-intro">
+          <Link
+            className="brand footer-brand"
+            href={`/${locale}`}
+            aria-label={dictionary.nav.homeLabel}
+          >
+            <span className="brand-mark" aria-hidden="true">
+              K
+            </span>
+            <span>KINAVELA</span>
+          </Link>
+          <p className="site-footer-status">
+            <span className="status-dot" aria-hidden="true" />
+            {dictionary.footer.status}
+          </p>
         </div>
-        <p>
-          <span className="status-dot" />
-          {dictionary.footer.status}
-        </p>
-        <nav aria-label={dictionary.footer.legalLabel}>
-          <Link href={`/${locale}/privacy`}>{dictionary.footer.privacy}</Link>{" "}
-          <Link href={`/${locale}/terms`}>{dictionary.footer.terms}</Link>{" "}
-          <Link href={"/" + locale + "/impressum"}>
+        <nav
+          className="site-footer-links"
+          aria-label={dictionary.footer.legalLabel}
+        >
+          <Link href={`/${locale}/blog`}>{dictionary.nav.blog}</Link>
+          <Link href={`/${locale}/privacy`}>{dictionary.footer.privacy}</Link>
+          <Link href={`/${locale}/terms`}>{dictionary.footer.terms}</Link>
+          <Link href={`/${locale}/impressum`}>
             {dictionary.footer.impressum}
-          </Link>{" "}
-          <Link href={"/" + locale + "/cookies"}>
-            {dictionary.footer.cookies}
-          </Link>{" "}
-          <Link href={"/" + locale + "/child-safety"}>
+          </Link>
+          <Link href={`/${locale}/cookies`}>{dictionary.footer.cookies}</Link>
+          <Link href={`/${locale}/child-safety`}>
             {dictionary.footer.childSafety}
-          </Link>{" "}
-          <Link href={"/" + locale + "/community-guidelines"}>
+          </Link>
+          <Link href={`/${locale}/community-guidelines`}>
             {dictionary.footer.community}
-          </Link>{" "}
+          </Link>
           <a href="mailto:contact@kinavela.com">{dictionary.footer.contact}</a>
         </nav>
-        <p>
+        <p className="site-footer-copyright">
           © {new Date().getUTCFullYear()} Kinavela. {dictionary.footer.rights}
         </p>
       </footer>

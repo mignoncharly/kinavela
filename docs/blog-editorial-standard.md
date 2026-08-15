@@ -110,16 +110,18 @@ its own.
 
 ## Translation honesty
 
-Set `originalLocale` on every file. On a translated file, also set
-`translator`. The page then says so, and the structured data declares a
-`translator` on the article.
+Set `originalLocale` on every file. When someone other than the author
+translates a post, set `translator`; the page and structured data then credit
+that person. When the author owns every language version, omit `translator` and
+keep the byline unchanged.
 
 **Never publish an unedited machine translation.** A large share of this
 audience are native French speakers. They will notice within a sentence, and
 the credibility cost lands on the whole site, not just that post.
 
-Machine-drafted and then genuinely edited by a person is fine — name that
-person as the translator.
+Machine-drafted and then genuinely edited by the author is fine; the existing
+byline owns that language version. If someone else edits or translates it, name
+that person as the translator.
 
 ---
 
@@ -151,7 +153,7 @@ Before merging a post:
 - [ ] `npm run blog:check` reports nothing, or every finding is argued in the PR
 - [ ] The post contains something only a human here could know — name it in the PR description
 - [ ] The opening is a scene or a claim, not a definition
-- [ ] Paragraph lengths vary because the thoughts did
+- [ ] `originalLocale` is right; a different translator is credited when one exists
 - [ ] `originalLocale` is right; `translator` set if this is a translation
 - [ ] No unedited machine translation
 - [ ] If a real family appears: consent recorded, no identifiable children, no precise locations

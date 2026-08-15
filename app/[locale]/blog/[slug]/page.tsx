@@ -13,7 +13,7 @@ import { blogPostLocales, getBlogPost } from "@/features/blog/registry";
 import { blogPostLanguageAlternates } from "@/features/blog/seo";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-import { formatDate, formatLanguage } from "@/lib/i18n/format";
+import { formatDate } from "@/lib/i18n/format";
 
 type PageProps = { params: Promise<{ locale: string; slug: string }> };
 
@@ -134,15 +134,11 @@ export default async function BlogPostPage({ params }: PageProps) {
           </p>
         )}
 
-        {post.translated && (
+        {post.translated && post.translator && (
           <p className="blog-translation-note">
-            {post.translator
-              ? fill(dictionary.blog.translatedBy, {
-                  translator: post.translator,
-                })
-              : fill(dictionary.blog.onlyIn, {
-                  language: formatLanguage(locale, post.originalLocale),
-                })}{" "}
+            {fill(dictionary.blog.translatedBy, {
+              translator: post.translator,
+            })}{" "}
             <Link href={`/${post.originalLocale}/blog/${slug}`}>
               {dictionary.blog.readOriginal}
             </Link>

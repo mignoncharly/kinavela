@@ -2260,3 +2260,130 @@ footer p:last-child {
   background: #7f9b75;
   transform: translateX(-50%) rotate(16deg);
 }
+
+/* Responsive landing navigation and footer. */
+.landing-page .site-footer {
+  min-height: 0;
+  grid-template-columns: minmax(13rem, 0.65fr) minmax(0, 1.35fr);
+  grid-template-areas:
+    "intro links"
+    "copyright copyright";
+  align-items: start;
+  column-gap: clamp(2.5rem, 6vw, 7rem);
+  row-gap: 1.75rem;
+  padding: clamp(2.5rem, 4vw, 4rem) 0 1.75rem;
+}
+
+.site-footer-intro {
+  grid-area: intro;
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+}
+
+.landing-page .site-footer .footer-brand {
+  width: fit-content;
+}
+
+.landing-page .site-footer .site-footer-status {
+  line-height: 1.5;
+}
+
+.landing-page .site-footer .site-footer-links {
+  grid-area: links;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  justify-content: stretch;
+  gap: 0.8rem clamp(1rem, 2vw, 2rem);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.site-footer-links a {
+  min-height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  overflow-wrap: anywhere;
+}
+
+.landing-page .site-footer .site-footer-copyright {
+  grid-area: copyright;
+  width: 100%;
+  display: block;
+  justify-self: stretch;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .landing-page .desktop-nav {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .landing-page .desktop-nav > :not(.nav-blog) {
+    display: none;
+  }
+
+  .landing-page .site-footer {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "intro"
+      "links"
+      "copyright";
+    row-gap: 1.75rem;
+  }
+
+  .landing-page .site-footer .site-footer-links {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .landing-page .site-header {
+    gap: 0.625rem;
+  }
+
+  .landing-page .desktop-nav {
+    font-size: 0.75rem;
+  }
+
+  .landing-page .locale-switcher {
+    gap: 0.125rem;
+    padding: 0.1875rem;
+  }
+
+  .landing-page .site-footer {
+    padding: 2.25rem 0 1.5rem;
+  }
+
+  .landing-page .site-footer .site-footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.35rem 1rem;
+  }
+
+  .site-footer-links a {
+    min-height: 2.75rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .landing-page .site-header {
+    gap: 0.4rem;
+  }
+
+  .landing-page .brand {
+    gap: 0.45rem;
+    letter-spacing: 0.12em;
+  }
+
+  .landing-page .locale-switcher a {
+    min-width: 1.75rem;
+  }
+
+  .landing-page .site-footer .site-footer-links {
+    grid-template-columns: 1fr;
+  }
+}
