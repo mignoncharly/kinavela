@@ -14,8 +14,32 @@ describe("blog markdown rendering", () => {
     expect(html).not.toContain("<h1>");
   });
 
-  it("caps heading depth at h6", () => {
-    expect(renderMarkdown("###### tief")).toContain("<h6>");
+  it("normalises the shallowest heading to h2, whatever the author typed", () => {
+    // Writing `##` for top-level sections is at least as natural as `#`. With a
+    // fixed offset that produced <h3> under an <h1> with no <h2> between them —
+    // an outline that skips a level, and nothing in review would catch it.
+    const html = renderMarkdown("## Abschnitt\n\n### Unterpunkt");
+    expect(html).toContain("<h2>Abschnitt</h2>");
+    expect(html).toContain("<h3>Unterpunkt</h3>");
+  });
+
+  it("preserves relative depth rather than flattening", () => {
+    const html = renderMarkdown("## Eins\n\n#### Tief\n\n## Zwei");
+    expect(html).toContain("<h2>Eins</h2>");
+    expect(html).toContain("<h4>Tief</h4>");
+    expect(html).toContain("<h2>Zwei</h2>");
+  });
+
+  it("never emits a heading above h2 or below h6", () => {
+    expect(renderMarkdown("###### tief")).toContain("<h2>tief</h2>");
+    const deep = renderMarkdown("# A\n\n###### F");
+    expect(deep).toContain("<h2>A</h2>");
+    expect(deep).not.toMatch(/<h[17-9]/);
+  });
+
+  it("does not carry an offset over from the previous document", () => {
+    renderMarkdown("###### tief");
+    expect(renderMarkdown("# Oben")).toContain("<h2>Oben</h2>");
   });
 
   it("drops raw HTML but keeps its text", () => {

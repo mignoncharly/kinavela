@@ -16,8 +16,23 @@ import { SITE_URL } from "./site";
 
 const SAFE_PROTOCOLS = new Set(["https:", "http:", "mailto:"]);
 
-/** Markdown H1 becomes H2: the page template already owns the only H1. */
-const HEADING_OFFSET = 1;
+/**
+ * The page template owns the only <h1>, so a post's top-level heading must
+ * render as <h2>. Rather than a fixed offset — which silently produced <h3>
+ * with no <h2> above it whenever an author reached for `##` instead of `#` —
+ * the shallowest heading in a document is normalised to level 2 and the rest
+ * shift with it. Relative structure is preserved; the outline never skips.
+ */
+let headingOffset = 1;
+
+function headingOffsetFor(body: string) {
+  const depths = [...body.matchAll(/^(#{1,6})\s+\S/gm)].map(
+    (match) => (match[1] ?? "").length,
+  );
+  const shallowest = Math.min(...depths);
+  return depths.length === 0 ? 1 : 2 - shallowest;
+}
+
 const WORDS_PER_MINUTE = 200;
 
 function escapeAttribute(value: string) {
@@ -59,7 +74,7 @@ const renderer: RendererObject = {
   },
 
   heading({ tokens, depth }) {
-    const level = Math.min(depth + HEADING_OFFSET, 6);
+    const level = Math.min(Math.max(depth + headingOffset, 2), 6);
     return `<h${level}>${this.parser.parseInline(tokens)}</h${level}>\n`;
   },
 
@@ -85,6 +100,9 @@ const renderer: RendererObject = {
 const parser = new Marked({ gfm: true, breaks: false, renderer });
 
 export function renderMarkdown(body: string): string {
+  // Set immediately before a synchronous parse. Module-level state is safe
+  // here only because parse() never yields; keep it that way.
+  headingOffset = headingOffsetFor(body);
   const html = parser.parse(body, { async: false });
   return typeof html === "string" ? html : "";
 }
