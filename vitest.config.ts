@@ -6,7 +6,10 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
-    include: ["tests/unit/**/*.test.{ts,tsx}"],
+    // .mjs is included so the CLI scripts in scripts/ can be tested here
+    // rather than through a hand-rolled --self-test flag. tsconfig only
+    // includes .ts/.tsx, so this does not affect typecheck.
+    include: ["tests/unit/**/*.test.{ts,tsx,mjs}"],
     coverage: { reporter: ["text", "json", "html"] },
   },
   resolve: {

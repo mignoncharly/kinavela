@@ -1,0 +1,4 @@
+# Blog test fixtures are deliberately malformed in places — they exist to prove
+# the parser and renderer reject bad input, so reformatting them would quietly
+# repair the very cases under test.
+tests/fixtures/blog/
